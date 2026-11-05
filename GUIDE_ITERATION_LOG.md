@@ -1,5 +1,12 @@
 # Registro de Iteraciones y Evolución Pedagógica — Copilot 365 al Máximo
 
+## Iteración 4.3 · 2026-11-05 · Índice de talleres en Actividades
+
+- Índice lateral fijo en pantallas de 75rem o más, agrupado en Outlook y extensiones, con estado por taller (hecho o siguiente), conteo por grupo y resaltado del taller que se está leyendo.
+- En pantallas angostas, el índice se abre como panel desde «Ver todos los talleres» o «Talleres» en la barra fija; se cierra con Escape, el fondo o el botón y devuelve el foco.
+- Cada tarjeta termina con enlaces «Anterior» y «Siguiente» con el nombre del taller.
+- El menú hamburguesa informa su estado con `aria-expanded`.
+
 ## Iteración 4.2 · 2026-11-05 · Orientación y tarjetas plegables en Actividades
 
 - Hitos de `actividades.html` agrupados en «Outlook · Talleres 0 a 14» y «Extensiones A a F y proyecto final»; el siguiente taller pendiente se resalta y tiene el botón «Ir al Taller N».

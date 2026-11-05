@@ -73,3 +73,38 @@ test('expone los filtros admitidos', () => {
   assert.deepEqual(P.TOOL_FILTERS, ['todas', 'outlook', 'extensiones']);
   assert.deepEqual(P.STATUS_FILTERS, ['todas', 'pendientes', 'completadas']);
 });
+
+test('neighbors: devuelve anterior y siguiente según el orden de presentación', () => {
+  assert.deepEqual(P.neighbors(order, 1), { prev: 15, next: 2 });
+  assert.deepEqual(P.neighbors(order, 15), { prev: null, next: 1 });
+  assert.deepEqual(P.neighbors(order, 8), { prev: 2, next: null });
+});
+
+test('neighbors: un ID que no está en el recorrido no tiene vecinos', () => {
+  assert.deepEqual(P.neighbors(order, 99), { prev: null, next: null });
+});
+
+test('buildIndex: agrupa en Outlook y extensiones, conserva el orden y marca estado', () => {
+  const items = [
+    { id: 15, tool: 'outlook', code: '0', label: 'Diagnóstico' },
+    { id: 1, tool: 'outlook', code: '1', label: 'Prompt' },
+    { id: 13, tool: 'sharepoint', code: 'A', label: 'SharePoint' },
+    { id: 7, tool: undefined, code: '★', label: 'Proyecto final' }
+  ];
+  const groups = P.buildIndex(items, [1], 15);
+  assert.deepEqual(groups.map(g => g.key), ['outlook', 'extensiones']);
+  assert.deepEqual(groups[0].items.map(i => i.id), [15, 1]);
+  assert.deepEqual(groups[1].items.map(i => i.id), [13, 7]);
+  assert.equal(groups[0].items[1].done, true);
+  assert.equal(groups[0].items[0].isNext, true);
+  assert.equal(groups[0].done, 1);
+  assert.equal(groups[0].total, 2);
+  assert.equal(groups[1].done, 0);
+});
+
+test('buildIndex: omite grupos vacíos y acepta una lista vacía', () => {
+  const only = P.buildIndex([{ id: 3, tool: 'extension', code: 'C', label: 'Word' }], [], null);
+  assert.deepEqual(only.map(g => g.key), ['extensiones']);
+  assert.equal(only[0].items[0].isNext, false);
+  assert.deepEqual(P.buildIndex([], [], null), []);
+});

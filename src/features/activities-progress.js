@@ -52,5 +52,27 @@
     return true;
   }
 
-  return { TOOL_FILTERS, STATUS_FILTERS, parseProgress, toggleId, summarize, nextPending, matchesFilter };
+  // Taller anterior y siguiente de un ID dentro del recorrido.
+  function neighbors(order, id) {
+    const i = order.indexOf(id);
+    if (i === -1) return { prev: null, next: null };
+    return { prev: i > 0 ? order[i - 1] : null, next: i < order.length - 1 ? order[i + 1] : null };
+  }
+
+  const INDEX_GROUPS = [
+    { key: 'outlook', title: 'Outlook · Talleres 0 a 14' },
+    { key: 'extensiones', title: 'Extensiones y proyecto final' }
+  ];
+
+  // Agrupa los talleres ({ id, tool, code, label }) para el índice, con su estado y conteo por grupo.
+  function buildIndex(items, completed, nextId) {
+    return INDEX_GROUPS.map(g => {
+      const list = items
+        .filter(it => (it.tool === 'outlook') === (g.key === 'outlook'))
+        .map(it => ({ ...it, done: completed.includes(it.id), isNext: it.id === nextId }));
+      return { ...g, items: list, total: list.length, done: list.filter(it => it.done).length };
+    }).filter(g => g.total > 0);
+  }
+
+  return { TOOL_FILTERS, STATUS_FILTERS, parseProgress, toggleId, summarize, nextPending, matchesFilter, neighbors, buildIndex };
 });
