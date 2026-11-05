@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copilot en las Apps — Copilot 365 al Máximo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3669A4;
+      --primary-light: #4A7DB8;
+      --primary-dark: #2B5486;
+      --accent: #5B9BD5;
+      --bg: #F4F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #EDF1F7;
+      --text-primary: #1A2332;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D2DCE8;
+      --success: #38A169;
+      --warning: #D69E2E;
+      --error: #E53E3E;
+      --info: #3182CE;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow-card: 0 2px 8px rgba(54,105,164,0.08);
+      --shadow-hover: 0 4px 16px rgba(54,105,164,0.15);
+      --transition: all 0.3s ease;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-code: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      white-space: normal;
+      word-break: normal;
+      hyphens: none;
+      overflow-wrap: break-word;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none; display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .navbar-brand span { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary); font-size: .875rem;
+      padding: .45rem .75rem; border-radius: var(--radius-btn);
+      transition: var(--transition); white-space: nowrap; font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary); color: #fff;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: .5rem;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px; background: var(--text-primary);
+      border-radius: 2px; transition: var(--transition);
+    }
+
+    @media (max-width: 1024px) {
+      .nav-links {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: var(--surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: .75rem 1rem; width: 100%; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Main Layout ── */
+    main {
+      flex: 1; margin-top: 64px;
+      padding: 2.5rem 1.5rem 4rem;
+      inline-size: 100%; max-inline-size: 100%;
+    }
+    .container {
+      width: 100%; max-width: 1320px; margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, #2B5486 0%, #3669A4 60%, #5B9BD5 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      padding: 3rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 6px 20px rgba(54,105,164,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '💼';
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      padding: .35rem .85rem;
+      border-radius: 20px;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: .8rem;
+      line-height: 1.2;
+    }
+    .page-header p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    /* App Navigation Grid */
+    .app-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: .75rem;
+      margin-bottom: 2.5rem;
+    }
+    .app-select-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1rem .5rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      box-shadow: var(--shadow-card);
+    }
+    .app-select-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+    .app-select-btn .app-icon {
+      font-size: 1.8rem;
+    }
+    .app-select-btn .app-name {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    /* App Detail Card */
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+      position: relative;
+    }
+    .app-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 2px solid var(--surface-alt);
+    }
+    .app-main-icon {
+      font-size: 3rem;
+      line-height: 1;
+    }
+    .app-title-box h2 {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin-bottom: .25rem;
+    }
+    .app-title-box span {
+      font-size: .95rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Prose */
+    .prose {
+      inline-size: 100%;
+      max-inline-size: 100%;
+      font-size: 1.02rem;
+      color: var(--text-secondary);
+    }
+    @media (min-width: 40rem) {
+      .prose p {
+        text-align: justify;
+        text-align-last: start;
+      }
+    }
+    .prose p {
+      margin-bottom: 1.2rem;
+    }
+
+    /* Capabilities Grid */
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .cap-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 1.25rem;
+    }
+    .cap-box h4 {
+      font-size: 1.05rem;
+      color: var(--primary);
+      margin-bottom: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .cap-box p {
+      font-size: .9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    /* Chat bubble prompt */
+    .chat-bubble-container {
+      margin: 1.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .chat-bubble {
+      background: #F0F6FD;
+      border: 1px solid #C4D9F2;
+      border-radius: 12px 12px 12px 2px;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+    }
+    .chat-bubble-header {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .chat-prompt-text {
+      font-family: var(--font-code);
+      font-size: .92rem;
+      color: #1A2332;
+      line-height: 1.6;
+    }
+    .chat-bubble-footer {
+      margin-top: .6rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .8rem;
+      color: var(--text-muted);
+    }
+    .btn-copy-bubble {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .btn-copy-bubble:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Pro tip box */
+    .pro-tip {
+      background: #FEF9E7;
+      border-left: 4px solid var(--warning);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-btn);
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .pro-tip-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .pro-tip h4 {
+      color: #745307;
+      font-size: 1.05rem;
+      margin-bottom: .25rem;
+    }
+    .pro-tip p {
+      color: #634706;
+      font-size: .95rem;
+      margin-bottom: 0;
+    }
+
+    /* Table Quick Ref */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: .92rem;
+    }
+    th {
+      background: #2B5486;
+      color: #fff;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+    }
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #F8FAFD; }
+
+    /* Page Nav */
+    .page-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .75rem 1.5rem;
+      border-radius: var(--radius-btn);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: .95rem;
+    }
+    .btn-nav-prev {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-nav-prev:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+    .btn-nav-next {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(54,105,164,0.25);
+    }
+    .btn-nav-next:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: #141E2B;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 3.5rem 2rem 2rem;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .8rem;
+    }
+    .footer-desc {
+      font-size: .9rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .footer-nav-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      list-style: none;
+    }
+    .footer-nav-links a {
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-nav-links a:hover {
+      color: #5B9BD5;
+    }
+    .footer-bottom {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.4);
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+  
+    /* Accordion & Diagnostics */
+    .troubleshoot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    .accordion {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      margin-top: 1.5rem;
+      background: var(--surface);
+    }
+    .accordion-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .accordion-item:last-child {
+      border-bottom: none;
+    }
+    .accordion-header {
+      width: 100%;
+      text-align: left;
+      padding: 1.15rem 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      transition: background 0.2s ease;
+    }
+    .accordion-header:hover {
+      background: var(--surface-alt);
+    }
+    .accordion-icon {
+      font-size: 1rem;
+      transition: transform 0.3s ease;
+    }
+    .accordion-header.active .accordion-icon {
+      transform: rotate(180deg);
+    }
+    .accordion-content {
+      display: none;
+      padding: 1.25rem 1.5rem 1.5rem;
+      background: #FDFEFE;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--surface-alt);
+      font-size: .95rem;
+      line-height: 1.6;
+    }
+    .accordion-content.open {
+      display: block;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span>✦</span> Copilot 365 al Máximo
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="fundamentos.html">Fundamentos</a></li>
+      <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+      <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+      <li><a href="copilot-apps.html" class="active">Copilot en Apps</a></li>
+      <li><a href="prompts.html">Prompts</a></li>
+      <li><a href="actividades.html">Actividades</a></li>
+      <li><a href="evaluacion.html">Evaluación</a></li>
+    </ul>
+    <button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú de navegación">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="badge">Módulo 4 · Suite Microsoft 365</div>
+        <h1>Copilot en Cada Aplicación de Microsoft 365</h1>
+        <p>Aprende a desatar el poder de la inteligencia artificial exactamente en el lugar donde trabajas. Descubre las capacidades nativas, prompts calibrados y mejores prácticas para Word, Excel, PowerPoint, Outlook, Teams, OneNote, Loop, Whiteboard y Forms.</p>
+      </header>
+
+      <!-- App Jump Buttons -->
+      <div class="app-selector-grid">
+        <a href="#app-outlook" class="app-select-btn">
+          <span class="app-icon">📧</span>
+          <span class="app-name">Outlook</span>
+        </a>
+        <a href="#app-word" class="app-select-btn">
+          <span class="app-icon">📝</span>
+          <span class="app-name">Word</span>
+        </a>
+        <a href="#app-excel" class="app-select-btn">
+          <span class="app-icon">📊</span>
+          <span class="app-name">Excel</span>
+        </a>
+        <a href="#app-powerpoint" class="app-select-btn">
+          <span class="app-icon">🎯</span>
+          <span class="app-name">PowerPoint</span>
+        </a>
+        <a href="#app-teams" class="app-select-btn">
+          <span class="app-icon">💬</span>
+          <span class="app-name">Teams</span>
+        </a>
+        <a href="#app-onenote" class="app-select-btn">
+          <span class="app-icon">📓</span>
+          <span class="app-name">OneNote</span>
+        </a>
+        <a href="#app-loop" class="app-select-btn">
+          <span class="app-icon">🔄</span>
+          <span class="app-name">Loop</span>
+        </a>
+        <a href="#app-whiteboard" class="app-select-btn">
+          <span class="app-icon">🎨</span>
+          <span class="app-name">Whiteboard</span>
+        </a>
+        <a href="#app-forms" class="app-select-btn">
+          <span class="app-icon">📋</span>
+          <span class="app-name">Forms</span>
+        </a>
+      </div>
+
+      <div class="pro-tip" style="margin-bottom:2rem;">
+        <div class="pro-tip-icon">📬</div>
+        <div>
+          <h4>Outlook primero</h4>
+          <p>Esta guía gira alrededor de Outlook: allí llegan las solicitudes, los adjuntos y las invitaciones. Las demás aplicaciones aparecen como extensiones para continuar el trabajo que empieza en el correo.</p>
+        </div>
+      </div>
+
+      <!-- 0. OUTLOOK -->
+      <section class="app-card" id="app-outlook">
+        <div class="app-header">
+          <div class="app-main-icon">📧</div>
+          <div class="app-title-box">
+            <h2>Microsoft Outlook · El centro de trabajo con Copilot y sus agentes</h2>
+            <span>Recupera el control de tu bandeja de entrada y redacta respuestas diplomáticas en segundos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>El correo electrónico sigue siendo el canal principal de comunicación institucional, pero gestionar hilos de 40 mensajes donde varias personas discuten en paralelo consume energía vital. Copilot en Outlook lee por ti, sintetiza los acuerdos y te asesora en el tono de tus respuestas.</p>
+
+          <div class="capabilities-grid">
+            <div class="cap-box">
+              <h4>⚡ Resumen por Copilot</h4>
+              <p>Lee hilos kilométricos en 5 segundos y extrae los puntos de vista de cada persona y las decisiones tomadas.</p>
+            </div>
+            <div class="cap-box">
+              <h4>✍️ Redacción Contextual</h4>
+              <p>Genera borradores con la longitud adecuada (corto, mediano, extenso) tomando en cuenta los correos previos de la cadena.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🎭 Asesor de Tono</h4>
+              <p>Reescribe mensajes cuando estés frustrado para asegurar diplomacia, asertividad y claridad sin asperezas.</p>
+            </div>
+            <div class="cap-box">
+              <h4>📎 Adjuntos</h4>
+              <p>Resume archivos adjuntos de Excel, Word o PDF y compara versiones de un documento recibido en correos distintos.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🔍 Búsqueda en Microsoft 365</h4>
+              <p>Responde preguntas sobre acuerdos, fechas y personas a partir de tus correos, archivos y reuniones, con citas que puedes abrir.</p>
+            </div>
+            <div class="cap-box">
+              <h4>📅 Calendario y reuniones</h4>
+              <p>Consulta tus compromisos, encuentra espacios libres, prepara reuniones y convierte su contenido en un correo de acta, si tu organización lo permite.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🤖 Agentes en el panel</h4>
+              <p>Desde el menú ☰ del panel cambias a Prompt Coach, Writing Coach, Workflows u otros agentes habilitados, o creas uno propio.</p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt de Triaje de Correo</div>
+              <div class="chat-prompt-text" id="p-mail-1">"Categoriza mis correos no leídos de las últimas 24 horas en tres grupos: 1) Responder hoy (compromisos urgentes), 2) Responder esta semana, 3) Solo informativo (FYI). Para el grupo 1, sugiere un borrador de respuesta breve de confirmación."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Inicio de jornada laboral en 10 minutos</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-mail-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pro-tip">
+            <div class="pro-tip-icon">💡</div>
+            <div>
+              <h4>Consejo Pro en Outlook</h4>
+              <p>Aprovecha la función <strong>"Preparación para reuniones"</strong>: pide a Copilot antes de una cita: <em>"Resume los últimos intercambios de correos y archivos compartidos con el remitente de esta reunión para tener el contexto listo."</em></p>
+            </div>
+          </div>
+          <div class="pro-tip">
+            <div class="pro-tip-icon">🧪</div>
+            <div>
+              <h4>Comprueba antes de confiar</h4>
+              <p>La disponibilidad de adjuntos, búsqueda, calendario y reuniones depende de lo que habilite tu organización. Haz el <a href="actividades.html#act-15">Taller 0 · Diagnóstico de capacidades</a> y practica después con los <a href="actividades.html#bloque-outlook">talleres de Outlook</a>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. WORD -->
+      <section class="app-card" id="app-word">
+        <div class="app-header">
+          <div class="app-main-icon">📝</div>
+          <div class="app-title-box">
+            <h2>Microsoft Word · Redacción y Transformación Documental</h2>
+            <span>De la hoja en blanco a propuestas estructuradas y síntesis ejecutivas en minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>En Word, Copilot opera como un coautor experimentado instalado en el lienzo. Puedes pedirle que redacte desde cero, que reescriba selecciones de texto para pulir su tono o que transforme informes densos en tablas ejecutivas sin perder la rigurosidad conceptual.</p>
+
+          <div class="capabilities-grid">
+            <div class="cap-box">
+              <h4>📄 Borradores Guiados</h4>
+              <p>Genera propuestas, actas y manuales a partir de un título o esquema breve, respetando formatos académicos e institucionales.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🔄 Reescritura Contextual</h4>
+              <p>Selecciona un párrafo y modifícalo para que sea más formal, conciso, persuasivo o accesible para aprendices principiantes.</p>
+            </div>
+            <div class="cap-box">
+              <h4>📊 Conversión a Tablas</h4>
+              <p>Transforma listas largas y descripciones caóticas en matrices limpias y estructuradas con encabezados automáticos.</p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt Recomendado en Word</div>
+              <div class="chat-prompt-text" id="p-word-1">"Redacta un informe de avance sobre el proyecto formativo 'Sistema de Gestión de Aprendizaje'. Estructura: 1) Resumen de actividades completadas esta semana, 2) Lista de dos riesgos potenciales de cronograma, 3) Próximos pasos a entregar el viernes. Tono profesional y claro."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Informes semanales de gestión</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-word-1', this)">Copiar</button>
+              </div>
+            </div>
+
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Anclaje con Comando Barra (/)</div>
+              <div class="chat-prompt-text" id="p-word-2">"Basándote en /ActaReunionLunes.docx, elabora una propuesta ejecutiva de 2 páginas con introducción, justificación, metodología de trabajo y tabla de entregables."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Transformar notas de reunión en propuesta</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-word-2', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pro-tip">
+            <div class="pro-tip-icon">💡</div>
+            <div>
+              <h4>Consejo Pro en Word</h4>
+              <p>No le pidas a Copilot que "haga todo el documento de 30 páginas" en un solo prompt. Pídele primero la estructura de títulos (tabla de contenido), revisa el índice y luego ve pidiéndole que desarrolle cada sección por separado. El resultado tendrá 10 veces más calidad y profundidad analítica.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. EXCEL -->
+      <section class="app-card" id="app-excel">
+        <div class="app-header">
+          <div class="app-main-icon">📊</div>
+          <div class="app-title-box">
+            <h2>Microsoft Excel · Análisis Inteligente y Ciencia de Datos</h2>
+            <span>Fórmulas automáticas, insights conversacionales y ejecución de Python integrada</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Copilot en Excel transforma la interacción con los datos. Ya no necesitas memorizar complejas funciones anidadas como <code>BUSCARX</code>, <code>INDICE</code> o <code>COINCIDIR</code>. Simplemente formula tu duda en lenguaje natural y Copilot generará las columnas calculadas, formateará la tabla o creará gráficos explicativos.</p>
+
+          <div class="capabilities-grid">
+            <div class="cap-box">
+              <h4>🧮 Generador de Fórmulas</h4>
+              <p>Describe en español la lógica que necesitas calcular y Copilot generará la fórmula exacta lista para insertar.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🔍 Análisis de Tendencias</h4>
+              <p>Detecta automáticamente correlaciones, productos con mayor crecimiento, valores atípicos y patrones estacionales.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🐍 Agente Analyst (Python)</h4>
+              <p>Ejecuta código Python nativo en un entorno seguro en la nube para análisis estadístico avanzado y gráficos complejos.</p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt Recomendado en Excel</div>
+              <div class="chat-prompt-text" id="p-excel-1">"Genera una columna de 'Riesgo Académico' donde asigne 'Alto' si la asistencia es menor al 75% o la nota definitiva es inferior a 3.5, 'Medio' si la nota está entre 3.5 y 4.0, y 'Bajo' en los demás casos. Maneja posibles celdas vacías."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Reglas condicionales sin anidar condicionales a mano</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-excel-1', this)">Copiar</button>
+              </div>
+            </div>
+
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Análisis Estadístico</div>
+              <div class="chat-prompt-text" id="p-excel-2">"¿Cuáles son los 3 centros de formación con mayor tasa de deserción este trimestre? Compara sus promedios contra el total nacional y genera un gráfico de barras comparativo."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Síntesis gráfica instantánea</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-excel-2', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pro-tip">
+            <div class="pro-tip-icon">💡</div>
+            <div>
+              <h4>Consejo Pro en Excel</h4>
+              <p>Para que Copilot funcione a la perfección, tus datos <strong>deben estar formateados como Tabla de Excel</strong> (atajo <code>Ctrl + T</code>) y cada columna debe tener un encabezado único y descriptivo sin celdas combinadas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. POWERPOINT -->
+      <section class="app-card" id="app-powerpoint">
+        <div class="app-header">
+          <div class="app-main-icon">🎯</div>
+          <div class="app-title-box">
+            <h2>Microsoft PowerPoint · Presentaciones de Alto Impacto</h2>
+            <span>Transformación directa de documentos a diapositivas visuales con notas del orador</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Crear presentaciones profesionales solía requerir horas de copiar y pegar fragmentos de texto, ajustar cuadros y buscar imágenes. Copilot en PowerPoint automatiza la generación de la narrativa, diseña esquemas visuales equilibrados y redacta las fichas de apoyo para el expositor.</p>
+
+          <div class="capabilities-grid">
+            <div class="cap-box">
+              <h4>📑 De Word a Diapositivas</h4>
+              <p>Referencia un archivo de Word con <code>/</code> y Copilot construirá una presentación coherente de 8 a 12 diapositivas estructuradas.</p>
+            </div>
+            <div class="cap-box">
+              <h4>🎙️ Notas del Orador</h4>
+              <p>Redacta automáticamente el guion verbal que debes pronunciar en cada lámina, con pausas e ideas clave.</p>
+            </div>
+            <div class="cap-box">
+              <h4>✨ Reorganización Visual</h4>
+              <p>Convierte listas aburridas en gráficos interactivos de procesos, embudos de tiempo y cuadrantes comparativos.</p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt Recomendado en PowerPoint</div>
+              <div class="chat-prompt-text" id="p-ppt-1">"Crea una presentación de 8 diapositivas basada en /GuiaCurricular2026.docx. Debe incluir: Diapositiva de portada, 3 diapositivas con los objetivos de aprendizaje, 2 de metodología de evaluación y 1 de conclusiones. Agrega notas de apoyo en cada diapositiva."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Convertir un documento técnico en exposición para aprendices</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-ppt-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pro-tip">
+            <div class="pro-tip-icon">💡</div>
+            <div>
+              <h4>Consejo Pro en PowerPoint</h4>
+              <p>Si una diapositiva generada tiene demasiado texto denso, selecciona el cuadro y dile a Copilot: <em>"Haz esta diapositiva más visual, reduce el texto a 4 viñetas de máximo 10 palabras cada una y sugiere un icono para cada punto."</em></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. TEAMS -->
+      <section class="app-card" id="app-teams">
+        <div class="app-header">
+          <div class="app-main-icon">💬</div>
+          <div class="app-title-box">
+            <h2>Microsoft Teams · Colaboración en Tiempo Real y Actas Automáticas</h2>
+            <span>Reuniones productivas, asignación de tareas al vuelo y traducción simultánea</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Microsoft Teams es el centro de operaciones donde residen los agentes más poderosos (como <strong>Facilitator</strong> e <strong>Interpreter</strong>). Con la transcripción activa, Copilot actúa como el secretario más eficiente del mundo: registra compromisos, detecta preguntas sin respuesta y sintetiza debates acalorados con imparcialidad.</p>
+
+          <div class="capabilities-grid">
+            <div class="cap-box">
+              <h4>📋 Minutas en Vivo</h4>
+              <p>Genera actas con asistentes, acuerdos y tareas con nombre propio sin que nadie tenga que dejar de participar.</p>
+            </div>
+            <div class="cap-box">
+              <h4>❓ Detección de Pendientes</h4>
+              <p>Pregúntale en medio de la reunión: <em>"¿Qué preguntas quedaron sin responder de las planteadas por el coordinador?"</em></p>
+            </div>
+            <div class="cap-box">
+              <h4>🌐 Intérprete Multilingüe</h4>
+              <p>Traducción de voz en vivo durante llamadas con aliados internacionales, preservando el timbre de voz del interlocutor.</p>
+            </div>
+          </div>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt Post-Reunión en Teams</div>
+              <div class="chat-prompt-text" id="p-teams-1">"A partir de la transcripción de esta reunión, genera un acta con: 1) Resumen de 4 viñetas de las decisiones acordadas, 2) Tabla con 3 columnas: Tarea pendiente, Persona responsable según lo hablado y Fecha límite mencionada, 3) Desacuerdos que quedaron pendientes para la próxima sesión."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Cierre de reunión con seguimiento impecable</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-teams-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pro-tip">
+            <div class="pro-tip-icon">💡</div>
+            <div>
+              <h4>Consejo Pro en Teams</h4>
+              <p><strong>Asegúrate siempre de que la opción "Iniciar transcripción" esté encendida</strong> al arrancar la sesión de Teams. Sin transcripción activa, Copilot no tiene acceso al audio hablado para generar actas ni recapitular compromisos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. ONENOTE -->
+      <section class="app-card" id="app-onenote">
+        <div class="app-header">
+          <div class="app-main-icon">📓</div>
+          <div class="app-title-box">
+            <h2>Microsoft OneNote · Cuadernos Inteligentes y Mapas Mentales</h2>
+            <span>Transforma notas caóticas, transcripciones y fotos de tableros en guías de estudio estructuradas</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>OneNote es el lienzo perfecto para la captura rápida de ideas. Con Copilot integrado, tus páginas de apuntes se convierten en recursos pedagógicos: crea mapas conceptuales, elabora cuestionarios de repaso para tus estudiantes y extrae listas de verificación operativas.</p>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt Pedagógico en OneNote</div>
+              <div class="chat-prompt-text" id="p-one-1">"Organiza las notas de esta sección en una guía de estudio para aprendices técnicos. Debe contener: 1) Glosario con las 5 definiciones esenciales, 2) Esquema conceptual de los temas vistos y 3) 4 preguntas de autoevaluación con sus respectivas respuestas explicadas al final."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Material didáctico a partir de notas de clase</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-one-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. LOOP -->
+      <section class="app-card" id="app-loop">
+        <div class="app-header">
+          <div class="app-main-icon">🔄</div>
+          <div class="app-title-box">
+            <h2>Microsoft Loop · Espacios de Trabajo Vivos y Ágiles</h2>
+            <span>Componentes colaborativos sincronizados que se mueven fluidamente entre Teams, Outlook y la web</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Microsoft Loop rompe las fronteras de los documentos estáticos. Sus componentes son bloques vivos que puedes incrustar en un correo o en un chat de Teams y se actualizan en tiempo real para todos. Copilot en Loop facilita la co-creación ágil de tableros Kanban, tablas de progreso y lluvia de ideas iterativa.</p>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt de Desglose de Proyecto en Loop</div>
+              <div class="chat-prompt-text" id="p-loop-1">"Genera una tabla de seguimiento de tareas para el rediseño del portal web institucional. Incluye columnas para: Actividad, Hito correspondiente, Responsable sugerido, Estimación en días y Estado inicial (No iniciado)."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Tableros de trabajo colaborativos en 1 clic</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-loop-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. WHITEBOARD -->
+      <section class="app-card" id="app-whiteboard">
+        <div class="app-header">
+          <div class="app-main-icon">🎨</div>
+          <div class="app-title-box">
+            <h2>Microsoft Whiteboard · Lluvia de Ideas y Agrupación Visual</h2>
+            <span>Generación masiva de notas adhesivas digitales y síntesis temática para talleres creativos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Durante talleres de ideación, design thinking o retrospectivas de proyectos, Copilot en Whiteboard elimina el bloqueo creativo. Puede sembrar el tablero con decenas de ideas en forma de notas adhesivas (sticky notes) de colores y luego categorizarlas por afinidad semántica con un solo botón.</p>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt de Ideación en Whiteboard</div>
+              <div class="chat-prompt-text" id="p-wb-1">"Sugiere 8 ideas innovadoras para fomentar la participación activa de los aprendices en ambientes virtuales de aprendizaje. Coloca cada propuesta como una nota adhesiva separada y luego agrúpalas en dos categorías: 'Interacción en vivo' y 'Trabajo autónomo'."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Facilitación de talleres de co-diseño</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-wb-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. FORMS -->
+      <section class="app-card" id="app-forms">
+        <div class="app-header">
+          <div class="app-main-icon">📋</div>
+          <div class="app-title-box">
+            <h2>Microsoft Forms · Encuestas y Quizzes Automatizados</h2>
+            <span>Diseño instantáneo de instrumentos de evaluación con análisis inteligente de respuestas</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Diseñar un cuestionario riguroso, equilibrado y con diferentes tipos de preguntas (opción múltiple, escala Likert, respuesta abierta) toma tiempo. Copilot en Forms genera el formulario completo a partir de tu objetivo formativo y, una vez recogidas las respuestas, analiza las tendencias cuantitativas y los comentarios cualitativos.</p>
+
+          <div class="chat-bubble-container">
+            <div class="chat-bubble">
+              <div class="chat-bubble-header">✦ Prompt de Creación de Quiz en Forms</div>
+              <div class="chat-prompt-text" id="p-forms-1">"Crea una prueba de conocimientos de 8 preguntas sobre 'Principios de Seguridad de la Información y Gestión de Contraseñas'. Incluye 5 preguntas de selección múltiple con única respuesta, 2 de verdadero/falso y 1 de escala de autopercepción. Configura la retroalimentación formativa de la opción correcta en cada una."</div>
+              <div class="chat-bubble-footer">
+                <span>Caso de uso: Evaluaciones diagnósticas instantáneas</span>
+                <button type="button" class="btn-copy-bubble" onclick="copyPromptText('p-forms-1', this)">Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Diagnostics & Troubleshooting Section -->
+      <section class="troubleshoot-card" id="diagnostico-apps">
+        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; border-bottom:2px solid var(--surface-alt); padding-bottom:1rem;">
+          <span style="font-size:2.2rem;">🔧</span>
+          <div>
+            <h2 style="font-size:1.6rem; color:var(--primary-dark); margin-bottom:.2rem;">Diagnóstico Rápido y Recuperación ante Errores</h2>
+            <span style="font-size:.9rem; color:var(--text-muted); font-weight:500;">Respuestas directas para superar los 5 bloqueos más frecuentes en el uso cotidiano de Copilot</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Cuando trabajas con inteligencia artificial en aplicaciones de producción, es normal toparse con mensajes de error o comportamientos inesperados. Consulta esta guía antes de frustrarte:</p>
+
+          <div class="accordion">
+            <div class="accordion-item">
+              <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+                <span>1. ¿Por qué el icono de Copilot aparece deshabilitado o no responde en Excel?</span>
+                <span class="accordion-icon">▼</span>
+              </button>
+              <div class="accordion-content">
+                <p>Copilot en Excel exige dos condiciones técnicas obligatorias:
+                <br>• <strong>Almacenamiento en la nube:</strong> El archivo debe estar guardado en tu OneDrive institucional o SharePoint de equipo (la función de autoguardado debe estar en "Activado"). No funciona en archivos guardados en carpetas locales como <code>C:\Descargas</code> o unidades USB.
+                <br>• <strong>Formato oficial de Tabla:</strong> El rango de datos debe estar convertido en una tabla oficial de Excel. Selecciona los datos y presiona <code>Ctrl + T</code>. Asegúrate de que no existan filas en blanco intermedias ni celdas combinadas en los encabezados.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+                <span>2. ¿Qué hacer si Copilot inventa datos o proporciona una cifra incorrecta (Alucinación)?</span>
+                <span class="accordion-icon">▼</span>
+              </button>
+              <div class="accordion-content">
+                <p>Aplica la técnica del <strong>anclaje forzado</strong>:
+                <br>• Utiliza el comando <code>/</code> para enlazar el documento original en lugar de permitir que busque en todo tu correo.
+                <br>• Añade una regla explícita en tu prompt: <em>"Basa tu respuesta únicamente en la información contenida en el archivo adjunto. Si la cifra exacta no se encuentra expresamente redactada, indica 'Dato no disponible en la fuente' y no calcules estimaciones."</em>
+                <br>• Solicita que cite el número de página o sección para verificación humana inmediata.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+                <span>3. ¿Por qué Copilot no puede generar el resumen ni las tareas de una reunión en Teams?</span>
+                <span class="accordion-icon">▼</span>
+              </button>
+              <div class="accordion-content">
+                <p>Copilot no graba audio de forma oculta. Para procesar el diálogo hablado, <strong>es obligatorio que la transcripción en vivo esté iniciada</strong> desde el inicio de la sesión (menú <code>Más (...)</code> → <code>Grabar y transcribir</code> → <code>Iniciar transcripción</code>). Si la transcripción estuvo apagada, Copilot solo podrá consultar los mensajes de texto que se hayan escrito en el chat de la reunión.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+                <span>4. ¿Cómo resolver el error de "Documento demasiado extenso" al crear diapositivas en PowerPoint?</span>
+                <span class="accordion-icon">▼</span>
+              </button>
+              <div class="accordion-content">
+                <p>Copilot en PowerPoint tiene un límite de lectura de contexto por archivo (aproximadamente 20 a 30 páginas). Si tu informe tiene 80 páginas:
+                <br>• Abre el documento en Microsoft Word.
+                <br>• Pídele a Copilot en Word: <em>"Genera un resumen estructurado de 3 páginas de este informe destacando objetivos, metodología, resultados y conclusiones."</em>
+                <br>• Guarda ese nuevo documento como <code>/Informe_Sintesis.docx</code> y utilízalo como fuente en PowerPoint.</p>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <button type="button" class="accordion-header" onclick="toggleAccordion(this)">
+                <span>5. ¿Qué hacer si Copilot busca en internet público cuando necesito datos privados de mi centro?</span>
+                <span class="accordion-icon">▼</span>
+              </button>
+              <div class="accordion-content">
+                <p>En la parte superior de la ventana de Microsoft Copilot Chat verás dos pestañas: <strong>Web</strong> y <strong>Work</strong>. Si tienes seleccionada la pestaña "Web", el motor consultará únicamente el buscador Bing. Asegúrate de hacer clic en la pestaña <strong>"Work"</strong> para que active la conexión con Microsoft Graph y tus repositorios de SharePoint y OneDrive.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="page-nav-bar">
+        <a href="creacion-agentes.html" class="btn-nav btn-nav-prev">← Anterior: Crear Agentes</a>
+        <a href="prompts.html" class="btn-nav btn-nav-next">Siguiente: Biblioteca de Prompts →</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">✦ Copilot 365 al Máximo</div>
+        <p class="footer-desc">Guía educativa integral diseñada para aprendices, instructores y profesionales que buscan dominar Microsoft 365 Copilot, sus agentes inteligentes y la automatización moderna del trabajo.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom:.8rem; font-size:.95rem;">Módulos del Curso</h4>
+        <ul class="footer-nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="fundamentos.html">Fundamentos</a></li>
+          <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+          <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+          <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+          <li><a href="prompts.html">Biblioteca Prompts</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="evaluacion.html">Evaluación</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Copilot 365 al Máximo. Formación y Productividad Digital.</span>
+      <span>Diseñado con serenidad nórdica · Accesible y Práctico</span>
+    </div>
+  </footer>
+
+  <script>
+    // Responsive hamburger
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+      });
+    }
+
+    // Copy prompt text in bubbles
+    function copyPromptText(id, btn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✓ Copiado';
+        btn.style.background = '#38A169';
+        setTimeout(() => {
+          btn.innerText = orig;
+          btn.style.background = '';
+        }, 1800);
+      }).catch(err => {
+        console.error('Error al copiar:', err);
+      });
+    }
+
+    // Accordion toggle
+    function toggleAccordion(btn) {
+      btn.classList.toggle('active');
+      const content = btn.nextElementSibling;
+      if (content) {
+        content.classList.toggle('open');
+      }
+    }
+  </script>
+</body>
+</html>
+

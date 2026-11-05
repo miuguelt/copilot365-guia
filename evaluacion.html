@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluación y Certificación — Copilot 365 al Máximo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3669A4;
+      --primary-light: #4A7DB8;
+      --primary-dark: #2B5486;
+      --accent: #5B9BD5;
+      --bg: #F4F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #EDF1F7;
+      --text-primary: #1A2332;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D2DCE8;
+      --success: #38A169;
+      --warning: #D69E2E;
+      --error: #E53E3E;
+      --info: #3182CE;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow-card: 0 2px 8px rgba(54,105,164,0.08);
+      --shadow-hover: 0 4px 16px rgba(54,105,164,0.15);
+      --transition: all 0.3s ease;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-code: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      white-space: normal;
+      word-break: normal;
+      hyphens: none;
+      overflow-wrap: break-word;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none; display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .navbar-brand span { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary); font-size: .875rem;
+      padding: .45rem .75rem; border-radius: var(--radius-btn);
+      transition: var(--transition); white-space: nowrap; font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary); color: #fff;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: .5rem;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px; background: var(--text-primary);
+      border-radius: 2px; transition: var(--transition);
+    }
+
+    @media (max-width: 1024px) {
+      .nav-links {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: var(--surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: .75rem 1rem; width: 100%; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Main Layout ── */
+    main {
+      flex: 1; margin-top: 64px;
+      padding: 2.5rem 1.5rem 4rem;
+      inline-size: 100%; max-inline-size: 100%;
+    }
+    .container {
+      width: 100%; max-width: 1320px; margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, #2B5486 0%, #3669A4 60%, #5B9BD5 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      padding: 3rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 6px 20px rgba(54,105,164,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '🏆';
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      padding: .35rem .85rem;
+      border-radius: 20px;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: .8rem;
+      line-height: 1.2;
+    }
+    .page-header p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    /* Module Card */
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+    }
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--surface-alt);
+      padding-bottom: 1rem;
+    }
+    .module-num {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.25rem;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(54,105,164,0.25);
+    }
+    .module-title-box h2 {
+      font-size: 1.65rem;
+      color: var(--primary-dark);
+      margin-bottom: .25rem;
+    }
+    .module-title-box span {
+      font-size: .9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Prose */
+    .prose {
+      inline-size: 100%;
+      max-inline-size: 100%;
+      font-size: 1.02rem;
+      color: var(--text-secondary);
+    }
+    @media (min-width: 40rem) {
+      .prose p {
+        text-align: justify;
+        text-align-last: start;
+      }
+    }
+    .prose p {
+      margin-bottom: 1.2rem;
+    }
+
+    /* Quiz Widget */
+    .quiz-container {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .quiz-progress-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: .95rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .quiz-question-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    .quiz-question-title {
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+    .quiz-option {
+      background: var(--surface-alt);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 1rem 1.25rem;
+      font-size: .95rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .quiz-option:hover:not(.disabled) {
+      border-color: var(--primary);
+      background: #F0F6FD;
+    }
+    .quiz-option.correct {
+      background: #EBF8F2;
+      border-color: var(--success);
+      color: #1C5237;
+      font-weight: 600;
+    }
+    .quiz-option.incorrect {
+      background: #FFF5F5;
+      border-color: var(--error);
+      color: #9B2C2C;
+    }
+    .quiz-feedback {
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-btn);
+      font-size: .92rem;
+      display: none;
+    }
+    .quiz-feedback.show-correct {
+      display: block;
+      background: #EBF8F2;
+      border-left: 4px solid var(--success);
+      color: #1C5237;
+    }
+    .quiz-feedback.show-incorrect {
+      display: block;
+      background: #FFF5F5;
+      border-left: 4px solid var(--error);
+      color: #9B2C2C;
+    }
+    .quiz-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+    .btn-quiz {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: .65rem 1.5rem;
+      border-radius: var(--radius-btn);
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-quiz:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+    .btn-quiz:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Quiz Results Box */
+    .quiz-result-card {
+      display: none;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      margin-top: 2rem;
+    }
+    .result-score-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 2.2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 6px 16px rgba(54,105,164,0.3);
+    }
+    .result-title {
+      font-size: 1.6rem;
+      color: var(--primary-dark);
+      margin-bottom: .5rem;
+    }
+    .result-msg {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 650px;
+      margin: 0 auto 1.5rem;
+    }
+
+    /* Rubric Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: .92rem;
+    }
+    th {
+      background: #2B5486;
+      color: #fff;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+    }
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #F8FAFD; }
+
+    /* Reflection textareas */
+    .reflection-item {
+      margin-bottom: 1.75rem;
+    }
+    .reflection-label {
+      display: block;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: .6rem;
+      font-size: 1.05rem;
+    }
+    .reflection-textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-family: var(--font-main);
+      font-size: .95rem;
+      color: var(--text-primary);
+      background: #FDFEFE;
+      resize: vertical;
+      outline: none;
+      transition: var(--transition);
+    }
+    .reflection-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(54,105,164,0.15);
+    }
+
+    /* Certificate Box */
+    .cert-wrapper {
+      background: #FAFBFD;
+      border: 8px double var(--primary);
+      border-radius: var(--radius-card);
+      padding: 3rem 2.5rem;
+      margin: 2.5rem 0;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(54,105,164,0.15);
+    }
+    .cert-seal {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+    .cert-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      letter-spacing: .03em;
+      margin-bottom: .5rem;
+      text-transform: uppercase;
+    }
+    .cert-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .cert-name-input {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
+      border: none;
+      border-bottom: 2px solid var(--primary);
+      background: transparent;
+      text-align: center;
+      padding: .5rem;
+      width: 80%;
+      max-width: 500px;
+      margin-bottom: 1.5rem;
+      outline: none;
+    }
+    .cert-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 750px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .cert-meta-row {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      font-size: .9rem;
+      color: var(--text-muted);
+    }
+    .cert-print-btn {
+      margin-top: 2rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: .85rem 2rem;
+      border-radius: var(--radius-btn);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      box-shadow: 0 4px 12px rgba(54,105,164,0.25);
+      transition: var(--transition);
+    }
+    .cert-print-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #000; }
+      .navbar, footer, .page-header, .module-card, .page-nav-bar, .cert-print-btn { display: none !important; }
+      main { margin: 0; padding: 0; }
+      .container { max-width: 100%; margin: 0; }
+      .cert-wrapper {
+        border: 4px double #000;
+        box-shadow: none;
+        margin: 2cm auto;
+        padding: 3cm 2cm;
+      }
+    }
+
+    /* Page Nav */
+    .page-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .75rem 1.5rem;
+      border-radius: var(--radius-btn);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: .95rem;
+    }
+    .btn-nav-prev {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-nav-prev:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+    .btn-nav-next {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(54,105,164,0.25);
+    }
+    .btn-nav-next:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: #141E2B;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 3.5rem 2rem 2rem;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .8rem;
+    }
+    .footer-desc {
+      font-size: .9rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .footer-nav-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      list-style: none;
+    }
+    .footer-nav-links a {
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-nav-links a:hover {
+      color: #5B9BD5;
+    }
+    .footer-bottom {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.4);
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+  
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span>✦</span> Copilot 365 al Máximo
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="fundamentos.html">Fundamentos</a></li>
+      <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+      <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+      <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+      <li><a href="prompts.html">Prompts</a></li>
+      <li><a href="actividades.html">Actividades</a></li>
+      <li><a href="evaluacion.html" class="active">Evaluación</a></li>
+    </ul>
+    <button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú de navegación">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="badge">Módulo 7 · Evaluación & Certificación</div>
+        <h1>Evaluación Integral de Competencias y Certificado</h1>
+        <p>Valida tus conocimientos sobre la arquitectura de Copilot, el diseño de agentes y las técnicas de prompt engineering mediante nuestro cuestionario interactivo de 15 reactivos. Consulta la rúbrica oficial de desempeño y genera tu certificado de aprovechamiento personalizado.</p>
+      </header>
+
+      <!-- Section 1: Quiz Interactivo -->
+      <section class="module-card" id="quiz-section">
+        <div class="module-header">
+          <div class="module-num">01</div>
+          <div class="module-title-box">
+            <h2>Cuestionario Interactivo de Conocimientos</h2>
+            <span>15 preguntas de selección múltiple con retroalimentación formativa inmediata</span>
+          </div>
+        </div>
+
+        <div class="quiz-container">
+          <div class="quiz-progress-bar">
+            <span id="quizCounter">Pregunta 1 de 15</span>
+            <span id="quizScoreTracker">Aciertos: 0</span>
+          </div>
+
+          <div class="quiz-question-box">
+            <div class="quiz-question-title" id="questionText">Cargando pregunta...</div>
+            <div class="quiz-options" id="optionsContainer">
+              <!-- Options rendered by JS -->
+            </div>
+            <div class="quiz-feedback" id="feedbackBox"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button type="button" class="btn-quiz" id="btnNext" onclick="nextQuestion()" disabled>Siguiente Pregunta →</button>
+          </div>
+        </div>
+
+        <!-- Result Box -->
+        <div class="quiz-result-card" id="resultCard">
+          <div class="result-score-circle" id="scoreCircle">0%</div>
+          <div class="result-title" id="resultTitle">Evaluación Finalizada</div>
+          <div class="result-msg" id="resultMsg">Mensaje de desempeño.</div>
+          <button type="button" class="btn-quiz" onclick="restartQuiz()">🔄 Reintentar Evaluación</button>
+        </div>
+      </section>
+
+      <!-- Section 2: Rúbrica de Desempeño del Proyecto Integrador -->
+      <section class="module-card" id="rubrica-section">
+        <div class="module-header">
+          <div class="module-num">02</div>
+          <div class="module-title-box">
+            <h2>Rúbrica de Evaluación del Proyecto Integrador</h2>
+            <span>Criterios objetivos para valorar la evidencia de transferencia al entorno real</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Esta matriz analítica define los estándares de calidad con los que instructores y evaluadores calificarán el Portafolio de Evidencias del Proyecto Integrador (Actividad 7):</p>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Criterio Evaluado</th>
+                  <th>Excelente (5.0)</th>
+                  <th>Bueno (4.0)</th>
+                  <th>Aceptable (3.0)</th>
+                  <th>Insuficiente (1.0 - 2.0)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>1. Aplicación del método CRTT+L</strong></td>
+                  <td>Todos los prompts documentados incluyen Contexto con fuente anclada (<code>/</code>), Rol, Tarea con formato observable, Tono y Límites con <code>[NO CONSTA]</code>.</td>
+                  <td>La mayoría de prompts aplica CRTT+L, pero omite el formato de salida o los límites.</td>
+                  <td>Los prompts son parcialmente vagos o carecen de fuentes específicas.</td>
+                  <td>Prompts de una sola línea sin contexto ni anclaje de fuentes.</td>
+                </tr>
+                <tr>
+                  <td><strong>2. Articulación de Apps (3+ M365)</strong></td>
+                  <td>Conecta fluidamente al menos 3 aplicaciones (ej: Teams → Word → PPT) en un ciclo de valor coherente.</td>
+                  <td>Utiliza 3 aplicaciones pero la transferencia entre ellas se percibe forzada o inconexa.</td>
+                  <td>Solo utiliza 2 aplicaciones en el flujo.</td>
+                  <td>Se limita a una sola aplicación aislada.</td>
+                </tr>
+                <tr>
+                  <td><strong>3. Rigor en Creación de Agente</strong></td>
+                  <td>El agente personalizado incluye system prompt de 5 partes, fuentes fiables de SharePoint y prueba de guardrails superada.</td>
+                  <td>El agente funciona adecuadamente pero las instrucciones carecen de restricciones explícitas.</td>
+                  <td>El agente no tiene fuentes documentales delimitadas y presenta alucinaciones leves.</td>
+                  <td>No construyó el agente o copió instrucciones ajenas sin contextualizar.</td>
+                </tr>
+                <tr>
+                  <td><strong>4. Medición de Productividad</strong></td>
+                  <td>Aporta una tabla cuantitativa creíble comparando minutos manuales vs. minutos con Copilot, demostrando ahorro superior al 50%.</td>
+                  <td>Estima tiempos de ahorro pero sin desglose por actividad del flujo.</td>
+                  <td>Menciona que ahorró tiempo pero sin cifras ni métricas comprobables.</td>
+                  <td>No incluye comparativa de productividad.</td>
+                </tr>
+                <tr>
+                  <td><strong>5. Verificación Ética y Datos</strong></td>
+                  <td>Demuestra verificación humana en cada paso (human-in-the-loop), corrige discrepancias y cuida la privacidad.</td>
+                  <td>Revisa el contenido pero confía ciegamente en algunos datos numéricos generados.</td>
+                  <td>Poca verificación observable de las salidas del modelo.</td>
+                  <td>Publicó información falsa o confidencial sin filtro.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Bitácora de Reflexión Crítica -->
+      <section class="module-card" id="reflexion-section">
+        <div class="module-header">
+          <div class="module-num">03</div>
+          <div class="module-title-box">
+            <h2>Bitácora de Reflexión y Compromiso de Transformación</h2>
+            <span>Consolida tu aprendizaje respondiendo estas tres preguntas clave para tu labor diaria</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Tus respuestas se guardan automáticamente en tu navegador para que puedas consultarlas en cualquier momento:</p>
+
+          <div class="reflection-item">
+            <label class="reflection-label" for="ref1">1. ¿Cuáles son las 3 tareas rutinarias de tu trabajo que a partir de hoy delegarás a Copilot para recuperar tiempo de valor?</label>
+            <textarea id="ref1" class="reflection-textarea" placeholder="Describe aquí las 3 actividades (ej: actas de Teams, fórmulas en Excel, borradores de informes en Word)..." oninput="saveReflection('ref1')"></textarea>
+          </div>
+
+          <div class="reflection-item">
+            <label class="reflection-label" for="ref2">2. ¿Qué agente personalizado diseñaría tu equipo para resolver el mayor cuello de botella de tu área o centro?</label>
+            <textarea id="ref2" class="reflection-textarea" placeholder="Explica el rol del agente, sus fuentes documentales de SharePoint y qué problema solucionaría..." oninput="saveReflection('ref2')"></textarea>
+          </div>
+
+          <div class="reflection-item">
+            <label class="reflection-label" for="ref3">3. ¿Cuál es tu protocolo personal para evitar que las alucinaciones de la IA afecten la calidad de tus entregables oficiales?</label>
+            <textarea id="ref3" class="reflection-textarea" placeholder="Detalla tu método de revisión (ej: cotejo contra el documento original, verificación de fórmulas en Excel, lectura crítica)..." oninput="saveReflection('ref3')"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Certificado de Finalización -->
+      <section class="module-card" id="certificado-section">
+        <div class="module-header">
+          <div class="module-num">04</div>
+          <div class="module-title-box">
+            <h2>Certificado de Aprovechamiento Digital</h2>
+            <span>Genera tu reconocimiento al completar satisfactoriamente el curso y las actividades</span>
+          </div>
+        </div>
+
+        <div class="cert-wrapper" id="certificateBox">
+          <div class="cert-seal">✦ 🏅 ✦</div>
+          <div class="cert-title">Certificado de Aprovechamiento</div>
+          <div class="cert-subtitle">Programa de Formación y Productividad Digital en Microsoft 365 Copilot</div>
+          
+          <p style="font-size: 1rem; color: var(--text-muted); margin-bottom:.5rem;">Se hace constar que:</p>
+          
+          <input type="text" id="certName" class="cert-name-input" value="Nombre del Participante" placeholder="Escribe tu Nombre Completo Aquí" oninput="updateCertName()">
+          
+          <p class="cert-desc">
+            Ha culminado con éxito el itinerario formativo integral <strong>"Microsoft Copilot 365 al Máximo"</strong>, demostrando dominio en los fundamentos de Microsoft Graph, arquitectura de agentes de IA, creación de agentes declarativos en Copilot Studio, redacción de prompts con el método CRTT+L y automatización del trabajo en la suite Microsoft 365.
+          </p>
+
+          <div class="cert-meta-row">
+            <div>
+              <strong>Calificación de Evaluación:</strong>
+              <div id="certScoreDisplay" style="color:var(--primary); font-weight:700; font-size:1.1rem;">Pendiente de evaluación</div>
+            </div>
+            <div>
+              <strong>Fecha de Emisión:</strong>
+              <div id="certDateDisplay">29 de octubre de 2026</div>
+            </div>
+            <div>
+              <strong>Emisor:</strong>
+              <div>Comunidad de Productividad Digital</div>
+            </div>
+          </div>
+
+          <button type="button" class="cert-print-btn" onclick="window.print()">
+            <span>🖨️ Imprimir Certificado / Guardar PDF</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="page-nav-bar">
+        <a href="actividades.html" class="btn-nav btn-nav-prev">← Anterior: Actividades Prácticas</a>
+        <a href="index.html" class="btn-nav btn-nav-next">Volver al Inicio ✦</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">✦ Copilot 365 al Máximo</div>
+        <p class="footer-desc">Guía educativa integral diseñada para aprendices, instructores y profesionales que buscan dominar Microsoft 365 Copilot, sus agentes inteligentes y la automatización moderna del trabajo.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom:.8rem; font-size:.95rem;">Módulos del Curso</h4>
+        <ul class="footer-nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="fundamentos.html">Fundamentos</a></li>
+          <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+          <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+          <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+          <li><a href="prompts.html">Biblioteca Prompts</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="evaluacion.html">Evaluación</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Copilot 365 al Máximo. Formación y Productividad Digital.</span>
+      <span>Diseñado con serenidad nórdica · Accesible y Práctico</span>
+    </div>
+  </footer>
+
+  <script>
+    // Quiz Questions Data (15 questions)
+    const quizQuestions = [
+      {
+        q: "1. ¿Cuáles son los cinco pilares del método CRTT+L para escribir un prompt?",
+        options: [
+          "a) Gramática, Sintaxis, Estilo y Ortografía",
+          "b) Contexto, Rol, Tarea, Tono y Límites",
+          "c) Gráficos, Contenido, SharePoint, Excel",
+          "d) Verificar, Examinar, Revisar y Atribuir"
+        ],
+        correct: 1,
+        exp: "CRTT+L reúne Contexto (situación, destinatario y fuente con /), Rol (desde qué papel responde), Tarea (acción y formato), Tono (cómo debe sonar) y Límites (qué no puede suponer). V.E.R.A. (opción d) no estructura el prompt: sirve para revisar la respuesta."
+      },
+      {
+        q: "2. Con la licencia completa de Microsoft 365 Copilot, ¿qué agente es el más idóneo para investigaciones profundas de múltiples pasos que cruzan fuentes web y archivos de trabajo?",
+        options: [
+          "a) Facilitator",
+          "b) Interpreter",
+          "c) Researcher (Investigador)",
+          "d) SharePoint Agent"
+        ],
+        correct: 2,
+        exp: "Researcher ejecuta cadenas de razonamiento analítico avanzado consultando la web y tu Microsoft Graph para entregar reportes exhaustivos con citas."
+      },
+      {
+        q: "3. En el panel de Copilot de Outlook buscas «Researcher» y aparece «No encontramos ninguna coincidencia». ¿Qué significa y qué haces?",
+        options: [
+          "a) Que Outlook tiene un error y debes reinstalarlo",
+          "b) Que ese agente no está habilitado para tu cuenta; usas los agentes disponibles, como Prompt Coach o Writing Coach, o consultas la licencia con la administración",
+          "c) Que debes escribir el nombre en inglés y en mayúsculas",
+          "d) Que el agente solo funciona los fines de semana"
+        ],
+        correct: 1,
+        exp: "El catálogo de agentes depende de la licencia y de lo que habilite la organización. Researcher requiere la licencia completa de Microsoft 365 Copilot; si no aparece, trabajas con los agentes disponibles."
+      },
+      {
+        q: "4. ¿Qué tipo de agente de Microsoft 365 se diseña visualmente sin código en Microsoft Copilot Studio?",
+        options: [
+          "a) Agente compilado",
+          "b) Agente declarativo (Declarative Agent)",
+          "c) Agente de red neuronal recursiva",
+          "d) Agente de script en shell"
+        ],
+        correct: 1,
+        exp: "Los agentes declarativos se configuran mediante instrucciones en lenguaje natural, fuentes de SharePoint y conectores sin necesidad de programar."
+      },
+      {
+        q: "5. ¿Qué comando especial permite anclar directamente un archivo de OneDrive/SharePoint dentro de un prompt en Word, PowerPoint o Copilot Chat?",
+        options: [
+          "a) @archivo",
+          "b) #archivo",
+          "c) /archivo (barra oblicua)",
+          "d) !archivo"
+        ],
+        correct: 2,
+        exp: "El comando barra oblicua (/) abre inmediatamente el menú contextual de archivos recientes para anclar la información original."
+      },
+      {
+        q: "6. Abres un correo con un archivo de Excel adjunto y quieres saber qué te piden sin abrirlo. ¿Cuál es el mejor primer paso?",
+        options: [
+          "a) Reenviar el correo a un compañero para que lo lea",
+          "b) Pedir en el panel de Copilot un resumen del adjunto con propósito, fechas, responsables y lo que te piden, y verificar después tres datos en el archivo",
+          "c) Borrar el correo si es muy largo",
+          "d) Copiar todo el Excel en una hoja nueva"
+        ],
+        correct: 1,
+        exp: "Copilot puede resumir adjuntos desde el panel de Outlook, pero el resumen se verifica contra el archivo original antes de actuar."
+      },
+      {
+        q: "7. ¿Qué diferencia sustancial existe entre un Agente de SharePoint y un Agente Declarativo de Copilot Studio?",
+        options: [
+          "a) El agente de SharePoint requiere programar en C#",
+          "b) El agente de SharePoint se crea en 2 minutos y está acotado estrictamente a los archivos de su biblioteca documental",
+          "c) El agente de SharePoint solo funciona en teléfonos móviles",
+          "d) No existe ninguna diferencia técnica"
+        ],
+        correct: 1,
+        exp: "Los agentes de SharePoint se generan con 1 clic desde la propia biblioteca y responden únicamente sobre los documentos contenidos en ese sitio."
+      },
+      {
+        q: "8. ¿Para qué sirve el conmutador (toggle) 'Work' vs. 'Web' en Microsoft Copilot Chat?",
+        options: [
+          "a) Work busca en tus datos internos protegidos de Microsoft Graph; Web busca en internet público",
+          "b) Work funciona sin internet; Web requiere cable de red",
+          "c) Work es para Office de escritorio; Web es para la versión en navegador",
+          "d) Ambos conmutadores realizan exactamente la misma consulta"
+        ],
+        correct: 0,
+        exp: "Work busca en correos, chats y documentos privados de la organización; Web rastrea información abierta y pública de internet."
+      },
+      {
+        q: "9. Copilot te responde que tiene acceso a tus calendarios y reuniones. ¿Cómo debes tratar esa afirmación?",
+        options: [
+          "a) Como un hecho confirmado",
+          "b) Como una hipótesis que compruebas con un caso real, comparando su respuesta con tu calendario",
+          "c) Como un error, porque Copilot nunca accede al calendario",
+          "d) Como una señal para cambiar de cuenta"
+        ],
+        correct: 1,
+        exp: "Copilot puede describir mal sus propios permisos. El Taller 0 enseña a confirmar cada capacidad con una prueba real."
+      },
+      {
+        q: "10. ¿Cuál de las siguientes es una práctica obligatoria al redactar el System Prompt (instrucciones) de un agente institucional?",
+        options: [
+          "a) Dejar las instrucciones lo más abiertas y ambiguas posibles",
+          "b) Incluir rol, ámbito de fuentes, tono, formato y guardrails explícitos sobre qué NO debe hacer",
+          "c) Escribir las instrucciones únicamente en inglés británico",
+          "d) Copiar el código fuente de una página web pública"
+        ],
+        correct: 1,
+        exp: "Un buen system prompt establece límites infranqueables (guardrails), fuentes de autoridad y formato para evitar alucinaciones."
+      },
+      {
+        q: "11. ¿Qué función debe estar obligatoriamente encendida en una reunión de Teams para que Copilot pueda generar actas y resumir acuerdos?",
+        options: [
+          "a) La cámara de todos los participantes",
+          "b) La transcripción en vivo de la reunión",
+          "c) El modo conferencia con pantalla compartida",
+          "d) La grabación de video en calidad 4K"
+        ],
+        correct: 1,
+        exp: "Copilot necesita el texto capturado por la transcripción activa para poder razonar sobre el diálogo, acuerdos y tareas habladas."
+      },
+      {
+        q: "12. ¿Cómo garantiza Microsoft que los datos institucionales del SENA o empresas no se filtren a la IA pública?",
+        options: [
+          "a) Borrando los datos del servidor cada 24 horas",
+          "b) Mediante el límite de datos comerciales (CDP): los datos quedan aislados en el tenant y jamás se usan para entrenar modelos públicos",
+          "c) Obligando a usar contraseñas de 30 caracteres",
+          "d) No existe garantía de privacidad en herramientas cloud"
+        ],
+        correct: 1,
+        exp: "Con la Protección de Datos Comerciales activa, las consultas permanecen dentro del límite de seguridad de la organización y no entrenan a la IA."
+      },
+      {
+        q: "13. ¿Qué ventaja ofrece el principio de la 'iteración progresiva' al interactuar con Copilot?",
+        options: [
+          "a) Ninguna, siempre es mejor borrar el chat y escribir un prompt nuevo",
+          "b) Permite refinar tono, longitud y estructura sobre el contexto previo como si dialogaras con un colega de carne y hueso",
+          "c) Consume menos licencia de usuario",
+          "d) Acelera la velocidad de conexión a internet"
+        ],
+        correct: 1,
+        exp: "La memoria conversacional de Copilot permite ajustar el primer borrador sucesivamente (ej: 'hazlo más breve', 'conviértelo en tabla')."
+      },
+      {
+        q: "14. Recibes cada semana el mismo tipo de solicitud de aprendices. ¿Qué opción reduce más el trabajo repetido sin perder el control?",
+        options: [
+          "a) Responder siempre desde cero",
+          "b) Crear un agente con instrucciones fijas que pida los datos faltantes y no prometa decisiones, y probarlo con casos típicos, incompletos y fuera de alcance",
+          "c) Activar una respuesta automática para todos los correos",
+          "d) Pedir a los aprendices que no escriban"
+        ],
+        correct: 1,
+        exp: "Un agente con instrucciones claras y probado con varios casos resuelve la parte repetitiva, mientras las decisiones siguen siendo tuyas."
+      },
+      {
+        q: "15. ¿Qué haces antes de activar un flujo de Workflows que envía avisos cuando llega un correo «urgente»?",
+        options: [
+          "a) Activarlo de inmediato y revisarlo en un mes",
+          "b) Revisar la vista previa del flujo y sus destinatarios, y probar un correo que lo dispare y otro que no",
+          "c) Compartirlo con toda la organización",
+          "d) Desactivar las notificaciones de Teams"
+        ],
+        correct: 1,
+        exp: "Una automatización se valida con un caso positivo y uno negativo, y se revisa a quién envía mensajes antes de activarla."
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOptionIndex = null;
+
+    function loadQuestion() {
+      const q = quizQuestions[currentQuestionIndex];
+      document.getElementById('quizCounter').innerText = `Pregunta ${currentQuestionIndex + 1} de ${quizQuestions.length}`;
+      document.getElementById('questionText').innerText = q.q;
+
+      const optsContainer = document.getElementById('optionsContainer');
+      optsContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.innerText = opt;
+        btn.onclick = () => selectOption(idx, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      const fb = document.getElementById('feedbackBox');
+      fb.className = 'quiz-feedback';
+      fb.style.display = 'none';
+      document.getElementById('btnNext').disabled = true;
+      selectedOptionIndex = null;
+    }
+
+    function selectOption(idx, btn) {
+      if (selectedOptionIndex !== null) return; // already answered
+      selectedOptionIndex = idx;
+
+      const q = quizQuestions[currentQuestionIndex];
+      const allBtns = document.querySelectorAll('.quiz-option');
+      allBtns.forEach(b => b.classList.add('disabled'));
+
+      const fb = document.getElementById('feedbackBox');
+
+      if (idx === q.correct) {
+        score++;
+        btn.classList.add('correct');
+        fb.className = 'quiz-feedback show-correct';
+        fb.innerHTML = `<strong>¡Correcto!</strong> ${q.exp}`;
+      } else {
+        btn.classList.add('incorrect');
+        allBtns[q.correct].classList.add('correct');
+        fb.className = 'quiz-feedback show-incorrect';
+        fb.innerHTML = `<strong>Respuesta incorrecta.</strong> ${q.exp}`;
+      }
+
+      document.getElementById('quizScoreTracker').innerText = `Aciertos: ${score}`;
+      document.getElementById('btnNext').disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizQuestions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.querySelector('.quiz-container').style.display = 'none';
+      const resultCard = document.getElementById('resultCard');
+      resultCard.style.display = 'block';
+
+      const pct = Math.round((score / quizQuestions.length) * 100);
+      document.getElementById('scoreCircle').innerText = pct + '%';
+
+      let title = '';
+      let msg = '';
+
+      if (pct >= 90) {
+        title = '🏆 ¡Nivel Experto en Microsoft 365 Copilot!';
+        msg = `Obtuviste ${score} de ${quizQuestions.length} aciertos. Posees una comprensión integral de la arquitectura, agentes y prompts. Estás listo para liderar la adopción en tu centro o empresa.`;
+      } else if (pct >= 70) {
+        title = '🌟 ¡Nivel Avanzado Competente!';
+        msg = `Obtuviste ${score} de ${quizQuestions.length} aciertos. Tienes fundamentos muy sólidos. Revisa los módulos donde tuviste dudas para afinar tu maestría al 100%.`;
+      } else if (pct >= 50) {
+        title = '📚 ¡Nivel Intermedio en Desarrollo!';
+        msg = `Obtuviste ${score} de ${quizQuestions.length} aciertos. Buen comienzo. Te recomendamos repasar los módulos de Creación de Agentes y Copilot en Apps.`;
+      } else {
+        title = '🔄 ¡Repaso Recomendado!';
+        msg = `Obtuviste ${score} de ${quizQuestions.length} aciertos. No te preocupes: el dominio de la IA es un proceso iterativo. Vuelve a consultar la guía y repite la prueba.`;
+      }
+
+      document.getElementById('resultTitle').innerText = title;
+      document.getElementById('resultMsg').innerText = msg;
+
+      // Update certificate score display
+      document.getElementById('certScoreDisplay').innerText = `${pct}% (${score}/${quizQuestions.length})`;
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      selectedOptionIndex = null;
+      document.querySelector('.quiz-container').style.display = 'block';
+      document.getElementById('resultCard').style.display = 'none';
+      document.getElementById('quizScoreTracker').innerText = `Aciertos: 0`;
+      loadQuestion();
+    }
+
+    // LocalStorage for reflections
+    function saveReflection(id) {
+      const val = document.getElementById(id).value;
+      try {
+        localStorage.setItem('copilot_reflection_' + id, val);
+      } catch (e) {}
+    }
+
+    function loadReflections() {
+      ['ref1', 'ref2', 'ref3'].forEach(id => {
+        try {
+          const val = localStorage.getItem('copilot_reflection_' + id);
+          if (val) document.getElementById(id).value = val;
+        } catch (e) {}
+      });
+    }
+
+    function updateCertName() {
+      const name = document.getElementById('certName').value;
+      try {
+        localStorage.setItem('copilot_cert_name', name);
+      } catch (e) {}
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadQuestion();
+      loadReflections();
+
+      // Load saved cert name
+      try {
+        const savedName = localStorage.getItem('copilot_cert_name');
+        if (savedName) document.getElementById('certName').value = savedName;
+      } catch (e) {}
+
+      // Set today's date formatted in Colombia
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const today = new Date().toLocaleDateString('es-CO', options);
+      document.getElementById('certDateDisplay').innerText = today;
+
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('nav-links');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+          navLinks.classList.toggle('open');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

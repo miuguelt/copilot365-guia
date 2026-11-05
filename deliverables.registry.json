@@ -1,0 +1,578 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devbrain/educational-guide-schema/v2.5.0/deliverables.registry.schema.json",
+  "version": "2.5.0",
+  "standard": "devbrain.educational-guide",
+  "guideId": "copilot-365-al-maximo",
+  "status": "active",
+  "sourceStatus": "Estructura canónica de evidencias y rúbricas de evaluación del curso Copilot 365 al Máximo.",
+  "portfolioTemplate": "docs/evidencias-template.md",
+  "submission": {
+    "packageName": "EV-COPILOT365-MAXIMO",
+    "namingRule": "EV-COPILOT365-<ficha>-<apellido><nombre>.zip",
+    "format": "Archivo comprimido ZIP con el portafolio de evidencias del proyecto integrador, capturas de prompts, fichas de agentes y reflexiones.",
+    "where": "Plataforma LMS institucional o repositorio documental asignado por el instructor.",
+    "whatIsGraded": "Rigor metodológico en prompts (método CRTT+L y verificación V.E.R.A.), articulación de mínimo 3 apps de M365, calidad del agente declarativo, evidencia de reducción de tiempos y verificación de alucinaciones.",
+    "approval": [
+      "Las 7 actividades prácticas están marcadas como completadas con sus respectivos entregables.",
+      "El agente declarativo cuenta con System Prompt de 5 partes y prueba de guardrails superada.",
+      "La matriz de productividad demuestra un ahorro de tiempo verídico superior al 50%.",
+      "El cuestionario de conocimientos alcanza un puntaje igual o superior al 70%."
+    ],
+    "competencyMap": [
+      {
+        "evidenceType": "conocimiento",
+        "artifacts": [
+          "EV-CP01-CRTTL",
+          "EV-CP02-AGENTS-CATALOG",
+          "EV-CP07-QUIZ"
+        ],
+        "criterion": "Comprende la arquitectura de grounding, el método CRTT+L y el catálogo de agentes.",
+        "instrument": "Cuestionario interactivo y lista de chequeo",
+        "learningResult": "RAP-01"
+      },
+      {
+        "evidenceType": "desempeño",
+        "artifacts": [
+          "EV-CP03-WORD-PPT",
+          "EV-CP04-EXCEL-DATA",
+          "EV-CP05-COPILOT-STUDIO"
+        ],
+        "criterion": "Aplica técnicas de prompting avanzado, modelado en Excel y configuración en Copilot Studio.",
+        "instrument": "Rúbrica de observación analítica",
+        "learningResult": "RAP-02"
+      },
+      {
+        "evidenceType": "producto",
+        "artifacts": [
+          "EV-CP06-PROYECTO-INTEGRADOR"
+        ],
+        "criterion": "Portafolio de evidencias completo del flujo cross-app para el Caso Titán con balance cuantitativo de productividad.",
+        "instrument": "Rúbrica de evaluación de proyecto",
+        "learningResult": "RAP-04"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "EV-CP01-CRTTL",
+      "code": "ACT-1",
+      "name": "Laboratorio de prompts con el método CRTT+L",
+      "purpose": "Demostrar la capacidad de formular peticiones precisas comparando una orden ambigua contra una estructurada.",
+      "inputs": [
+        "Consola de Copilot Chat (en modo Web)",
+        "Método CRTT+L: Contexto, Rol, Tarea, Tono y Límites"
+      ],
+      "instructions": "Envía un prompt vago, documenta su respuesta superficial, formula la versión mejorada con los cinco pilares de CRTT+L y redacta un balance reflexivo de 100 palabras.",
+      "example": "[G] Sintetiza las 4 noticias más relevantes... [C] Para directores académicos... [S] Fuentes web de las últimas 48 horas... [E] Tabla de 3 columnas.",
+      "checklist": [
+        "Identifica claramente Goal, Context, Source y Expectations.",
+        "Compara de forma objetiva la calidad de ambas salidas.",
+        "Adjunta captura legible con la fecha de la prueba."
+      ],
+      "criterion": "Aplica explícitamente los cinco pilares de CRTT+L, con la fuente delimitada en el Contexto y [NO CONSTA] en los Límites.",
+      "instrument": "Lista de chequeo de prompting",
+      "evidenceType": "conocimiento",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-1"
+      },
+      "aiAssist": {
+        "protocol": "V.E.R.A.",
+        "verification": "Comprobar que los 4 componentes estén presentes y diferenciados.",
+        "execution": "Probar en Copilot Chat con conmutador Web activo.",
+        "review": "Revisar que la respuesta no contenga noticias ficticias ni alucinadas.",
+        "attribution": "Declarar la fecha y el modelo utilizado (GPT-4o en Copilot)."
+      }
+    },
+    {
+      "id": "EV-CP02-AGENTS-CATALOG",
+      "code": "ACT-2",
+      "name": "Ficha de Exploración de Agentes en Outlook",
+      "purpose": "Identificar los agentes habilitados en la cuenta y comparar el aporte de Prompt Coach, Writing Coach y Workflows frente a una consulta normal a Copilot.",
+      "inputs": [
+        "Panel Copilot de Outlook con su catálogo de agentes",
+        "Un correo propio sin datos de terceros"
+      ],
+      "instructions": "Lista los agentes habilitados, comprueba con el buscador si existen Researcher o Analyst, prueba al menos 3 agentes disponibles con un correo real y documenta el resultado.",
+      "checklist": [
+        "Incluye la lista de agentes habilitados en la cuenta.",
+        "Documenta al menos 3 agentes probados con su prompt.",
+        "Compara cada resultado con la misma consulta a Copilot sin agente."
+      ],
+      "criterion": "Distingue el ámbito de actuación y las herramientas especializadas de cada agente.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "conocimiento",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-2"
+      }
+    },
+    {
+      "id": "EV-CP03-WORD-PPT",
+      "code": "ACT-3-5",
+      "name": "Propuesta y Presentación Ejecutiva Ofimática",
+      "purpose": "Demostrar el anclaje de documentos con comando / y la transformación automática a diapositivas en PowerPoint.",
+      "inputs": [
+        "Microsoft Word con Copilot",
+        "Microsoft PowerPoint con Copilot",
+        "Archivo base de antecedentes en OneDrive"
+      ],
+      "instructions": "Redacta una propuesta de 3 páginas en Word anclando un archivo con /, luego genera en PowerPoint un deck de 8 diapositivas con notas del orador a partir del Word.",
+      "checklist": [
+        "Documento de Word con borrador inicial, anclaje /, reescritura de tono y tabla de entregables.",
+        "Presentación de PowerPoint de 8 diapositivas con narrativa limpia.",
+        "Notas del orador redactadas en cada diapositiva."
+      ],
+      "criterion": "Genera documentos y presentaciones fluidas sin duplicar esfuerzos manuales de copia y pega.",
+      "instrument": "Rúbrica de producto ofimático",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-3"
+      }
+    },
+    {
+      "id": "EV-CP04-EXCEL-DATA",
+      "code": "ACT-4",
+      "name": "Modelo Analítico Asistido en Excel",
+      "purpose": "Aplicar razonamiento conversacional sobre datos tabulares, fórmulas condicionales y gráficos explicativos.",
+      "inputs": [
+        "Conjunto de datos de calificaciones o ventas (mínimo 30 filas)",
+        "Microsoft Excel con Copilot"
+      ],
+      "instructions": "Formatea la tabla con Ctrl + T, solicita a Copilot una fórmula condicional multinivel, detecta anomalías y genera un gráfico dinámico explicativo.",
+      "checklist": [
+        "Rango convertido oficialmente en Tabla de Excel.",
+        "Columna calculada generada por Copilot sin errores de sintaxis.",
+        "Gráfico insertado con interpretación de conclusiones."
+      ],
+      "criterion": "Maneja datos estructurados y extrae insights mediante lenguaje natural.",
+      "instrument": "Rúbrica de análisis de datos",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-4"
+      }
+    },
+    {
+      "id": "EV-CP05-COPILOT-STUDIO",
+      "code": "ACT-6",
+      "name": "Arquitectura y Sandbox de Agente Declarativo",
+      "purpose": "Diseñar, configurar y probar un agente personalizado con base de conocimiento y guardrails éticos.",
+      "inputs": [
+        "Microsoft Copilot Studio o Creador de Agentes de SharePoint",
+        "Documentos normativos o procedimentales en PDF/Word"
+      ],
+      "instructions": "Redacta el System Prompt estructurado en 5 partes, sube mínimo 2 documentos de conocimiento, define un guardrail y realiza 5 pruebas en sandbox (incluyendo una pregunta trampa).",
+      "checklist": [
+        "System prompt con rol, ámbito, tono, guardrails y formato.",
+        "Fuentes de conocimiento de SharePoint correctamente indexadas.",
+        "Bitácora de 5 interacciones demostrando anclaje y bloqueo de preguntas no autorizadas."
+      ],
+      "criterion": "Construye un agente fiable que no alucina y respeta las políticas de la organización.",
+      "instrument": "Rúbrica de diseño de agentes",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-6"
+      }
+    },
+    {
+      "id": "EV-CP06-PROYECTO-INTEGRADOR",
+      "code": "ACT-7",
+      "name": "Portafolio de Evidencias del Proyecto Integrador Multifuncional",
+      "purpose": "Articular el ecosistema completo de Microsoft 365 Copilot en un flujo cross-app que resuelva el Caso Titán.",
+      "inputs": [
+        "Caso Conductor Titán",
+        "Mínimo 3 aplicaciones de M365 (Teams, Word, Excel, PPT, Forms, Loop)",
+        "Agente declarativo desplegado"
+      ],
+      "instructions": "Construye y documenta el flujo de trabajo continuo, elabora la matriz de balance de productividad (tiempo manual vs. Copilot) y formula la reflexión de gobernanza y ética.",
+      "checklist": [
+        "Flujo cross-app integrado con capturas de cada paso.",
+        "Matriz comparativa con métricas de tiempo comprobables.",
+        "Reflexión crítica sobre mitigación de sesgos y alucinaciones."
+      ],
+      "criterion": "Demuestra competencia integral en la transformación productiva de un proceso de negocio.",
+      "instrument": "Rúbrica analítica del proyecto integrador",
+      "evidenceType": "producto",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-7"
+      }
+    },
+    {
+      "id": "EV-CP03B-PPT",
+      "code": "ACT-5",
+      "name": "Presentación generada desde un documento técnico",
+      "purpose": "Transformar un documento en una presentación de 8 diapositivas con notas para el orador.",
+      "inputs": [
+        "Documento de Word en OneDrive",
+        "PowerPoint con Copilot"
+      ],
+      "instructions": "Genera la presentación desde el documento, revisa cada diapositiva y completa las notas del orador.",
+      "checklist": [
+        "8 diapositivas coherentes con el documento.",
+        "Notas del orador revisadas."
+      ],
+      "criterion": "Convierte contenido extenso en una exposición visual fiel a la fuente.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-5"
+      }
+    },
+    {
+      "id": "EV-OL01-TRIAGE",
+      "code": "ACT-8",
+      "name": "Triage de la bandeja con Copilot",
+      "purpose": "Resumir, priorizar y ordenar los correos pendientes con Copilot en Outlook.",
+      "inputs": [
+        "Bandeja de Outlook propia",
+        "Panel Copilot de Outlook"
+      ],
+      "instructions": "Resume un hilo, clasifica los correos sin leer en tres grupos, verifica la clasificación y crea una regla.",
+      "checklist": [
+        "Clasificación verificada con errores documentados.",
+        "Regla creada para un correo recurrente.",
+        "Tiempo del triage registrado."
+      ],
+      "criterion": "Reduce el tiempo de lectura sin perder pendientes.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-8"
+      }
+    },
+    {
+      "id": "EV-OL02-RESPUESTA",
+      "code": "ACT-9",
+      "name": "Respuesta con tono revisado",
+      "purpose": "Redactar una respuesta con Copilot y revisar tono y claridad con Writing Coach.",
+      "inputs": [
+        "Correo por responder",
+        "Borrador con Copilot",
+        "Writing Coach o Coaching de Copilot"
+      ],
+      "instructions": "Genera dos versiones del borrador, revísalas con Writing Coach y justifica los cambios aceptados y rechazados.",
+      "checklist": [
+        "Tres versiones del correo.",
+        "Tabla de cambios aceptados y rechazados con motivo."
+      ],
+      "criterion": "Mejora la claridad y el tono conservando la voz propia.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-9"
+      }
+    },
+    {
+      "id": "EV-OL03-HILO-TAREAS",
+      "code": "ACT-10",
+      "name": "Compromisos extraídos de un hilo",
+      "purpose": "Convertir un hilo de correo en tareas con responsable y fecha.",
+      "inputs": [
+        "Hilo de al menos 4 mensajes",
+        "Microsoft To Do"
+      ],
+      "instructions": "Extrae los compromisos con Copilot, corrígelos contra el hilo, regístralos en To Do y redacta un correo de confirmación.",
+      "checklist": [
+        "Cada compromiso con responsable y fecha o «sin definir».",
+        "Tareas visibles en To Do.",
+        "Correo de confirmación revisado."
+      ],
+      "criterion": "Asegura el seguimiento de los acuerdos tomados por correo.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-10"
+      }
+    },
+    {
+      "id": "EV-OL04-REUNION",
+      "code": "ACT-11",
+      "name": "Agenda de reunión preparada desde el calendario",
+      "purpose": "Preparar una reunión con el contexto de los correos previos.",
+      "inputs": [
+        "Reunión del calendario de Outlook",
+        "Asesor de reuniones o Copilot"
+      ],
+      "instructions": "Resume el contexto de la reunión, propone una agenda con tiempos, inclúyela en la convocatoria y redacta el seguimiento.",
+      "checklist": [
+        "Agenda con tiempos y objetivo por punto.",
+        "Contexto con referencia a los correos de origen."
+      ],
+      "criterion": "Llega a la reunión con contexto y la cierra con acuerdos claros.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-11"
+      }
+    },
+    {
+      "id": "EV-OL05-WORKFLOWS",
+      "code": "ACT-12",
+      "name": "Automatización de un aviso de correo",
+      "purpose": "Crear y probar una automatización de correo con Workflows o una regla de Outlook.",
+      "inputs": [
+        "Agente Workflows (Frontier) o reglas de Outlook"
+      ],
+      "instructions": "Describe el flujo, revisa la vista previa, prueba el caso positivo y el negativo y decide si lo dejas activo.",
+      "checklist": [
+        "Prueba positiva y negativa documentadas.",
+        "Destinatarios revisados antes de activar."
+      ],
+      "criterion": "Automatiza una rutina de correo de forma controlada y verificable.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-12"
+      }
+    },
+    {
+      "id": "EV-EXT01-SHAREPOINT",
+      "code": "EXT-A",
+      "name": "Lista de SharePoint creada desde el correo",
+      "purpose": "Compartir compromisos de un hilo en una lista de SharePoint.",
+      "inputs": [
+        "Tabla de compromisos del Taller 10",
+        "SharePoint list agent"
+      ],
+      "instructions": "Crea la lista con el agente, revisa columnas y permisos y comparte el enlace por correo.",
+      "checklist": [
+        "Lista completa con fechas.",
+        "Permisos adecuados para los destinatarios."
+      ],
+      "criterion": "Pasa del correo individual al seguimiento compartido.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-13"
+      }
+    },
+    {
+      "id": "EV-EXT02-TEAMS",
+      "code": "EXT-B",
+      "name": "Resumen de correo publicado en Teams",
+      "purpose": "Sustituir reenvíos largos por un resumen en un canal de Teams.",
+      "inputs": [
+        "Hilo de correo resumido",
+        "Canal de Teams del equipo"
+      ],
+      "instructions": "Adapta el resumen para el canal, publícalo y revisa al día siguiente si evitó correos adicionales.",
+      "checklist": [
+        "Resumen sin información que el canal no deba ver.",
+        "Cada punto con responsable."
+      ],
+      "criterion": "Elige el canal adecuado para cada conversación.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-14"
+      }
+    },
+    {
+      "id": "EV-OL00-DIAGNOSTICO",
+      "code": "TALLER-0",
+      "name": "Tabla de diagnóstico de capacidades",
+      "purpose": "Comprobar con casos reales qué capacidades de Copilot están habilitadas en la cuenta.",
+      "inputs": [
+        "Outlook con el panel Copilot"
+      ],
+      "instructions": "Prueba siete capacidades (resumen, adjuntos, búsqueda, calendario, reuniones, agentes y creación de agentes) y registra sí, no o parcial con su alternativa.",
+      "checklist": [
+        "Siete capacidades probadas con casos reales.",
+        "Calendario y búsqueda contrastados con Outlook."
+      ],
+      "criterion": "Decide la ruta de trabajo con evidencia propia y no con lo que Copilot dice de sí mismo.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-15"
+      }
+    },
+    {
+      "id": "EV-OL06-ADJUNTOS",
+      "code": "ACT-16",
+      "name": "Resumen verificado de adjuntos",
+      "purpose": "Entender y comparar adjuntos recibidos por correo.",
+      "inputs": [
+        "Outlook con el panel Copilot",
+        "Correo con adjunto"
+      ],
+      "instructions": "Resume un adjunto, compara versiones si aplica, verifica tres datos y responde con una pregunta concreta.",
+      "checklist": [
+        "Tres datos verificados contra el archivo.",
+        "Pregunta basada en un vacío real."
+      ],
+      "criterion": "Extrae información de adjuntos sin perder precisión.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-16"
+      }
+    },
+    {
+      "id": "EV-OL07-BUSQUEDA",
+      "code": "ACT-17",
+      "name": "Acuerdos recuperados con fuentes",
+      "purpose": "Recuperar decisiones dispersas con preguntas en lenguaje natural.",
+      "inputs": [
+        "Outlook con el panel Copilot"
+      ],
+      "instructions": "Formula dos preguntas sobre acuerdos y fechas, y verifica cada fuente citada.",
+      "checklist": [
+        "Cada afirmación verificada o marcada como no verificable.",
+        "Al menos un límite identificado."
+      ],
+      "criterion": "Usa la búsqueda de Copilot con verificación de fuentes.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-17"
+      }
+    },
+    {
+      "id": "EV-OL08-CALENDARIO",
+      "code": "ACT-18",
+      "name": "Semana organizada con tiempo de foco",
+      "purpose": "Leer el calendario, proponer horarios y proteger bloques de foco.",
+      "inputs": [
+        "Outlook con el panel Copilot",
+        "Calendario de Outlook"
+      ],
+      "instructions": "Obtén los espacios libres, corrígelos contra el calendario, propone horarios y crea dos bloques de foco.",
+      "checklist": [
+        "Horarios sin cruces.",
+        "Bloques de foco marcados como ocupados."
+      ],
+      "criterion": "Planifica el tiempo con apoyo de Copilot y control propio.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-18"
+      }
+    },
+    {
+      "id": "EV-OL09-SEGUIMIENTOS",
+      "code": "ACT-19",
+      "name": "Recordatorios de seguimiento programados",
+      "purpose": "Detectar correos enviados sin respuesta y preparar recordatorios.",
+      "inputs": [
+        "Outlook con el panel Copilot"
+      ],
+      "instructions": "Lista los seguimientos, depúralos contra Elementos enviados y programa tres recordatorios.",
+      "checklist": [
+        "Lista depurada.",
+        "Recordatorios con fecha o acción concreta."
+      ],
+      "criterion": "Cierra ciclos de comunicación pendientes.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-19"
+      }
+    },
+    {
+      "id": "EV-OL10-ACTA",
+      "code": "ACT-20",
+      "name": "Correo de acta de reunión",
+      "purpose": "Convertir una reunión en un acta con decisiones, tareas y fechas.",
+      "inputs": [
+        "Outlook con el panel Copilot",
+        "Reunión de Teams con transcripción o notas propias"
+      ],
+      "instructions": "Resume la reunión, corrige el resumen y envía el correo de acta.",
+      "checklist": [
+        "Decisiones, tareas, responsables y fechas presentes.",
+        "Correcciones señaladas."
+      ],
+      "criterion": "Formaliza los acuerdos de una reunión por escrito.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-20"
+      }
+    },
+    {
+      "id": "EV-OL11-AGENTE-CORREO",
+      "code": "ACT-21",
+      "name": "Agente propio para un correo recurrente",
+      "purpose": "Crear y probar un agente con instrucciones propias.",
+      "inputs": [
+        "Outlook con el panel Copilot",
+        "Opción Crear agente o prompt reutilizable"
+      ],
+      "instructions": "Crea el agente, pruébalo con tres correos (típico, incompleto y fuera de alcance) y ajusta sus instrucciones.",
+      "checklist": [
+        "Pide datos faltantes sin inventarlos.",
+        "Deriva la solicitud fuera de alcance."
+      ],
+      "criterion": "Diseña instrucciones de agente verificables con pruebas.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-21"
+      }
+    },
+    {
+      "id": "EV-OL12-PLANTILLAS",
+      "code": "ACT-22",
+      "name": "Plantilla y paso rápido configurados",
+      "purpose": "Combinar Copilot con Mis plantillas y Pasos rápidos.",
+      "inputs": [
+        "Outlook con el panel Copilot"
+      ],
+      "instructions": "Crea una plantilla a partir de una respuesta de Copilot, configura un paso rápido y mide el tiempo con tres correos.",
+      "checklist": [
+        "Plantilla sin datos personales.",
+        "Paso rápido con tres acciones."
+      ],
+      "criterion": "Elige entre IA y herramientas deterministas según la tarea.",
+      "instrument": "Lista de verificación",
+      "evidenceType": "desempeño",
+      "station": {
+        "page": "actividades.html",
+        "sectionId": "act-22"
+      }
+    },
+    {
+      "id": "EV-CP07-QUIZ",
+      "code": "EVAL-FINAL",
+      "name": "Cuestionario de Certificación y Bitácora Reflexiva",
+      "purpose": "Validar formalmente el dominio conceptual y ético sobre Microsoft 365 Copilot.",
+      "inputs": [
+        "Cuestionario interactivo de 15 preguntas",
+        "Bitácora de 3 reflexiones de compromiso"
+      ],
+      "instructions": "Responde los 15 reactivos en la plataforma, alcanza un puntaje >= 70%, completa las 3 preguntas de la bitácora y genera tu certificado digital.",
+      "checklist": [
+        "Puntaje de aprobación alcanzado (>= 70%).",
+        "3 preguntas de reflexión diligenciadas.",
+        "Certificado digital generado con nombre del aprendiz y fecha."
+      ],
+      "criterion": "Demuestra comprensión integral de la teoría, seguridad, ética y herramientas de Copilot.",
+      "instrument": "Prueba objetiva de conocimientos",
+      "evidenceType": "conocimiento",
+      "station": {
+        "page": "evaluacion.html",
+        "sectionId": "quiz-section"
+      }
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+name: CI - Verificación de Calidad Web y Gobernanza
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  web-quality-audit:
+    name: Auditoría Estática de Calidad Web y Enlaces
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar Integridad de Hipervínculos
+        shell: pwsh
+        run: |
+          $pages = Get-ChildItem -Path "*.html"
+          $expected = @('index.html', 'fundamentos.html', 'agentes-preconstruidos.html', 'creacion-agentes.html', 'copilot-apps.html', 'prompts.html', 'actividades.html', 'evaluacion.html')
+          $hasErrors = $false
+
+          foreach ($page in $pages) {
+              $content = Get-Content $page.FullName -Raw
+              foreach ($exp in $expected) {
+                  if (-not $content.Contains($exp)) {
+                      Write-Error "El archivo $($page.Name) carece de enlace a $exp"
+                      $hasErrors = $true
+                  }
+              }
+          }
+
+          if ($hasErrors) { exit 1 } else { Write-Host "Integridad de enlaces validada con éxito." }
+
+      - name: Validar Estándares de Accesibilidad y Formato
+        shell: pwsh
+        run: |
+          # Verificar que no existan target="_blank" sin rel="noopener noreferrer"
+          $unsafeLinks = Select-String -Path "*.html" -Pattern 'target="_blank"(?!\s+rel=)'
+          if ($unsafeLinks) {
+              Write-Error "Se encontraron enlaces target=_blank inseguros sin rel=noopener noreferrer."
+              exit 1
+          }
+
+          # Verificar que los botones tengan type explícito
+          $untypedButtons = Select-String -Path "*.html" -Pattern '<button(?![^>]*\btype=)'
+          if ($untypedButtons) {
+              Write-Error "Se encontraron botones sin atributo type explícito."
+              exit 1
+          }
+
+          Write-Host "Verificaciones de accesibilidad superadas con éxito."
+
+      - name: Verificar Coherencia de Actividades, Evidencias y Agentes
+        shell: pwsh
+        run: ./tools/Test-GuideConsistency.ps1
+
+      - name: Verificar el canon de prompts (solo CRTT+L y V.E.R.A.)
+        shell: pwsh
+        run: ./tools/prompt-canon/Test-PromptCanon.ps1 -Root .
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Pruebas del calificador CRTT+L con cobertura de funciones al 100 %
+        shell: pwsh
+        run: |
+          node --test --experimental-test-coverage --test-coverage-functions=100 --test-coverage-lines=95 tests/*.test.cjs

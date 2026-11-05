@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentes Preconstruidos — Copilot 365 al Máximo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3669A4;
+      --primary-light: #4A7DB8;
+      --primary-dark: #2B5486;
+      --accent: #5B9BD5;
+      --bg: #F4F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #EDF1F7;
+      --text-primary: #1A2332;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D2DCE8;
+      --success: #38A169;
+      --warning: #D69E2E;
+      --error: #E53E3E;
+      --info: #3182CE;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow-card: 0 2px 8px rgba(54,105,164,0.08);
+      --shadow-hover: 0 4px 16px rgba(54,105,164,0.15);
+      --transition: all 0.3s ease;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-code: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none; display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .navbar-brand span { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary); font-size: .875rem;
+      padding: .45rem .75rem; border-radius: var(--radius-btn);
+      transition: var(--transition); white-space: nowrap;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary); color: #fff;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: .5rem;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px; background: var(--text-primary);
+      border-radius: 2px; transition: var(--transition);
+    }
+
+    @media (max-width: 1024px) {
+      .nav-links {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: var(--surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: .75rem 1rem; width: 100%; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1; margin-top: 64px;
+      padding: 2.5rem 1.5rem 4rem;
+      inline-size: 100%; max-inline-size: 100%;
+    }
+    .container {
+      width: 100%; max-width: 1400px; margin: 0 auto;
+    }
+
+    /* ── Typography ── */
+    h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 800; color: var(--primary-dark); margin-bottom: .5rem; line-height: 1.2; }
+    h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); font-weight: 700; color: var(--primary); margin: 2.5rem 0 1rem; }
+    h3 { font-size: 1.15rem; font-weight: 600; color: var(--text-primary); margin: 1.5rem 0 .75rem; }
+    p, li { max-inline-size: 100%; }
+
+    @media (min-width: 40rem) {
+      .prose { text-align: justify; text-align-last: start; }
+    }
+    .prose {
+      inline-size: 100%; max-inline-size: 100%;
+      white-space: normal; word-break: normal; hyphens: none;
+      overflow-wrap: break-word;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 60%, #1e3a5f 100%);
+      color: #fff; border-radius: var(--radius-card); padding: 3rem 2.5rem;
+      margin-bottom: 3rem; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -40%; right: -10%;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: rgba(91,155,213,0.12);
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -30%; left: 20%;
+      width: 350px; height: 350px; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .hero h1 { color: #fff; }
+    .hero p { color: rgba(255,255,255,0.9); font-size: 1.1rem; max-width: 80ch; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 2rem; padding: .4rem 1rem; font-size: .85rem; color: #fff;
+    }
+
+    /* ── Agent Cards ── */
+    .agent-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .agent-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+    .agent-card-header {
+      padding: 1.75rem 2rem 1.25rem;
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .agent-icon {
+      font-size: 2.5rem; line-height: 1;
+      min-width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-card);
+    }
+    .agent-card:nth-child(1) .agent-icon { background: #eaf3fc; }
+    .agent-card:nth-child(2) .agent-icon { background: #e8f8ef; }
+    .agent-card:nth-child(3) .agent-icon { background: #fef5e7; }
+    .agent-card:nth-child(4) .agent-icon { background: #fde8e8; }
+    .agent-card:nth-child(5) .agent-icon { background: #e8ecf8; }
+    .agent-card:nth-child(6) .agent-icon { background: #f0e8f8; }
+    .agent-card:nth-child(7) .agent-icon { background: #e8f5f0; }
+    .agent-header-text { flex: 1; }
+    .agent-header-text h2 { margin: 0 0 .25rem; font-size: 1.35rem; }
+    .agent-subtitle {
+      font-size: .9rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .agent-where-badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      background: var(--surface-alt); border: 1px solid var(--border);
+      border-radius: 2rem; padding: .2rem .7rem; font-size: .78rem;
+      color: var(--primary); font-weight: 600; margin-left: .5rem;
+    }
+    .agent-card-body { padding: 1.5rem 2rem 2rem; }
+    .agent-description {
+      font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.25rem;
+      line-height: 1.7;
+    }
+
+    /* capabilities grid */
+    .capabilities-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: .75rem; margin-bottom: 1.5rem;
+    }
+    .capability-item {
+      display: flex; align-items: flex-start; gap: .5rem;
+      background: var(--surface-alt); border-radius: var(--radius-btn);
+      padding: .65rem .85rem; font-size: .88rem; color: var(--text-secondary);
+      border: 1px solid transparent; transition: var(--transition);
+    }
+    .capability-item:hover { border-color: var(--accent); }
+    .capability-icon { color: var(--primary); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    /* prompt boxes */
+    .prompt-section-title {
+      font-size: .82rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--text-muted); margin-bottom: .75rem;
+    }
+    .prompt-box {
+      background: var(--surface-alt);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+      padding: .85rem 1.15rem; margin-bottom: .6rem;
+      font-family: var(--font-code); font-size: .86rem;
+      color: var(--text-primary); line-height: 1.55;
+      position: relative; cursor: pointer; transition: var(--transition);
+    }
+    .prompt-box:hover { background: #e2e9f3; }
+    .prompt-box .copy-hint {
+      position: absolute; top: .5rem; right: .75rem;
+      font-size: .7rem; color: var(--text-muted);
+      font-family: var(--font-main); opacity: 0; transition: var(--transition);
+    }
+    .prompt-box:hover .copy-hint { opacity: 1; }
+    .prompt-box.copied .copy-hint { color: var(--success); }
+
+    /* ideal use case callout */
+    .ideal-callout {
+      background: linear-gradient(135deg, #eaf3fc 0%, #f0f7ff 100%);
+      border: 1px solid #c9ddf0;
+      border-radius: var(--radius-btn); padding: 1rem 1.25rem;
+      margin-top: 1.25rem; display: flex; align-items: flex-start; gap: .65rem;
+    }
+    .ideal-callout-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .ideal-callout-content { font-size: .9rem; color: var(--text-secondary); }
+    .ideal-callout-content strong { color: var(--primary); }
+
+    /* pro tip callout */
+    .pro-tip {
+      background: linear-gradient(135deg, #fef5e7 0%, #fffdf5 100%);
+      border: 1px solid #f0dca0; border-radius: var(--radius-btn);
+      padding: 1rem 1.25rem; margin-top: 1rem;
+      display: flex; align-items: flex-start; gap: .65rem;
+      font-size: .88rem; color: var(--text-secondary);
+    }
+    .pro-tip strong { color: var(--warning); }
+
+    /* accordion */
+    .accordion-trigger {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; background: none; border: none; cursor: pointer;
+      padding: .75rem 0; font-family: var(--font-main);
+      font-size: .92rem; font-weight: 600; color: var(--primary);
+      border-top: 1px solid var(--border); transition: var(--transition);
+    }
+    .accordion-trigger:hover { color: var(--primary-dark); }
+    .accordion-arrow {
+      transition: transform .3s ease; font-size: .8rem;
+    }
+    .accordion-trigger[aria-expanded="true"] .accordion-arrow {
+      transform: rotate(180deg);
+    }
+    .accordion-content {
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s ease, padding .3s ease;
+    }
+    .accordion-content.open {
+      max-height: 2000px;
+    }
+    .accordion-inner { padding: .5rem 0 1rem; }
+
+    /* ── Dual agent mini-cards ── */
+    .dual-agents {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.5rem; margin-bottom: 2rem;
+    }
+    .mini-agent-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-card); padding: 1.5rem;
+      box-shadow: var(--shadow-card); transition: var(--transition);
+    }
+    .mini-agent-card:hover {
+      box-shadow: var(--shadow-hover); transform: translateY(-2px);
+    }
+    .mini-agent-card h3 { margin-top: 0; display: flex; align-items: center; gap: .5rem; }
+
+    /* ── Comparison table ── */
+    .table-wrapper {
+      overflow-x: auto; margin: 2rem 0; border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card); border: 1px solid var(--border);
+    }
+    .comparison-table {
+      width: 100%; border-collapse: collapse; font-size: .88rem;
+    }
+    .comparison-table thead { background: var(--primary); color: #fff; }
+    .comparison-table th {
+      padding: .85rem 1rem; text-align: left; font-weight: 600;
+      white-space: nowrap;
+    }
+    .comparison-table td {
+      padding: .75rem 1rem; border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .comparison-table tbody tr:nth-child(even) { background: var(--surface-alt); }
+    .comparison-table tbody tr:hover { background: #dce6f2; }
+    .complexity-badge {
+      display: inline-block; padding: .15rem .6rem; border-radius: 1rem;
+      font-size: .76rem; font-weight: 600;
+    }
+    .complexity-low { background: #c6f6d5; color: #22543d; }
+    .complexity-medium { background: #fefcbf; color: #744210; }
+    .complexity-high { background: #fed7d7; color: #9b2c2c; }
+
+    /* ── Info callout ── */
+    .info-callout {
+      background: linear-gradient(135deg, #ebf5ff, #f0f7ff);
+      border-left: 4px solid var(--info);
+      border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+      padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+      display: flex; align-items: flex-start; gap: .75rem;
+    }
+    .info-callout p { color: var(--text-secondary); font-size: .92rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--text-primary); color: rgba(255,255,255,0.7);
+      padding: 2rem; text-align: center; font-size: .85rem;
+      margin-top: auto;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 768px) {
+      main { padding: 1.5rem 1rem 3rem; }
+      .hero { padding: 2rem 1.25rem; }
+      .agent-card-header { flex-direction: column; gap: .75rem; padding: 1.25rem; }
+      .agent-card-body { padding: 1.25rem; }
+      .capabilities-grid { grid-template-columns: 1fr; }
+      .dual-agents { grid-template-columns: 1fr; }
+      .agent-subtitle { flex-wrap: wrap; }
+      .agent-where-badge { margin-left: 0; margin-top: .35rem; }
+    }
+  
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════ NAVBAR ═══════ -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand"><span>🚀</span> Copilot 365 al Máximo</a>
+  <button type="button" class="hamburger" aria-label="Menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Inicio</a>
+    <a href="fundamentos.html">Fundamentos</a>
+    <a href="agentes-preconstruidos.html" class="active">Agentes Preconstruidos</a>
+    <a href="creacion-agentes.html">Crear Agentes</a>
+    <a href="copilot-apps.html">Copilot en las Apps</a>
+    <a href="prompts.html">Biblioteca de Prompts</a>
+    <a href="actividades.html">Actividades Prácticas</a>
+    <a href="evaluacion.html">Evaluación</a>
+  </div>
+</nav>
+
+<!-- ═══════ MAIN ═══════ -->
+<main>
+  <div class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Agentes Preconstruidos de Microsoft 365 Copilot</h1>
+      <p class="prose">
+        Copilot incluye agentes listos para usar: asistentes especializados que te ayudan a redactar mejores prompts, revisar el tono de un correo, automatizar avisos o investigar a fondo. Esta página empieza por los que puedes abrir hoy desde el panel de Copilot en Outlook y después presenta los que requieren la licencia completa de Microsoft 365 Copilot.
+      </p>
+      <div class="hero-badges">
+        <span class="hero-badge">📬 Enfoque en Outlook</span>
+        <span class="hero-badge">🔎 Disponibilidad según licencia</span>
+        <span class="hero-badge">🔗 Integrados con M365</span>
+        <span class="hero-badge">🔒 Seguridad empresarial</span>
+      </div>
+    </section>
+
+    <!-- ═══════ DISPONIBILIDAD ═══════ -->
+    <div class="info-callout" style="margin-bottom: 2rem;">
+      <span style="font-size:1.4rem;">🔎</span>
+      <div>
+        <p class="prose">
+          <strong>Antes de empezar, comprueba qué agentes tienes.</strong> El catálogo cambia según la licencia de cada persona y lo que habilite la administración de tu organización. En Outlook, abre el panel <strong>Copilot</strong>, pulsa el menú <strong>☰</strong> y escribe el nombre del agente en el buscador. Si aparece «No encontramos ninguna coincidencia», ese agente no está habilitado para tu cuenta. Esta guía separa los agentes que se ven en el panel de Copilot de Outlook de una cuenta institucional de los que exigen la licencia completa de Microsoft 365 Copilot.
+        </p>
+      </div>
+    </div>
+
+    <!-- ═══════ DISPONIBLES EN OUTLOOK ═══════ -->
+    <h2 id="disponibles-outlook">Disponibles en Copilot de Outlook</h2>
+    <p class="prose" style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Estos agentes aparecen en la sección «Creado por Microsoft» del panel de Copilot en Outlook. Los que tienen la etiqueta <strong>Frontier</strong> pertenecen al programa de acceso anticipado de Microsoft: pueden cambiar o desaparecer sin aviso.
+    </p>
+
+    <section class="agent-card" id="copilot-outlook-base">
+      <div class="agent-card-header">
+        <div class="agent-icon">📬</div>
+        <div class="agent-header-text">
+          <h2>Copilot de Outlook <span style="color:var(--text-muted); font-weight:400;">(agente base)</span></h2>
+          <div class="agent-subtitle">
+            El punto de partida antes de elegir cualquier otro agente
+            <span class="agent-where-badge">📍 Cinta de Outlook · panel Copilot</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          Al abrir el panel sin elegir un agente, trabajas con Copilot de Outlook. Resume correos, redacta respuestas, lee adjuntos y, si tu organización lo permite, busca en tus correos, archivos, reuniones y calendario. Los demás agentes se eligen desde el menú <strong>☰</strong> cuando necesitas un comportamiento especializado; para volver al agente base, elige Copilot en ese mismo menú.
+        </p>
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Resumen del correo y del hilo abierto</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Borradores y coaching de respuestas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Resumen y comparación de adjuntos</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Preguntas sobre correos, calendario y reuniones</div>
+        </div>
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Resume el archivo adjunto de este correo en cinco puntos: propósito, fechas clave, responsables, cifras y lo que me piden a mí."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "¿Qué reuniones tengo mañana y qué correos debería revisar antes de cada una?"
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div class="pro-tip">
+          <span>💡</span>
+          <div><strong>Antes de usarlo a fondo:</strong> haz el <a href="actividades.html#act-15">Taller 0 · Diagnóstico de capacidades</a>. Te mostrará qué funciones están habilitadas en tu cuenta.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="agent-card" id="prompt-coach">
+      <div class="agent-card-header">
+        <div class="agent-icon">🧭</div>
+        <div class="agent-header-text">
+          <h2>Prompt Coach</h2>
+          <div class="agent-subtitle">
+            Escribe y mejora tus indicaciones antes de usarlas
+            <span class="agent-where-badge">📍 Panel Copilot de Outlook</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          Prompt Coach revisa una instrucción y te devuelve una versión más clara. Revísala con los cinco pilares de CRTT+L: contexto (con su fuente), rol, tarea, tono y límites. Es el mejor punto de partida para quien está aprendiendo: antes de pedirle a Copilot que redacte o resuma un correo, conviertes una petición vaga en una que da resultados útiles al primer intento.
+        </p>
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Detecta qué le falta a tu prompt</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Propone una versión mejorada lista para copiar</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Explica por qué cada cambio ayuda</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Sugiere plantillas reutilizables</div>
+        </div>
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Mejora este prompt para Copilot en Outlook: 'resume mis correos'. Quiero un resumen de los correos sin leer de hoy, agrupado por remitente y con las acciones que me piden."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Dame tres plantillas de prompt para responder correos de coordinación académica: aceptar, pedir más información y rechazar con cortesía."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> crear tu biblioteca personal de prompts para el correo que más se repite en tu semana.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="agent-card" id="writing-coach">
+      <div class="agent-card-header">
+        <div class="agent-icon">✍️</div>
+        <div class="agent-header-text">
+          <h2>Writing Coach</h2>
+          <div class="agent-subtitle">
+            Retroalimentación sobre claridad, tono y estructura
+            <span class="agent-where-badge">📍 Panel Copilot de Outlook</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          Writing Coach lee un texto que tú escribiste y te dice cómo mejorarlo: si el mensaje principal queda claro, si el tono es adecuado para el destinatario y si sobra o falta información. A diferencia de pedirle a Copilot que reescriba todo, aquí conservas tu voz y decides qué cambios aceptas.
+        </p>
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Evalúa claridad y orden de las ideas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Ajusta el tono según el destinatario</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Señala frases ambiguas o demasiado largas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Propone cambios sin reemplazar tu estilo</div>
+        </div>
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Revisa este borrador de respuesta a una coordinadora. Dime si el tono es respetuoso, si la solicitud queda clara en las dos primeras líneas y qué quitarías: [pega tu borrador]"
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          <span>Ver más ejemplos y detalles</span>
+          <span class="accordion-arrow">▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Este correo es para un aprendiz que entregó tarde. Ayúdame a que sea firme pero amable, sin perder los tres datos clave: nueva fecha, criterio de evaluación y canal de contacto."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+          </div>
+        </div>
+        <div class="pro-tip">
+          <span>💡</span>
+          <div><strong>Consejo:</strong> Outlook también ofrece <strong>Coaching de Copilot</strong> dentro del redactor de correo. Si el agente no ve el borrador que tienes abierto, copia y pega el texto en el panel.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="agent-card" id="workflows">
+      <div class="agent-card-header">
+        <div class="agent-icon">⚙️</div>
+        <div class="agent-header-text">
+          <h2>Workflows <span style="color:var(--text-muted); font-weight:400;">(Frontier)</span></h2>
+          <div class="agent-subtitle">
+            Automatizaciones descritas en lenguaje natural
+            <span class="agent-where-badge">📍 Panel Copilot · Outlook, Teams y Planner</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          Workflows crea flujos de agente a partir de una descripción en lenguaje natural, sin abrir Power Automate. Le dices qué debe pasar, cuándo y dónde, y el agente arma el flujo y te lo muestra para que lo revises antes de activarlo. Es útil para tareas repetitivas del correo: avisos, recordatorios y resúmenes programados.
+        </p>
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Disparadores por correo, horario o evento</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Acciones en Outlook, Teams y Planner</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Vista previa del flujo antes de activarlo</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Sin código ni conectores manuales</div>
+        </div>
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Cada vez que reciba un correo con 'urgente' en el asunto, envíame un mensaje en Teams con el remitente y un resumen de dos líneas."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Todos los viernes a las 4 p. m., envíame un correo con la lista de mensajes marcados con bandera que siguen sin respuesta."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div class="pro-tip">
+          <span>💡</span>
+          <div><strong>Antes de activar:</strong> revisa a quién envía mensajes el flujo y desactívalo si ya no lo necesitas. Un flujo olvidado puede seguir enviando avisos durante meses.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="dual-agents">
+      <div class="mini-agent-card" id="idea-coach">
+        <h3>💡 Idea Coach</h3>
+        <p class="prose" style="color: var(--text-secondary); font-size: .92rem; margin-bottom: 1rem;">
+          Guía una lluvia de ideas por etapas: entender el problema, generar opciones y elegir. Sirve para preparar la propuesta que vas a enviar por correo o el orden del día de una reunión.
+        </p>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)" style="font-size: .82rem;">
+          "Ayúdame a generar cinco ideas para reducir los correos de seguimiento que recibo de los aprendices cada semana y a elegir la más fácil de aplicar."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+      </div>
+
+      <div class="mini-agent-card" id="sharepoint-list-agent">
+        <h3>📋 SharePoint list agent</h3>
+        <p class="prose" style="color: var(--text-secondary); font-size: .92rem; margin-bottom: 1rem;">
+          Convierte el contexto de una conversación con Copilot en una lista de SharePoint. Por ejemplo, los compromisos de un hilo de correo pasan a una lista compartida con columnas de responsable, fecha y estado.
+        </p>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)" style="font-size: .82rem;">
+          "Crea una lista de SharePoint con estas tareas, con columnas Tarea, Responsable, Fecha límite y Estado: [pega el resumen]"
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+      </div>
+
+      <div class="mini-agent-card" id="learning">
+        <h3>📘 Learning</h3>
+        <p class="prose" style="color: var(--text-secondary); font-size: .92rem; margin-bottom: 1rem;">
+          Recomienda rutas de aprendizaje bajo demanda, incluidas las de inteligencia artificial y Microsoft 365. Úsalo para encontrar un curso corto sobre la función de Outlook que quieres dominar.
+        </p>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)" style="font-size: .82rem;">
+          "Recomiéndame una ruta de menos de una hora para aprender a usar Copilot en Outlook: resúmenes, borradores y programación de reuniones."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+      </div>
+
+      <div class="mini-agent-card" id="career-coach">
+        <h3>💼 Career Coach</h3>
+        <p class="prose" style="color: var(--text-secondary); font-size: .92rem; margin-bottom: 1rem;">
+          Ayuda a planear tu desarrollo profesional: metas, habilidades por fortalecer y conversaciones con tu jefe. Es útil antes de escribir un correo para pedir formación o una nueva responsabilidad.
+        </p>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)" style="font-size: .82rem;">
+          "Quiero solicitar a mi coordinación una capacitación en analítica de datos. Ayúdame a ordenar los argumentos para el correo."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 2rem;">Agentes instalados por tu organización o por ti</h3>
+    <p class="prose" style="color: var(--text-secondary);">
+      En la sección «Mis agentes» pueden aparecer otros agentes, por ejemplo <strong>Asesor de reuniones</strong>, <strong>AI Meeting Notes</strong>, <strong>Estudiar y aprender</strong>, <strong>Asistente Académico</strong>, <strong>Adobe Acrobat</strong> o <strong>Canva</strong>. Algunos los publica tu organización y otros terceros, así que su comportamiento depende de quien los configuró. Antes de compartirles un correo, revisa la descripción del agente y qué datos puede consultar. En los talleres, <strong>Asesor de reuniones</strong> se usa para preparar reuniones desde el calendario; si no lo tienes, Copilot de Outlook cumple la misma función.
+    </p>
+
+    <div class="table-wrapper" style="margin-top: 1.5rem;">
+      <table class="comparison-table">
+        <thead>
+          <tr><th>Si en Outlook necesitas…</th><th>Usa</th><th>Resultado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Pedir mejor lo que quieres</td><td><strong>Prompt Coach</strong></td><td>Prompt claro y reutilizable</td></tr>
+          <tr><td>Revisar el tono de una respuesta</td><td><strong>Writing Coach</strong></td><td>Comentarios y versión mejorada</td></tr>
+          <tr><td>Que algo pase solo cada vez que llega un correo</td><td><strong>Workflows</strong></td><td>Flujo automático revisable</td></tr>
+          <tr><td>Convertir compromisos en una lista compartida</td><td><strong>SharePoint list agent</strong></td><td>Lista de SharePoint</td></tr>
+          <tr><td>Preparar una reunión</td><td><strong>Asesor de reuniones</strong> o Copilot</td><td>Agenda y puntos pendientes</td></tr>
+          <tr><td>Ordenar ideas antes de proponer algo</td><td><strong>Idea Coach</strong></td><td>Opciones priorizadas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════ REQUIEREN LICENCIA ═══════ -->
+    <h2 id="requieren-licencia" style="margin-top: 3rem;">Requieren licencia Microsoft 365 Copilot</h2>
+    <div class="info-callout" style="margin-bottom: 2rem;">
+      <span style="font-size:1.4rem;">🔐</span>
+      <div>
+        <p class="prose">
+          Los agentes de esta sección forman parte de la licencia completa de Microsoft 365 Copilot y algunos funcionan solo dentro de Teams o Planner. Si el buscador del panel de Copilot no los encuentra, tu cuenta no los tiene habilitados. Léelos como referencia de lo que ofrece la licencia completa; los talleres obligatorios de esta guía no dependen de ellos.
+        </p>
+      </div>
+    </div>
+
+    <!-- ═══════ AGENT 1: RESEARCHER ═══════ -->
+    <section class="agent-card" id="investigador">
+      <div class="agent-card-header">
+        <div class="agent-icon">🔬</div>
+        <div class="agent-header-text">
+          <h2>Researcher <span style="color:var(--text-muted); font-weight:400;">(Investigador)</span></h2>
+          <div class="agent-subtitle">
+            Investigación profunda y razonamiento multietapa
+            <span class="agent-where-badge">📍 Copilot Chat (Business Chat)</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          El agente Researcher realiza investigaciones complejas que normalmente tomarían más de 30 minutos. Combina razonamiento multietapa con acceso simultáneo a la web y a tus datos organizacionales en SharePoint, correos, reuniones y chats, y entrega informes estructurados con fuentes citadas.
+        </p>
+
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Informes de investigación con fuentes citadas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Cruza correos, archivos, reuniones y chats internos</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Razonamiento multietapa para preguntas complejas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Combina datos web con datos organizacionales</div>
+        </div>
+
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Investiga las tendencias del mercado educativo en Colombia para 2026 usando mis archivos de SharePoint y fuentes web."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Prepara un informe ejecutivo sobre el avance del proyecto formativo cruzando los correos con Juan y los archivos del equipo de la última semana."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+
+        <!-- Accordion: More Examples -->
+        <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          <span>Ver más ejemplos y detalles</span>
+          <span class="accordion-arrow">▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Compara las propuestas de los tres proveedores que recibimos esta semana por correo y recomienda cuál se ajusta mejor al presupuesto del área de formación."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Genera un análisis competitivo de las cinco principales plataformas LMS del mercado latinoamericano con datos actualizados."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> tareas de investigación que tomarían más de 30 minutos de trabajo manual: consolidar información dispersa, comparar alternativas o preparar informes ejecutivos con evidencia.
+          </div>
+        </div>
+
+        <div class="pro-tip">
+          <span>💡</span>
+          <div><strong>Consejo:</strong> mientras más específico sea el contexto que le des (nombres de personas, carpetas de SharePoint, rangos de fechas), más preciso y útil será el informe resultante.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ AGENT 2: FACILITATOR ═══════ -->
+    <section class="agent-card" id="facilitador">
+      <div class="agent-card-header">
+        <div class="agent-icon">🎙️</div>
+        <div class="agent-header-text">
+          <h2>Facilitator <span style="color:var(--text-muted); font-weight:400;">(Facilitador)</span></h2>
+          <div class="agent-subtitle">
+            Asistente virtual de reuniones en Teams
+            <span class="agent-where-badge">📍 Microsoft Teams</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          El Facilitator se une a tus reuniones de Teams como un participante inteligente. Toma notas estructuradas en tiempo real, captura las decisiones clave, asigna tareas a cada participante y se asegura de que la agenda se cumpla. Al terminar la reunión, tienes un resumen listo para compartir.
+        </p>
+
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Gestión de reuniones en tiempo real</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Toma de notas y captura de decisiones</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Asignación automática de tareas pendientes</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Seguimiento de la agenda punto por punto</div>
+        </div>
+
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Toma notas de esta reunión, identifica las decisiones tomadas y asigna las tareas pendientes a cada participante."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Resume los puntos clave de la reunión y envía un seguimiento por correo a todos los asistentes."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+
+        <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          <span>Ver más ejemplos y detalles</span>
+          <span class="accordion-arrow">▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Alerta si nos estamos desviando de la agenda y sugiere cuándo pasar al siguiente punto."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+            <p class="prose" style="color: var(--text-secondary); font-size: .9rem; margin-top: .75rem;">
+              El Facilitator funciona mejor en reuniones con agenda definida. Si la reunión tiene un documento de agenda previo en el evento del calendario, el agente lo usa como referencia para hacer seguimiento punto por punto.
+            </p>
+          </div>
+        </div>
+
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> reuniones recurrentes de seguimiento, comités directivos o sesiones de planificación donde es clave registrar quién se comprometió a qué y cuándo.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ AGENT 3: INTERPRETER ═══════ -->
+    <section class="agent-card" id="interprete">
+      <div class="agent-card-header">
+        <div class="agent-icon">🌐</div>
+        <div class="agent-header-text">
+          <h2>Interpreter <span style="color:var(--text-muted); font-weight:400;">(Intérprete)</span></h2>
+          <div class="agent-subtitle">
+            Traducción de voz en tiempo real para reuniones
+            <span class="agent-where-badge">📍 Microsoft Teams</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          El agente Interpreter ofrece traducción simultánea de voz en reuniones de Teams. Traduce en tiempo real entre múltiples idiomas, manteniendo una simulación del estilo vocal del hablante original. Hace posible que equipos multilingües o con socios internacionales colaboren sin barreras de idioma y sin contratar servicios externos de interpretación.
+        </p>
+
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Traducción en vivo en múltiples idiomas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Simulación de voz que conserva el estilo del hablante</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Reuniones inclusivas con equipos globales</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Elimina la necesidad de intérpretes externos</div>
+        </div>
+
+        <div class="prompt-section-title">Escenarios de uso</div>
+        <div class="prompt-box" style="border-left-color: var(--success); cursor: default;">
+          ✅ Reuniones con socios o clientes internacionales que hablan otros idiomas.
+        </div>
+        <div class="prompt-box" style="border-left-color: var(--success); cursor: default;">
+          ✅ Equipos distribuidos en varios países con idiomas nativos distintos.
+        </div>
+        <div class="prompt-box" style="border-left-color: var(--success); cursor: default;">
+          ✅ Webinars y capacitaciones dirigidas a audiencias multilingües.
+        </div>
+
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> cualquier reunión donde los participantes hablen idiomas diferentes. Reemplaza servicios de interpretación simultánea que pueden costar cientos de dólares por sesión.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ AGENT 4: ANALYST ═══════ -->
+    <section class="agent-card" id="analista">
+      <div class="agent-card-header">
+        <div class="agent-icon">📊</div>
+        <div class="agent-header-text">
+          <h2>Analyst <span style="color:var(--text-muted); font-weight:400;">(Analista)</span></h2>
+          <div class="agent-subtitle">
+            Análisis de datos avanzado con ejecución de Python
+            <span class="agent-where-badge">📍 Copilot Chat · Excel</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          El agente Analyst es el compañero ideal para quienes trabajan con datos. Interpreta hojas de cálculo complejas y desordenadas, ejecuta código Python para extraer patrones de negocio, genera visualizaciones, y aplica razonamiento avanzado para convertir datos crudos en hallazgos que se pueden presentar directamente a la dirección.
+        </p>
+
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Interpreta hojas de cálculo complejas y desordenadas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Ejecuta código Python para análisis de negocio</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Razonamiento avanzado sobre patrones en datos</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Genera gráficos y visualizaciones automáticas</div>
+        </div>
+
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Analiza este archivo de ventas, identifica los 3 productos con mayor crecimiento interanual y genera un gráfico de tendencia."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+
+        <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          <span>Ver más ejemplos y detalles</span>
+          <span class="accordion-arrow">▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Limpia esta hoja de cálculo: elimina duplicados, estandariza los nombres de las ciudades y genera una tabla resumen por región."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Compara el presupuesto aprobado contra la ejecución real del primer semestre. Resalta las partidas con desviación superior al 10 %."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+            <p class="prose" style="color: var(--text-secondary); font-size: .9rem; margin-top: .75rem;">
+              El Analyst puede trabajar directamente con archivos Excel cargados en OneDrive o SharePoint. También acepta archivos CSV y puede cruzar datos de varias hojas para un análisis integral.
+            </p>
+          </div>
+        </div>
+
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> recibir un archivo de datos que no conoces bien, necesitar entenderlo rápidamente y presentar hallazgos claros, todo sin escribir una sola fórmula de Excel o línea de código.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ AGENT 5: SHAREPOINT AGENT ═══════ -->
+    <section class="agent-card" id="sharepoint">
+      <div class="agent-card-header">
+        <div class="agent-icon">📁</div>
+        <div class="agent-header-text">
+          <h2>SharePoint Agent <span style="color:var(--text-muted); font-weight:400;">(Agente de SharePoint)</span></h2>
+          <div class="agent-subtitle">
+            Experto en el contenido de sitios SharePoint
+            <span class="agent-where-badge">📍 SharePoint</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          El agente de SharePoint convierte cualquier sitio de SharePoint en un asistente conversacional que responde preguntas sobre la documentación almacenada allí. Los propietarios del sitio lo habilitan sin escribir una sola línea de código: definen qué bibliotecas de documentos incluir y el agente queda listo para responder a los usuarios con información precisa y citada.
+        </p>
+
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Búsqueda en lenguaje natural sobre documentos</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Responde preguntas de políticas y procedimientos</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Alcance definido por bibliotecas de documentos específicas</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Despliegue sin código por el propietario del sitio</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Etiquetado automático y gestión de contenido</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Bot de preguntas frecuentes instantáneo</div>
+        </div>
+
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "¿Cuál es la política de vacaciones según el manual de recursos humanos?"
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "¿Qué documentos necesito para solicitar un reembolso de viáticos?"
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+
+        <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          <span>Ver más ejemplos y detalles</span>
+          <span class="accordion-arrow">▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Resume los cambios en el reglamento interno que se publicaron este trimestre."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+            <div class="info-callout">
+              <span style="font-size:1.3rem;">💡</span>
+              <p class="prose">
+                El agente de SharePoint respeta los permisos existentes del sitio: solo muestra información de documentos a los que el usuario ya tiene acceso. No hay riesgo de filtrar documentos confidenciales a personas sin autorización.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> sitios de recursos humanos, manuales de procedimientos, portales de onboarding o cualquier repositorio documental donde las personas hacen preguntas repetitivas que ya están resueltas en los documentos.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ AGENT 6: PROJECT MANAGER ═══════ -->
+    <section class="agent-card" id="gestor-proyectos">
+      <div class="agent-card-header">
+        <div class="agent-icon">📋</div>
+        <div class="agent-header-text">
+          <h2>Project Manager <span style="color:var(--text-muted); font-weight:400;">(Gestor de Proyectos)</span></h2>
+          <div class="agent-subtitle">
+            Planificación y seguimiento con Microsoft Planner
+            <span class="agent-where-badge">📍 Planner · Teams</span>
+          </div>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <p class="agent-description prose">
+          El agente Project Manager convierte descripciones en lenguaje natural en planes de proyecto completos dentro de Microsoft Planner. Crea tareas, asigna responsables, define fechas límite y después te ayuda a hacer seguimiento: identifica tareas atrasadas, bloqueos y riesgos antes de que se conviertan en problemas.
+        </p>
+
+        <h3>Capacidades principales</h3>
+        <div class="capabilities-grid">
+          <div class="capability-item"><span class="capability-icon">✦</span> Crea planes de proyecto desde lenguaje natural</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Seguimiento de estado y fechas límite</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Asignación automática de responsables</div>
+          <div class="capability-item"><span class="capability-icon">✦</span> Alerta sobre bloqueos y riesgos</div>
+        </div>
+
+        <div class="prompt-section-title">Prompts de ejemplo</div>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+          "Crea un plan de proyecto para la migración del sistema de nómina con fases de análisis, desarrollo, pruebas y despliegue. Asigna a Carolina el análisis y a Miguel el desarrollo."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+
+        <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+          <span>Ver más ejemplos y detalles</span>
+          <span class="accordion-arrow">▼</span>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-inner">
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "¿Qué tareas del plan de capacitación están atrasadas y quién es el responsable de cada una?"
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+            <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)">
+              "Agrega una tarea de revisión de calidad antes de cada entrega y asígnala al líder técnico."
+              <span class="copy-hint">Clic para copiar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ideal-callout">
+          <span class="ideal-callout-icon">🎯</span>
+          <div class="ideal-callout-content">
+            <strong>Caso de uso ideal:</strong> convertir rápidamente la idea de un proyecto en un tablero estructurado de Planner con tareas, responsables y cronograma, sin pasar horas armándolo a mano.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ AGENTS 7: WORKFLOWS & PEOPLE ═══════ -->
+    <h2 style="margin-top: 3rem;">Agentes complementarios con licencia completa</h2>
+    <p class="prose" style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Con la licencia completa también se habilitan estos dos agentes. Workflows ya aparece en algunas cuentas como agente Frontier; revisa su tarjeta en la sección de disponibles.
+    </p>
+
+    <div class="dual-agents">
+      <div class="mini-agent-card">
+        <h3>⚙️ Workflows Agent <span style="color:var(--text-muted); font-weight:400;">(Automatizaciones)</span></h3>
+        <p class="prose" style="color: var(--text-secondary); font-size: .92rem; margin-bottom: 1rem;">
+          Automatiza rutinas que cruzan varias aplicaciones de Microsoft 365: Teams, Outlook y Planner. Permite crear flujos de trabajo desde el chat de Copilot sin necesidad de abrir Power Automate. Por ejemplo, puedes configurar que cada vez que un correo con determinado asunto llegue a tu bandeja, se cree una tarea en Planner y se notifique a tu equipo en Teams.
+        </p>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)" style="font-size: .82rem;">
+          "Cada vez que reciba un correo con 'urgente' en el asunto, crea una tarea en mi plan de Planner y notifícame por Teams."
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+      </div>
+
+      <div class="mini-agent-card">
+        <h3>👥 People Agent <span style="color:var(--text-muted); font-weight:400;">(Personas)</span></h3>
+        <p class="prose" style="color: var(--text-secondary); font-size: .92rem; margin-bottom: 1rem;">
+          Te da contexto organizacional sobre tus colegas. Antes de una reunión, puedes preguntarle quién es alguien, en qué proyectos trabaja, a quién reporta y cuáles han sido sus contribuciones recientes en documentos compartidos. Toda la información se obtiene del directorio organizacional y de la actividad en Microsoft Graph.
+        </p>
+        <div role="button" tabindex="0" class="prompt-box" onclick="copyPrompt(this)" style="font-size: .82rem;">
+          "Dame contexto sobre Laura Gómez antes de la reunión de las 3: ¿en qué proyectos está trabajando y con quién colabora más?"
+          <span class="copy-hint">Clic para copiar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ DECISION TREE DIAGRAM ═══════ -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-card); padding:2rem; margin:2.5rem 0 2rem; box-shadow:var(--shadow-card);">
+      <h2 style="font-size:1.5rem; color:var(--primary-dark); margin-bottom:.5rem; display:flex; align-items:center; gap:.5rem;">
+        <span>🌳</span> Árbol de decisión de los agentes con licencia completa
+      </h2>
+      <p class="prose" style="color:var(--text-secondary); margin-bottom:1.5rem;">
+        Utiliza este mapa lógico para elegir en segundos el agente especializado que mejor resolverá la tarea de tu equipo:
+      </p>
+
+      <div style="width:100%; overflow-x:auto; text-align:center;">
+        <svg viewBox="0 0 880 270" style="width:100%; max-width:880px; height:auto; display:inline-block;" aria-label="Diagrama del Árbol de Decisión de Agentes Preconstruidos">
+          <defs>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9 z" fill="#3669A4"/>
+            </marker>
+          </defs>
+
+          <!-- Root Question -->
+          <rect x="290" y="10" width="300" height="46" rx="8" fill="#2B5486"/>
+          <text x="440" y="38" font-family="Segoe UI, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">¿Cuál es tu necesidad principal?</text>
+
+          <!-- Branches Lines -->
+          <path d="M 330 56 L 90 100" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M 380 56 L 265 100" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M 440 56 L 440 100" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M 500 56 L 615 100" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <path d="M 550 56 L 790 100" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+
+          <!-- Option 1: Researcher -->
+          <rect x="15" y="110" width="150" height="60" rx="8" fill="#EDF1F7" stroke="#D2DCE8"/>
+          <text x="90" y="132" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#2B5486" text-anchor="middle">Investigar a fondo</text>
+          <text x="90" y="150" font-family="Segoe UI, sans-serif" font-size="10" fill="#718096" text-anchor="middle">Varios pasos web + Graph</text>
+          <path d="M 90 170 L 90 195" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <rect x="10" y="205" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#3669A4" stroke-width="2"/>
+          <text x="90" y="235" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#3669A4" text-anchor="middle">🔬 Researcher</text>
+
+          <!-- Option 2: Facilitator -->
+          <rect x="190" y="110" width="150" height="60" rx="8" fill="#EDF1F7" stroke="#D2DCE8"/>
+          <text x="265" y="132" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#2B5486" text-anchor="middle">Reunión en vivo Teams</text>
+          <text x="265" y="150" font-family="Segoe UI, sans-serif" font-size="10" fill="#718096" text-anchor="middle">Actas, notas y tareas</text>
+          <path d="M 265 170 L 265 195" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <rect x="185" y="205" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#3669A4" stroke-width="2"/>
+          <text x="265" y="235" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#3669A4" text-anchor="middle">👥 Facilitator</text>
+
+          <!-- Option 3: Interpreter -->
+          <rect x="365" y="110" width="150" height="60" rx="8" fill="#EDF1F7" stroke="#D2DCE8"/>
+          <text x="440" y="132" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#2B5486" text-anchor="middle">Otro idioma en Teams</text>
+          <text x="440" y="150" font-family="Segoe UI, sans-serif" font-size="10" fill="#718096" text-anchor="middle">Traducción simultánea voz</text>
+          <path d="M 440 170 L 440 195" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <rect x="360" y="205" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#3669A4" stroke-width="2"/>
+          <text x="440" y="235" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#3669A4" text-anchor="middle">🌐 Interpreter</text>
+
+          <!-- Option 4: Analyst -->
+          <rect x="540" y="110" width="150" height="60" rx="8" fill="#EDF1F7" stroke="#D2DCE8"/>
+          <text x="615" y="132" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#2B5486" text-anchor="middle">Datos y Estadísticas</text>
+          <text x="615" y="150" font-family="Segoe UI, sans-serif" font-size="10" fill="#718096" text-anchor="middle">Python, Excel y gráficos</text>
+          <path d="M 615 170 L 615 195" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <rect x="535" y="205" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#3669A4" stroke-width="2"/>
+          <text x="615" y="235" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#3669A4" text-anchor="middle">📊 Analyst</text>
+
+          <!-- Option 5: SharePoint Agent -->
+          <rect x="715" y="110" width="150" height="60" rx="8" fill="#EDF1F7" stroke="#D2DCE8"/>
+          <text x="790" y="132" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#2B5486" text-anchor="middle">Consultar documentos</text>
+          <text x="790" y="150" font-family="Segoe UI, sans-serif" font-size="10" fill="#718096" text-anchor="middle">Biblioteca o sitio propio</text>
+          <path d="M 790 170 L 790 195" stroke="#3669A4" stroke-width="2" marker-end="url(#arrow2)"/>
+          <rect x="710" y="205" width="160" height="50" rx="8" fill="#FFFFFF" stroke="#3669A4" stroke-width="2"/>
+          <text x="790" y="235" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#3669A4" text-anchor="middle">📁 SharePoint Agent</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══════ COMPARISON TABLE ═══════ -->
+    <h2 id="comparativa">Tabla comparativa de agentes con licencia completa</h2>
+    <p class="prose" style="color: var(--text-secondary); margin-bottom: 1rem;">
+      Esta tabla resume los agentes de la licencia completa. Para los agentes disponibles en Outlook, consulta la tabla de la primera sección.
+    </p>
+
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Agente</th>
+            <th>Dónde funciona</th>
+            <th>Ideal para</th>
+            <th>Complejidad</th>
+            <th>Resultado principal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🔬 Researcher</strong></td>
+            <td>Copilot Chat</td>
+            <td>Investigación profunda y multifuente</td>
+            <td><span class="complexity-badge complexity-high">Alta</span></td>
+            <td>Informe ejecutivo con fuentes citadas</td>
+          </tr>
+          <tr>
+            <td><strong>🎙️ Facilitator</strong></td>
+            <td>Teams (reuniones)</td>
+            <td>Gestión de reuniones en tiempo real</td>
+            <td><span class="complexity-badge complexity-medium">Media</span></td>
+            <td>Acta con decisiones y tareas asignadas</td>
+          </tr>
+          <tr>
+            <td><strong>🌐 Interpreter</strong></td>
+            <td>Teams (reuniones)</td>
+            <td>Comunicación multilingüe</td>
+            <td><span class="complexity-badge complexity-low">Baja</span></td>
+            <td>Traducción simultánea de voz</td>
+          </tr>
+          <tr>
+            <td><strong>📊 Analyst</strong></td>
+            <td>Copilot Chat · Excel</td>
+            <td>Análisis de datos y visualización</td>
+            <td><span class="complexity-badge complexity-high">Alta</span></td>
+            <td>Gráficos, tablas y hallazgos de negocio</td>
+          </tr>
+          <tr>
+            <td><strong>📁 SharePoint Agent</strong></td>
+            <td>SharePoint</td>
+            <td>Preguntas sobre documentación interna</td>
+            <td><span class="complexity-badge complexity-low">Baja</span></td>
+            <td>Respuestas con citas a documentos</td>
+          </tr>
+          <tr>
+            <td><strong>📋 Project Manager</strong></td>
+            <td>Planner · Teams</td>
+            <td>Planificación y seguimiento de proyectos</td>
+            <td><span class="complexity-badge complexity-medium">Media</span></td>
+            <td>Plan de tareas con responsables y plazos</td>
+          </tr>
+          <tr>
+            <td><strong>⚙️ Workflows</strong></td>
+            <td>Copilot Chat</td>
+            <td>Automatización de rutinas cross-app</td>
+            <td><span class="complexity-badge complexity-medium">Media</span></td>
+            <td>Flujos automatizados entre apps</td>
+          </tr>
+          <tr>
+            <td><strong>👥 People</strong></td>
+            <td>Copilot Chat</td>
+            <td>Contexto organizacional sobre colegas</td>
+            <td><span class="complexity-badge complexity-low">Baja</span></td>
+            <td>Perfil y actividad reciente de personas</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════ CLOSING INFO ═══════ -->
+    <div class="info-callout" style="margin-top: 2.5rem;">
+      <span style="font-size:1.4rem;">ℹ️</span>
+      <div>
+        <p class="prose">
+          <strong>Importante:</strong> todos los agentes preconstruidos respetan los permisos y las políticas de seguridad de tu organización en Microsoft 365. Solo acceden a datos para los cuales el usuario ya tiene permiso. La información procesada no se usa para entrenar modelos de IA externos.
+        </p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 2.5rem;">
+      <a href="creacion-agentes.html" style="
+        display: inline-flex; align-items: center; gap: .5rem;
+        background: var(--primary); color: #fff; text-decoration: none;
+        padding: .85rem 2rem; border-radius: var(--radius-btn);
+        font-weight: 600; font-size: 1rem;
+        transition: var(--transition);
+        box-shadow: 0 2px 8px rgba(54,105,164,0.2);
+      " onmouseover="this.style.background='var(--primary-dark)';this.style.transform='translateY(-2px)'"
+         onmouseout="this.style.background='var(--primary)';this.style.transform='none'">
+        Siguiente: Crear tus propios agentes →
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <p>Copilot 365 al Máximo — Guía práctica para aprovechar Microsoft 365 Copilot en tu organización</p>
+  <p style="margin-top: .5rem;">Creado con fines educativos · 2025</p>
+</footer>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script>
+  // Hamburger menu
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.navbar')) navLinks.classList.remove('open');
+  });
+
+  // Accordion
+  function toggleAccordion(btn) {
+    const content = btn.nextElementSibling;
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    content.classList.toggle('open');
+  }
+
+  // Copy prompt
+  function copyPrompt(el) {
+    const text = el.childNodes[0].textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      el.classList.add('copied');
+      const hint = el.querySelector('.copy-hint');
+      if (hint) {
+        const orig = hint.textContent;
+        hint.textContent = '✓ Copiado';
+        hint.style.opacity = '1';
+        setTimeout(() => {
+          el.classList.remove('copied');
+          hint.textContent = orig;
+          hint.style.opacity = '';
+        }, 1800);
+      }
+    }).catch(() => {});
+  }
+</script>
+</body>
+</html>
+

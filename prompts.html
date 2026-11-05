@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca de Prompts — Copilot 365 al Máximo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3669A4;
+      --primary-light: #4A7DB8;
+      --primary-dark: #2B5486;
+      --accent: #5B9BD5;
+      --bg: #F4F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #EDF1F7;
+      --text-primary: #1A2332;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D2DCE8;
+      --success: #38A169;
+      --warning: #D69E2E;
+      --error: #E53E3E;
+      --info: #3182CE;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow-card: 0 2px 8px rgba(54,105,164,0.08);
+      --shadow-hover: 0 4px 16px rgba(54,105,164,0.15);
+      --transition: all 0.3s ease;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-code: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      white-space: normal;
+      word-break: normal;
+      hyphens: none;
+      overflow-wrap: break-word;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none; display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .navbar-brand span { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary); font-size: .875rem;
+      padding: .45rem .75rem; border-radius: var(--radius-btn);
+      transition: var(--transition); white-space: nowrap; font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary); color: #fff;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: .5rem;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px; background: var(--text-primary);
+      border-radius: 2px; transition: var(--transition);
+    }
+
+    @media (max-width: 1024px) {
+      .nav-links {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: var(--surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: .75rem 1rem; width: 100%; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Main Layout ── */
+    main {
+      flex: 1; margin-top: 64px;
+      padding: 2.5rem 1.5rem 4rem;
+      inline-size: 100%; max-inline-size: 100%;
+    }
+    .container {
+      width: 100%; max-width: 1320px; margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, #2B5486 0%, #3669A4 60%, #5B9BD5 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      padding: 3rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 6px 20px rgba(54,105,164,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '💬';
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      padding: .35rem .85rem;
+      border-radius: 20px;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: .8rem;
+      line-height: 1.2;
+    }
+    .page-header p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    /* Search & Filter Bar */
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-card);
+    }
+    .search-box {
+      width: 100%;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: .85rem 1rem .85rem 2.8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-size: 1rem;
+      font-family: var(--font-main);
+      color: var(--text-primary);
+      background: #FDFEFE;
+      outline: none;
+      transition: var(--transition);
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(54,105,164,0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Filter buttons row */
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .filter-label {
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-right: .5rem;
+      min-width: 80px;
+    }
+    .btn-filter {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: .35rem .85rem;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-filter:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .btn-filter.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Counter bar */
+    .results-counter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .9rem;
+      color: var(--text-muted);
+      padding-top: .75rem;
+      border-top: 1px solid var(--surface-alt);
+    }
+
+    /* Prompts Grid */
+    .prompts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Prompt Card */
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+    }
+    .prompt-card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .badge-app {
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .25rem .65rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .badge-app-word { background: #E0EBF7; color: #1E4E8C; }
+    .badge-app-excel { background: #E2F5EA; color: #1A633A; }
+    .badge-app-powerpoint { background: #FDE8E3; color: #8F2B14; }
+    .badge-app-outlook { background: #E3F2FD; color: #1565C0; }
+    .badge-app-teams { background: #EDE7F6; color: #4A148C; }
+    .badge-app-onenote { background: #F3E5F5; color: #6A1B9A; }
+    .badge-app-loop { background: #E0F2F1; color: #00695C; }
+    .badge-app-whiteboard { background: #FFF3E0; color: #E65100; }
+    .badge-app-forms { background: #E8F5E9; color: #2E7D32; }
+
+    .badge-diff {
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .2rem .5rem;
+      border-radius: 4px;
+    }
+    .diff-basico { background: #EBF8F2; color: #1C5237; }
+    .diff-intermedio { background: #FEF9E7; color: #745307; }
+    .diff-avanzado { background: #FFF5F5; color: #9B2C2C; }
+
+    .prompt-bubble {
+      background: #F8FAFD;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: var(--font-code);
+      font-size: .88rem;
+      line-height: 1.6;
+      color: #1A2332;
+      margin-bottom: 1rem;
+      flex: 1;
+      white-space: pre-wrap;
+    }
+
+    .prompt-explanation {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      padding-top: .75rem;
+      border-top: 1px dashed var(--border);
+    }
+    .prompt-explanation strong {
+      color: var(--primary-dark);
+    }
+
+    .btn-copy-card {
+      align-self: flex-start;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: .45rem 1rem;
+      border-radius: var(--radius-btn);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      transition: var(--transition);
+    }
+    .btn-copy-card:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Page Nav */
+    .page-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .75rem 1.5rem;
+      border-radius: var(--radius-btn);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: .95rem;
+    }
+    .btn-nav-prev {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-nav-prev:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+    .btn-nav-next {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(54,105,164,0.25);
+    }
+    .btn-nav-next:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: #141E2B;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 3.5rem 2rem 2rem;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .8rem;
+    }
+    .footer-desc {
+      font-size: .9rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .footer-nav-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      list-style: none;
+    }
+    .footer-nav-links a {
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-nav-links a:hover {
+      color: #5B9BD5;
+    }
+    .footer-bottom {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.4);
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+  
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    /* Laboratorio CRTT+L */
+    .crttl-lab-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    .crttl-lab-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .crttl-lab-title h2 {
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .lab-tag {
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .25rem .7rem;
+      border-radius: 20px;
+      background: #EBF4FC;
+      color: var(--primary);
+      border: 1px solid #C4D9F2;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .crttl-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-family: var(--font-code);
+      font-size: .92rem;
+      color: var(--text-primary);
+      background: #FDFEFE;
+      resize: vertical;
+      outline: none;
+      transition: var(--transition);
+      line-height: 1.6;
+    }
+    .crttl-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(54,105,164,0.15);
+    }
+    .lab-btn-row {
+      display: flex;
+      gap: .6rem;
+      margin: 1rem 0 1.5rem;
+      flex-wrap: wrap;
+    }
+    .btn-lab-sample {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: .4rem .9rem;
+      border-radius: var(--radius-btn);
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-lab-sample:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .crttl-results-panel {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+    }
+    .score-meter-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .score-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+    .score-bar-bg {
+      flex: 1;
+      height: 12px;
+      background: #E2E8F0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 0 1.5rem;
+      min-width: 160px;
+    }
+    .score-bar-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease, background 0.4s ease;
+      border-radius: 6px;
+    }
+    .crttl-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .crttl-item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      transition: var(--transition);
+    }
+    .crttl-item-card.detected {
+      border-color: var(--success);
+      background: #F4FAF6;
+    }
+    .crttl-item-card.missing {
+      border-color: var(--warning);
+      background: #FFFDF8;
+    }
+    .crttl-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: .88rem;
+    }
+    .crttl-item-card.detected .crttl-item-header { color: #1C5237; }
+    .crttl-item-card.missing .crttl-item-header { color: #8A6508; }
+    .crttl-item-snippet {
+      font-size: .8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .crttl-advice-box {
+      padding: .85rem 1rem;
+      border-radius: var(--radius-btn);
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+    .crttl-advice-box.ok {
+      background: #EBF8F2;
+      color: #1C5237;
+      border-left: 4px solid var(--success);
+    }
+    .crttl-advice-box.warn {
+      background: #FEF9E7;
+      color: #745307;
+      border-left: 4px solid var(--warning);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span>✦</span> Copilot 365 al Máximo
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="fundamentos.html">Fundamentos</a></li>
+      <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+      <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+      <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+      <li><a href="prompts.html" class="active">Prompts</a></li>
+      <li><a href="actividades.html">Actividades</a></li>
+      <li><a href="evaluacion.html">Evaluación</a></li>
+    </ul>
+    <button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú de navegación">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="badge">Módulo 5 · Repositorio de Alto Rendimiento</div>
+        <h1>Biblioteca de Prompts Optimizados para Microsoft 365</h1>
+        <p>Sesenta prompts organizados con el método CRTT+L (Contexto, Rol, Tarea, Tono y Límites), el mismo de todas las guías del programa. Cada tarjeta explica qué pilar cumple cada parte; agrega el rol o el tono cuando tu caso lo pida. La categoría más amplia es Outlook, con 16 prompts para la bandeja, los adjuntos, el calendario, las reuniones y los agentes del panel. Filtra por aplicación o nivel de dificultad y copia con un clic el prompt que necesitas.</p>
+      </header>
+
+      <!-- Laboratorio CRTT+L -->
+      <section class="crttl-lab-card" id="crttl-lab" data-classification="comprobación estática">
+        <div class="crttl-lab-header">
+          <div class="crttl-lab-title">
+            <h2><span>🧪</span> Calificador de prompts con el método CRTT+L</h2>
+            <span style="font-size: .88rem; color: var(--text-muted); font-weight: 500;">Revisión inmediata en tu navegador; el texto no sale de tu equipo</span>
+          </div>
+          <span class="lab-tag">Laboratorio activo</span>
+        </div>
+
+        <p style="font-size: .95rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Escribe o pega tu prompt. El calificador revisa si contiene los cinco pilares: <strong>Contexto</strong>, <strong>Rol</strong>, <strong>Tarea</strong>, <strong>Tono</strong> y <strong>Límites</strong>. Puedes marcarlos con [C], [R], [T], [Tono] y [L] o escribirlos con tus palabras.
+        </p>
+
+        <label for="crttlPromptInput" class="sr-only">Prompt para revisar</label>
+        <textarea id="crttlPromptInput" class="crttl-textarea" placeholder="Ejemplo: [C] Usa solo /ProyectoTitan.docx; es para el comité. [R] Actúa como asistente de coordinación. [T] Extrae los acuerdos en una tabla de 4 columnas. [Tono] Profesional. [L] Si falta un dato, escribe [NO CONSTA]."></textarea>
+
+        <div class="lab-btn-row">
+          <button type="button" class="btn-lab-sample" data-sample="1">✦ Probar ejemplo completo</button>
+          <button type="button" class="btn-lab-sample" data-sample="2">⚠️ Probar ejemplo incompleto</button>
+          <button type="button" class="btn-lab-sample" data-sample="3">🧹 Limpiar</button>
+          <button type="button" class="btn-lab-sample" id="copyAuditedBtn" style="margin-left: auto; background: var(--primary); color: #fff; border-color: var(--primary);">📋 Copiar prompt</button>
+        </div>
+
+        <div class="crttl-results-panel" aria-live="polite">
+          <div class="score-meter-box">
+            <span class="score-text" id="crttlScoreText">Puntaje CRTT+L: 0 % · Sin evaluar</span>
+            <div class="score-bar-bg">
+              <div class="score-bar-fill" id="crttlScoreBar" style="background: var(--warning);"></div>
+            </div>
+          </div>
+
+          <div class="crttl-cards-grid">
+            <div class="crttl-item-card missing" id="card-contexto">
+              <div class="crttl-item-header">
+                <span>[C] Contexto</span>
+                <span id="status-contexto">⚠️ Ausente</span>
+              </div>
+              <div class="crttl-item-snippet" id="snippet-contexto"></div>
+            </div>
+            <div class="crttl-item-card missing" id="card-rol">
+              <div class="crttl-item-header">
+                <span>[R] Rol</span>
+                <span id="status-rol">⚠️ Ausente</span>
+              </div>
+              <div class="crttl-item-snippet" id="snippet-rol"></div>
+            </div>
+            <div class="crttl-item-card missing" id="card-tarea">
+              <div class="crttl-item-header">
+                <span>[T] Tarea</span>
+                <span id="status-tarea">⚠️ Ausente</span>
+              </div>
+              <div class="crttl-item-snippet" id="snippet-tarea"></div>
+            </div>
+            <div class="crttl-item-card missing" id="card-tono">
+              <div class="crttl-item-header">
+                <span>[Tono] Tono</span>
+                <span id="status-tono">⚠️ Ausente</span>
+              </div>
+              <div class="crttl-item-snippet" id="snippet-tono"></div>
+            </div>
+            <div class="crttl-item-card missing" id="card-limites">
+              <div class="crttl-item-header">
+                <span>[L] Límites</span>
+                <span id="status-limites">⚠️ Ausente</span>
+              </div>
+              <div class="crttl-item-snippet" id="snippet-limites"></div>
+            </div>
+          </div>
+
+          <div class="crttl-advice-box warn" id="crttlAdvice">
+            <strong>Para empezar:</strong> escribe un prompt en el cuadro superior.
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter Panel -->
+      <section class="filter-panel" id="prompts-outlook" style="margin-bottom:1.5rem;">
+        <h2 style="font-size:1.3rem; margin-bottom:.5rem;">📬 Empieza por Outlook</h2>
+        <p class="prose">Los prompts de Outlook están pensados para usarse en el panel de Copilot con un correo abierto. Los que empiezan por el nombre de un agente, como «(Prompt Coach)», se usan después de elegir ese agente en el menú ☰ del panel. Cambia los corchetes por tus datos antes de enviarlos.</p>
+        <button type="button" class="btn-filter" style="margin-top:.75rem;" onclick="filterApp('outlook', document.querySelector('.btn-filter[data-app=outlook]')); document.getElementById('promptsContainer').scrollIntoView({behavior:'smooth'});">Ver los 16 prompts de Outlook</button>
+      </section>
+
+      <section class="filter-panel">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar por palabra clave (ej: resumen, gráfico, acta, fórmula, riesgo, proyecto)..." oninput="applyFilters()">
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Aplicación:</span>
+          <button type="button" class="btn-filter active" data-app="all" onclick="filterApp('all', this)">Todas (60)</button>
+          <button type="button" class="btn-filter" data-app="outlook" onclick="filterApp('outlook', this)">📬 Outlook (16)</button>
+          <button type="button" class="btn-filter" data-app="word" onclick="filterApp('word', this)">Word</button>
+          <button type="button" class="btn-filter" data-app="excel" onclick="filterApp('excel', this)">Excel</button>
+          <button type="button" class="btn-filter" data-app="powerpoint" onclick="filterApp('powerpoint', this)">PowerPoint</button>
+          <button type="button" class="btn-filter" data-app="teams" onclick="filterApp('teams', this)">Teams</button>
+          <button type="button" class="btn-filter" data-app="onenote" onclick="filterApp('onenote', this)">OneNote</button>
+          <button type="button" class="btn-filter" data-app="loop" onclick="filterApp('loop', this)">Loop</button>
+          <button type="button" class="btn-filter" data-app="whiteboard" onclick="filterApp('whiteboard', this)">Whiteboard</button>
+          <button type="button" class="btn-filter" data-app="forms" onclick="filterApp('forms', this)">Forms</button>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Dificultad:</span>
+          <button type="button" class="btn-filter active" data-diff="all" onclick="filterDiff('all', this)">Todos los Niveles</button>
+          <button type="button" class="btn-filter" data-diff="basico" onclick="filterDiff('basico', this)">🟢 Básico</button>
+          <button type="button" class="btn-filter" data-diff="intermedio" onclick="filterDiff('intermedio', this)">🟡 Intermedio</button>
+          <button type="button" class="btn-filter" data-diff="avanzado" onclick="filterDiff('avanzado', this)">🔴 Avanzado</button>
+        </div>
+
+        <div class="results-counter">
+          <span id="counterText">Mostrando 60 de 60 prompts</span>
+          <span style="font-size:.82rem;">✦ Haz clic en "Copiar Prompt" para usarlo de inmediato</span>
+        </div>
+      </section>
+
+      <!-- Prompts Grid Container -->
+      <section class="prompts-grid" id="promptsContainer">
+        <!-- Prompts will be dynamically rendered or static with filter attributes -->
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="page-nav-bar">
+        <a href="copilot-apps.html" class="btn-nav btn-nav-prev">← Anterior: Copilot en Apps</a>
+        <a href="actividades.html" class="btn-nav btn-nav-next">Siguiente: Actividades Prácticas →</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">✦ Copilot 365 al Máximo</div>
+        <p class="footer-desc">Guía educativa integral diseñada para aprendices, instructores y profesionales que buscan dominar Microsoft 365 Copilot, sus agentes inteligentes y la automatización moderna del trabajo.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom:.8rem; font-size:.95rem;">Módulos del Curso</h4>
+        <ul class="footer-nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="fundamentos.html">Fundamentos</a></li>
+          <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+          <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+          <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+          <li><a href="prompts.html">Biblioteca Prompts</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="evaluacion.html">Evaluación</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Copilot 365 al Máximo. Formación y Productividad Digital.</span>
+      <span>Diseñado con serenidad nórdica · Accesible y Práctico</span>
+    </div>
+  </footer>
+
+  <script src="src/shared/crttl-evaluator.js"></script>
+  <script>
+    // Biblioteca de prompts (60). why: qué pilar CRTT+L cumple cada parte.
+    const promptsData = [
+      // --- WORD (8) ---
+      {
+        id: 'w1', app: 'word', appName: 'Word', diff: 'basico', diffName: 'Básico',
+        text: 'Redacta una carta formal solicitando una prórroga de entrega para el proyecto formativo [Nombre]. Menciona los avances logrados hasta la fecha, el motivo del retraso y la nueva fecha de entrega propuesta para el 15 de noviembre.',
+        why: '<strong>CRTT+L:</strong> [C] Datos de avance · formal institucional [T] Redactar carta → estructura con justificación y fecha clara [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w2', app: 'word', appName: 'Word', diff: 'basico', diffName: 'Básico',
+        text: 'Sintetiza este documento en exactamente 5 viñetas ejecutivas para presentar a la coordinación académica, destacando únicamente las metas cumplidas.',
+        why: '<strong>CRTT+L:</strong> [C] Texto actual · audiencia directiva [T] Sintetizar → 5 viñetas concisas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w3', app: 'word', appName: 'Word', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Basándote en /InformeAnual.docx, redacta un resumen ejecutivo de 300 palabras con tono sobrio y profesional. Incluye un párrafo inicial de impacto, una lista de los 3 mayores hitos y una advertencia sobre riesgos de presupuesto.',
+        why: '<strong>CRTT+L:</strong> [C] /InformeAnual.docx · tono sobrio [T] Resumen ejecutivo → 300 palabras estructuradas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w4', app: 'word', appName: 'Word', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Compara los dos enfoques metodológicos descritos en las secciones 2 y 4 de este documento. Organiza los contrastes en una tabla de 3 columnas: Criterio, Metodología Ágil y Metodología en Cascada.',
+        why: '<strong>CRTT+L:</strong> [C] Secciones 2 y 4 · evaluación técnica [T] Comparar → tabla de 3 columnas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w5', app: 'word', appName: 'Word', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Reescribe la sección seleccionada adoptando un lenguaje didáctico y cercano para aprendices de primer trimestre. Descompón los párrafos densos en oraciones cortas y agrega un ejemplo cotidiano.',
+        why: '<strong>CRTT+L:</strong> [C] Selección actual · principiantes [T] Reescribir didácticamente → oraciones cortas con analogía [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w6', app: 'word', appName: 'Word', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Crea una propuesta completa de proyecto formativo vinculada al sector agroindustrial. Estructura: Justificación, Objetivo General, 3 Objetivos Específicos medibles, Cronograma trimestral en tabla y Presupuesto estimado de recursos. Basa los lineamientos en /GuiaMetodologicaSENA.docx.',
+        why: '<strong>CRTT+L:</strong> [C] /GuiaMetodologicaSENA.docx · agroindustria formativa [T] Crear propuesta integral → documento completo estructurado [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w7', app: 'word', appName: 'Word', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Audita este contrato de prestación de servicios: identifica cláusulas ambiguas, penalizaciones desproporcionadas y fechas contradictorias. Presenta los hallazgos en una matriz con clasificación de riesgo: Crítico, Moderado o Leve.',
+        why: '<strong>CRTT+L:</strong> [C] Contrato abierto · análisis legal preventivo [T] Auditar y detectar riesgos → matriz con niveles de riesgo [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'w8', app: 'word', appName: 'Word', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Convierte estas notas dispersas tomadas durante la visita técnica en una bitácora oficial de inspección con: Fecha, Lugar, Observaciones de infraestructura y Recomendaciones correctivas.',
+        why: '<strong>CRTT+L:</strong> [C] Notas de campo · bitácora oficial [T] Estructurar notas caóticas → formato secuencial [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- EXCEL (7) ---
+      {
+        id: 'e1', app: 'excel', appName: 'Excel', diff: 'basico', diffName: 'Básico',
+        text: '¿Cuál es el promedio de horas de formación acumuladas por aprendiz en esta tabla? Muestra también el valor máximo y el mínimo.',
+        why: '<strong>CRTT+L:</strong> [C] Columna de horas · tabla de aprendices [T] Calcular medidas estadísticas → 3 valores puntuales [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'e2', app: 'excel', appName: 'Excel', diff: 'basico', diffName: 'Básico',
+        text: 'Crea una tabla dinámica en una hoja nueva que agrupe las horas invertidas por cada centro de formación y desglose el costo total de viáticos.',
+        why: '<strong>CRTT+L:</strong> [C] Tabla maestra · reporte de costos [T] Construir tabla dinámica → agrupación por centro [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'e3', app: 'excel', appName: 'Excel', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Escribe una fórmula que calcule una bonificación: 8% si el cumplimiento de metas supera el 100%, 4% si se sitúa entre el 80% y 99%, y 0% si es inferior al 80%. Aplica control de errores para celdas de texto.',
+        why: '<strong>CRTT+L:</strong> [C] Columna cumplimiento · esquema de incentivos [T] Fórmulas condicionales seguras → fórmula sin errores de sintaxis [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'e4', app: 'excel', appName: 'Excel', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Detecta los valores atípicos en la columna de costos operativos. Aplica formato condicional resaltando en rojo las celdas que se ubiquen a más de 2 desviaciones estándar de la media.',
+        why: '<strong>CRTT+L:</strong> [C] Columna costos · control presupuestal [T] Detección de anomalías → regla de formato condicional [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'e5', app: 'excel', appName: 'Excel', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Analiza la tendencia histórica de matrícula de los últimos 18 meses, calcula la tasa de crecimiento mensual compuesta (CAGR) y proyecta el trimestre siguiente. Genera un gráfico de líneas con la banda de proyección sombreada.',
+        why: '<strong>CRTT+L:</strong> [C] Datos 18 meses · planeación institucional [T] Análisis de series de tiempo → cálculo CAGR y gráfico visual [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'e6', app: 'excel', appName: 'Excel', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Ordena la tabla por margen de utilidad de forma descendente y aplica un relleno verde suave a las filas correspondientes al top 10% más rentable.',
+        why: '<strong>CRTT+L:</strong> [C] Tabla comercial · priorización de productos [T] Ordenar y resaltar → top 10% coloreado [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'e7', app: 'excel', appName: 'Excel', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Cruza los aprendices de esta hoja con el archivo /MaestroCertificaciones.xlsx mediante el número de identificación y genera una tabla con los aprendices pendientes de grado por falta de prueba Saber TyT.',
+        why: '<strong>CRTT+L:</strong> [C] Hoja actual + /MaestroCertificaciones.xlsx · auditoría de graduación [T] Cruce relacional → listado consolidado [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- POWERPOINT (6) ---
+      {
+        id: 'p1', app: 'powerpoint', appName: 'PowerPoint', diff: 'basico', diffName: 'Básico',
+        text: 'Crea una presentación introductoria de 5 diapositivas sobre "Buenas Prácticas de Ergonomía en el Trabajo Remoto" para aprendices administrativos.',
+        why: '<strong>CRTT+L:</strong> [C] Conocimiento general · sensibilización en salud ocupacional [T] Crear presentación → 5 diapositivas directas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'p2', app: 'powerpoint', appName: 'PowerPoint', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Transforma el archivo /BalanceGestion2025.docx en una presentación de 10 diapositivas ejecutivas con portada, 4 pilares de avance, 3 lecciones aprendidas y una diapositiva final de agradecimientos.',
+        why: '<strong>CRTT+L:</strong> [C] /BalanceGestion2025.docx · audiencia gerencial [T] Transformación de documento a presentación → 10 diapositivas secuenciales [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'p3', app: 'powerpoint', appName: 'PowerPoint', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Agrega una diapositiva de síntesis antes de las conclusiones que resuma en una infografía textual de 3 cuadrantes los acuerdos aprobados durante la sesión.',
+        why: '<strong>CRTT+L:</strong> [C] Diapositivas previas · cierre de comité [T] Agregar lámina de síntesis → estructura en 3 cuadrantes [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'p4', app: 'powerpoint', appName: 'PowerPoint', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Genera las notas del orador para cada diapositiva orientadas a una presentación de 15 minutos ante jurados evaluadores. Incluye preguntas que el jurado podría formular.',
+        why: '<strong>CRTT+L:</strong> [C] Deck actual · sustentación de proyecto [T] Redactar notas de apoyo → puntos de apoyo por lámina [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'p5', app: 'powerpoint', appName: 'PowerPoint', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Rediseña radicalmente esta presentación de 12 diapositivas: reduce el texto por lámina a máximo 4 viñetas de 8 palabras, sugiere un icono para cada punto y aplica la paleta institucional Brisa Nórdica.',
+        why: '<strong>CRTT+L:</strong> [C] Diapositivas sobrecargadas · presentación moderna [T] Rediseño y limpieza visual → regla 4x8 con iconos [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'p6', app: 'powerpoint', appName: 'PowerPoint', diff: 'basico', diffName: 'Básico',
+        text: 'Sugiere una estructura narrativa de 6 diapositivas para explicar un proyecto de desarrollo de software a clientes sin formación técnica.',
+        why: '<strong>CRTT+L:</strong> [C] Proyecto ADSO · clientes no técnicos [T] Diseñar narrativa → esquema de 6 láminas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- OUTLOOK (16) ---
+      {
+        id: 'o1', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: 'Resume este hilo de 15 correos en 3 viñetas concisas destacando la última decisión tomada por el director y el plazo acordado.',
+        why: '<strong>CRTT+L:</strong> [C] Cadena de correos · decisión ejecutiva [T] Resumir hilo largo → 3 viñetas breves [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o2', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: 'Redacta un correo confirmando mi asistencia al comité académico del jueves. Pregunta si se requiere llevar el listado de asistencia impreso.',
+        why: '<strong>CRTT+L:</strong> [C] Convocatoria · comité formal [T] Confirmar asistencia → respuesta corta y cortés [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o3', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Clasifica mis correos no leídos de hoy en tres prioridades: Urgente (atender hoy), Gestión Semanal e Informativos. Para los urgentes, redacta una respuesta preliminar indicando que el caso está en revisión.',
+        why: '<strong>CRTT+L:</strong> [C] Correos recibidos · inicio de jornada [T] Triaje de bandeja → clasificación con borradores [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o4', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Redacta un correo a los aprendices del grupo informando la reprogramación de la sesión virtual debido a mantenimiento de plataforma. Tono empático y claro, incluyendo la nueva fecha y el enlace de Teams.',
+        why: '<strong>CRTT+L:</strong> [C] Novedad técnica · comunidad de aprendices [T] Notificar reprogramación → mensaje empático con instrucciones [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o5', app: 'outlook', appName: 'Outlook', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Audita los correos de la última semana relacionados con la auditoría de calidad: genera un balance de qué evidencias fueron enviadas a tiempo, cuáles están pendientes por parte de los instructores y qué solicitudes no han tenido respuesta.',
+        why: '<strong>CRTT+L:</strong> [C] Hilos de auditoría · seguimiento de calidad [T] Auditoría de compromisos → matriz de estado de evidencias [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o6', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Reescribe este borrador que redacté con molestia: elimina la confrontación y conviértelo en una solicitud asertiva, profesional y colaborativa sin renunciar al cumplimiento del acuerdo.',
+        why: '<strong>CRTT+L:</strong> [C] Borrador áspero · comunicación asertiva [T] Moderar tono → mensaje constructivo y diplomático [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o7', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: 'Resume el archivo adjunto de este correo en cinco puntos: propósito, fechas clave, responsables, cifras importantes y lo que me piden a mí.',
+        why: '<strong>CRTT+L:</strong> [C] Archivo adjunto · correo recibido [T] Entender un adjunto → 5 puntos fijos [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o8', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Compara el adjunto de este correo con la versión que recibí el [fecha] y lista en una tabla qué cambió: sección, versión anterior y versión nueva.',
+        why: '<strong>CRTT+L:</strong> [C] Dos adjuntos · documento con versiones [T] Detectar cambios → tabla de diferencias [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o9', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: '¿Qué acordamos con [persona] sobre [tema] en el último mes? Cita el correo de donde sale cada acuerdo.',
+        why: '<strong>CRTT+L:</strong> [C] Búsqueda en tus correos · seguimiento [T] Recuperar acuerdos → acuerdos con cita [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o10', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: 'Muéstrame mis reuniones de esta semana y los bloques libres de más de una hora. Después propón tres horarios de 30 minutos para reunirme con [persona].',
+        why: '<strong>CRTT+L:</strong> [C] Calendario · agenda propia [T] Planear la semana → lista de huecos y 3 propuestas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o11', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Lista los correos que envié en las últimas dos semanas en los que pedí algo y todavía no me han respondido. Para cada uno, redacta un recordatorio breve y cordial.',
+        why: '<strong>CRTT+L:</strong> [C] Elementos enviados · correos enviados [T] Cerrar pendientes → lista con recordatorios [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o12', app: 'outlook', appName: 'Outlook', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Resume la reunión [nombre] del [día]: decisiones, tareas con responsable y fecha, y temas pendientes. Luego redacta el correo de acta para los asistentes.',
+        why: '<strong>CRTT+L:</strong> [C] Transcripción o notas · reunión realizada [T] Formalizar acuerdos → acta por correo [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o13', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: 'De este hilo, extrae los compromisos en una tabla con las columnas Tarea, Responsable, Fecha límite y Correo de origen. Si falta un dato, escribe «sin definir».',
+        why: '<strong>CRTT+L:</strong> [C] Hilo abierto · conversación con acuerdos [T] Convertir hilo en tareas → tabla de 4 columnas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o14', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: '(Prompt Coach) Mejora este prompt para usarlo en Outlook: «resume mis correos». Quiero los no leídos de hoy, agrupados por remitente y con la acción que me piden.',
+        why: '<strong>CRTT+L:</strong> [C] Prompt vago · uso diario en Outlook [T] Mejorar un prompt → versión mejorada y explicada [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o15', app: 'outlook', appName: 'Outlook', diff: 'basico', diffName: 'Básico',
+        text: '(Writing Coach) Revisa este borrador. Dime si la solicitud queda clara en las dos primeras líneas, si el tono es respetuoso para una coordinadora y qué frases sobran.',
+        why: '<strong>CRTT+L:</strong> [C] Borrador propio · destinatario de mayor jerarquía [T] Revisar tono y claridad → comentarios accionables [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'o16', app: 'outlook', appName: 'Outlook', diff: 'avanzado', diffName: 'Avanzado',
+        text: '(Workflows) Cada vez que reciba un correo con «urgente» en el asunto, envíame un mensaje en Teams con el remitente y un resumen de dos líneas.',
+        why: '<strong>CRTT+L:</strong> [C] Bandeja de entrada · correos críticos [T] Automatizar un aviso → flujo revisable antes de activar [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- TEAMS (6) ---
+      {
+        id: 't1', app: 'teams', appName: 'Teams', diff: 'basico', diffName: 'Básico',
+        text: '¿Cuáles fueron los 3 puntos principales discutidos en los primeros 20 minutos de esta reunión grabada?',
+        why: '<strong>CRTT+L:</strong> [C] Transcripción en vivo · puntos de inicio [T] Sintetizar bloque temporal → 3 puntos directos [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 't2', app: 'teams', appName: 'Teams', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Genera un acta formal de la sesión que contenga: Asistentes mencionados, Temas aprobados, Tabla con Compromisos (Tarea, Responsable, Fecha límite) y Asuntos aplazados para la próxima semana.',
+        why: '<strong>CRTT+L:</strong> [C] Transcripción completa · cierre de reunión [T] Elaborar acta oficial → formato estructurado [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 't3', app: 'teams', appName: 'Teams', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Resume las conversaciones del canal #proyecto-formativo de los últimos 5 días y destaca las dudas de los aprendices que aún no han recibido respuesta del instructor.',
+        why: '<strong>CRTT+L:</strong> [C] Historial del canal · atención docente [T] Monitoreo de canal → lista de dudas huérfanas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 't4', app: 'teams', appName: 'Teams', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Prepara un informe de alineación previo a mi reunión con la Subdirección: cruza los chats con el equipo pedagógico, los correos del último mes y las tareas abiertas en Planner para sugerir 4 temas estratégicos a tratar.',
+        why: '<strong>CRTT+L:</strong> [C] Teams + Outlook + Planner · reunión de alto nivel [T] Briefing estratégico → 4 temas con respaldo de datos [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 't5', app: 'teams', appName: 'Teams', diff: 'basico', diffName: 'Básico',
+        text: '¿Quién mencionó la fecha de entrega de la fase de análisis durante la reunión y qué indicaciones dio exactamente?',
+        why: '<strong>CRTT+L:</strong> [C] Audio/Transcripción · verificación de fechas [T] Localizar intervención puntual → cita textual con autor [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 't6', app: 'teams', appName: 'Teams', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Redacta un anuncio motivador para publicar en el canal general de Teams celebrando la entrega exitosa del sprint 2 y recordando la fecha de la retrospectiva.',
+        why: '<strong>CRTT+L:</strong> [C] Cierre de sprint · reconocimiento ágil [T] Redactar anuncio de equipo → tono alegre y convocante [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- ONENOTE (5) ---
+      {
+        id: 'n1', app: 'onenote', appName: 'OneNote', diff: 'basico', diffName: 'Básico',
+        text: 'Organiza las notas de esta página en secciones lógicas con títulos descriptivos, separando los conceptos teóricos de los ejercicios prácticos.',
+        why: '<strong>CRTT+L:</strong> [C] Página actual · organización de apuntes [T] Estructurar libreta → encabezados limpios [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'n2', app: 'onenote', appName: 'OneNote', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Crea una guía de estudio a partir de estos apuntes sobre bases de datos relacionales: incluye 5 conceptos esenciales, una tabla de ventajas/desventajas y 4 preguntas de repaso con sus respuestas ocultables.',
+        why: '<strong>CRTT+L:</strong> [C] Apuntes de clase · preparación para evaluación [T] Material de estudio → guía con cuestionario formativo [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'n3', app: 'onenote', appName: 'OneNote', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Revisa las notas de las últimas 4 reuniones del comité curricular e identifica cuáles han sido las dificultades más reiteradas reportadas por los instructores.',
+        why: '<strong>CRTT+L:</strong> [C] 4 páginas de actas · mejora continua [T] Análisis transversal → diagnóstico de problemas recurrentes [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'n4', app: 'onenote', appName: 'OneNote', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Transforma estas notas desestructuradas en un mapa mental en formato texto jerárquico (Nivel 1, Nivel 2 y Nivel 3) que ilustre el flujo de vida del desarrollo de software seguro.',
+        why: '<strong>CRTT+L:</strong> [C] Notas de ciberseguridad · aprendizaje visual [T] Mapa conceptual jerárquico → estructura anidada [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'n5', app: 'onenote', appName: 'OneNote', diff: 'basico', diffName: 'Básico',
+        text: 'Extrae de esta página todas las tareas pendientes y genera una lista de verificación con casillas de verificación para marcar el cumplimiento.',
+        why: '<strong>CRTT+L:</strong> [C] Página de notas · planificación operativa [T] Extracción de checklist → lista de chequeo interactiva [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- LOOP (4) ---
+      {
+        id: 'l1', app: 'loop', appName: 'Loop', diff: 'basico', diffName: 'Básico',
+        text: 'Genera una tabla interactiva de Loop para coordinar el taller formativo: columnas para Actividad, Encargado (@mención), Estado (Por hacer/En progreso/Hecho) y Enlace de material.',
+        why: '<strong>CRTT+L:</strong> [C] Objetivo del taller · coordinación ágil [T] Tabla viva de trabajo → componente Loop funcional [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'l2', app: 'loop', appName: 'Loop', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Descompón este objetivo general de proyecto ("Implementar sistema de control de asistencia biométrico") en 6 historias de usuario con sus respectivos criterios de aceptación.',
+        why: '<strong>CRTT+L:</strong> [C] Meta del proyecto · planeación de software [T] Desglose ágil → 6 historias de usuario en tabla [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'l3', app: 'loop', appName: 'Loop', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Crea una plantilla para la retrospectiva del equipo con 4 cuadrantes: 1) Qué funcionó genial, 2) Qué podemos mejorar, 3) Ideas innovadoras y 4) Compromisos concretos para el próximo ciclo.',
+        why: '<strong>CRTT+L:</strong> [C] Marco Scrum · mejora de equipo [T] Plantilla de retrospectiva → 4 cuadrantes colaborativos [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'l4', app: 'loop', appName: 'Loop', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Sintetiza las aportaciones de todos los miembros del equipo en este workspace de Loop y genera un informe de estado consolidado que resalte los acuerdos logrados y los bloqueos activos.',
+        why: '<strong>CRTT+L:</strong> [C] Todo el workspace de Loop · reporte de avance [T] Consolidación multiusuario → balance de estado [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- WHITEBOARD (4) ---
+      {
+        id: 'wb1', app: 'whiteboard', appName: 'Whiteboard', diff: 'basico', diffName: 'Básico',
+        text: 'Genera 10 ideas en notas adhesivas virtuales para incentivar el reciclaje y la sostenibilidad ambiental dentro del centro formativo.',
+        why: '<strong>CRTT+L:</strong> [C] Contexto de campus · campaña ecológica [T] Generar lluvia de ideas → 10 notas adhesivas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'wb2', app: 'whiteboard', appName: 'Whiteboard', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Agrupa todas las notas adhesivas de este tablero en 3 categorías temáticas y sugiere un encabezado claro y un color diferente para cada grupo.',
+        why: '<strong>CRTT+L:</strong> [C] Notas existentes · taller de ideación [T] Agrupación semántica → 3 clusters temáticos [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'wb3', app: 'whiteboard', appName: 'Whiteboard', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'A partir de las ideas votadas en el tablero, crea una matriz de priorización de 2x2: Eje X (Impacto: Bajo a Alto) y Eje Y (Esfuerzo: Bajo a Alto) y ubica cada propuesta en su cuadrante.',
+        why: '<strong>CRTT+L:</strong> [C] Ideas votadas · toma de decisiones [T] Matriz de impacto/esfuerzo → clasificación en 4 cuadrantes [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'wb4', app: 'whiteboard', appName: 'Whiteboard', diff: 'basico', diffName: 'Básico',
+        text: 'Resume las conclusiones principales de la sesión de ideación visual en un bloque de texto conciso de 4 líneas para compartir por correo con los participantes.',
+        why: '<strong>CRTT+L:</strong> [C] Todo el tablero · minuta de taller [T] Síntesis visual a texto → resumen de 4 líneas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+
+      // --- FORMS (4) ---
+      {
+        id: 'f1', app: 'forms', appName: 'Forms', diff: 'basico', diffName: 'Básico',
+        text: 'Diseña una encuesta de satisfacción de 6 preguntas para evaluar un taller de formación. Incluye escala Likert para la claridad del facilitador y un campo abierto para sugerencias.',
+        why: '<strong>CRTT+L:</strong> [C] Parámetros del taller · evaluación de evento [T] Crear encuesta de satisfacción → 6 preguntas variadas [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'f2', app: 'forms', appName: 'Forms', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Crea un quiz evaluativo de 10 preguntas sobre "Fundamentos de Redes de Computadores". Cada pregunta debe tener 4 opciones, marcar la respuesta correcta e incluir una explicación didáctica para el estudiante.',
+        why: '<strong>CRTT+L:</strong> [C] Contenido curricular · asignatura de redes [T] Generar examen formativo → 10 preguntas con retroalimentación [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'f3', app: 'forms', appName: 'Forms', diff: 'intermedio', diffName: 'Intermedio',
+        text: 'Genera un formulario de registro para la feria de proyectos institucionales: campos para Nombre del equipo, Nombre del proyecto, Centro de formación, Área temática y Enlace de video demostrativo.',
+        why: '<strong>CRTT+L:</strong> [C] Requisitos de feria · evento institucional [T] Formulario de inscripción → campos obligatorios validados [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      },
+      {
+        id: 'f4', app: 'forms', appName: 'Forms', diff: 'avanzado', diffName: 'Avanzado',
+        text: 'Analiza los 120 resultados recibidos en este formulario de evaluación docente: identifica los 3 aspectos mejor calificados, las 2 quejas más recurrentes en las respuestas abiertas y sugiere 3 acciones correctivas concretas.',
+        why: '<strong>CRTT+L:</strong> [C] Respuestas de Forms · gestión de calidad docente [T] Análisis cuantitativo y cualitativo → diagnóstico con acciones [L] Agrega: «Si falta un dato, escribe [NO CONSTA]».'
+      }
+    ];
+
+    let currentApp = 'all';
+    let currentDiff = 'all';
+
+    function renderPrompts() {
+      const container = document.getElementById('promptsContainer');
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      const filtered = promptsData.filter(p => {
+        const matchApp = (currentApp === 'all' || p.app === currentApp);
+        const matchDiff = (currentDiff === 'all' || p.diff === currentDiff);
+        const matchSearch = (
+          p.text.toLowerCase().includes(search) ||
+          p.appName.toLowerCase().includes(search) ||
+          p.why.toLowerCase().includes(search)
+        );
+        return matchApp && matchDiff && matchSearch;
+      });
+
+      document.getElementById('counterText').innerText = `Mostrando ${filtered.length} de ${promptsData.length} prompts`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: #fff; border-radius: 12px; border: 1px solid var(--border);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+            <h3 style="color: var(--primary-dark); margin-bottom: .5rem;">No se encontraron prompts</h3>
+            <p style="color: var(--text-muted);">Intenta ajustar tus filtros de búsqueda o seleccionar otra categoría.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => `
+        <article class="prompt-card" data-app="${p.app}" data-diff="${p.diff}">
+          <div class="card-top">
+            <span class="badge-app badge-app-${p.app}">${p.appName}</span>
+            <span class="badge-diff diff-${p.diff}">${p.diffName}</span>
+          </div>
+          <div class="prompt-bubble" id="txt-${p.id}">${p.text}</div>
+          <div class="prompt-explanation">${p.why}</div>
+          <button type="button" class="btn-copy-card" onclick="copyCardPrompt('txt-${p.id}', this)">
+            📋 Copiar Prompt
+          </button>
+        </article>
+      `).join('');
+    }
+
+    function filterApp(app, btn) {
+      currentApp = app;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderPrompts();
+    }
+
+    function filterDiff(diff, btn) {
+      currentDiff = diff;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderPrompts();
+    }
+
+    function applyFilters() {
+      renderPrompts();
+    }
+
+    function copyCardPrompt(id, btn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ ¡Copiado!';
+        btn.style.background = '#38A169';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+        }, 1800);
+      }).catch(err => {
+        console.error('Error al copiar:', err);
+      });
+    }
+
+    // Laboratorio CRTT+L: la lógica vive en src/shared/crttl-evaluator.js (probada con node --test).
+    const SAMPLES = {
+      1: '[C] Usa solo /ProyectoTitan.docx y los correos de esta semana; el resultado es para el comité de seguimiento de mañana. [R] Actúa como asistente de coordinación. [T] Extrae los acuerdos en una tabla de 4 columnas: Tarea, Responsable, Plazo y Riesgo. [Tono] Profesional y claro, en español de Colombia. [L] No inventes datos: si falta uno, escribe [NO CONSTA]. No envíes correos.',
+      2: 'Resume lo que se habló en la reunión y dime qué hay pendiente.',
+      3: ''
+    };
+
+    function auditPrompt() {
+      const input = document.getElementById('crttlPromptInput');
+      const result = window.CrttlEvaluator.evaluatePrompt(input.value);
+      result.pillars.forEach(p => {
+        document.getElementById('card-' + p.key).className = 'crttl-item-card ' + (p.found ? 'detected' : 'missing');
+        document.getElementById('status-' + p.key).innerText = p.found ? '✓ Presente' : '⚠️ Ausente';
+        document.getElementById('snippet-' + p.key).innerText = p.found ? `Detectado: «${p.evidence}».` : p.advice;
+      });
+      const bar = document.getElementById('crttlScoreBar');
+      const text = document.getElementById('crttlScoreText');
+      const adv = document.getElementById('crttlAdvice');
+      bar.style.width = result.score + '%';
+      const views = {
+        vacio: ['var(--warning)', 'Sin evaluar', 'warn', '<strong>Para empezar:</strong> escribe un prompt en el cuadro superior.'],
+        incompleto: ['var(--error)', 'Incompleto', 'warn', '<strong>Atención:</strong> con tan poca información, Copilot entregará una respuesta genérica o rellenará vacíos. Agrega los pilares marcados en amarillo.'],
+        parcial: ['var(--warning)', 'En progreso', 'warn', '<strong>Sugerencia:</strong> completa los pilares marcados en amarillo; los límites son los que evitan datos inventados.'],
+        completo: ['var(--success)', 'Completo', 'ok', '<strong>✦ Prompt completo:</strong> tiene los cinco pilares. Al recibir la respuesta, revísala con el protocolo V.E.R.A. antes de usarla.']
+      };
+      const [color, label, cls, html] = views[result.state];
+      bar.style.background = color;
+      text.innerText = `Puntaje CRTT+L: ${result.score} % · ${label}`;
+      adv.className = 'crttl-advice-box ' + cls;
+      adv.innerHTML = html;
+    }
+
+    function loadSamplePrompt(type) {
+      document.getElementById('crttlPromptInput').value = SAMPLES[type] || '';
+      auditPrompt();
+    }
+
+    function copyAuditedPrompt(btn) {
+      const text = document.getElementById('crttlPromptInput').value.trim();
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✓ ¡Copiado!';
+        btn.style.background = '#38A169';
+        setTimeout(() => {
+          btn.innerText = orig;
+          btn.style.background = '';
+        }, 1800);
+      }).catch(err => {
+        console.error(err);
+      });
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      renderPrompts();
+      document.getElementById('crttlPromptInput').addEventListener('input', auditPrompt);
+      document.querySelectorAll('[data-sample]').forEach(b => b.addEventListener('click', () => loadSamplePrompt(Number(b.dataset.sample))));
+      document.getElementById('copyAuditedBtn').addEventListener('click', e => copyAuditedPrompt(e.currentTarget));
+      auditPrompt();
+
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('nav-links');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+          navLinks.classList.toggle('open');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

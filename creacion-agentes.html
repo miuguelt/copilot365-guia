@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creación de Agentes — Copilot 365 al Máximo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3669A4;
+      --primary-light: #4A7DB8;
+      --primary-dark: #2B5486;
+      --accent: #5B9BD5;
+      --bg: #F4F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #EDF1F7;
+      --text-primary: #1A2332;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D2DCE8;
+      --success: #38A169;
+      --warning: #D69E2E;
+      --error: #E53E3E;
+      --info: #3182CE;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow-card: 0 2px 8px rgba(54,105,164,0.08);
+      --shadow-hover: 0 4px 16px rgba(54,105,164,0.15);
+      --transition: all 0.3s ease;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-code: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      white-space: normal;
+      word-break: normal;
+      hyphens: none;
+      overflow-wrap: break-word;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none; display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .navbar-brand span { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary); font-size: .875rem;
+      padding: .45rem .75rem; border-radius: var(--radius-btn);
+      transition: var(--transition); white-space: nowrap; font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary); color: #fff;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: .5rem;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px; background: var(--text-primary);
+      border-radius: 2px; transition: var(--transition);
+    }
+
+    @media (max-width: 1024px) {
+      .nav-links {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: var(--surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: .75rem 1rem; width: 100%; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Main Layout ── */
+    main {
+      flex: 1; margin-top: 64px;
+      padding: 2.5rem 1.5rem 4rem;
+      inline-size: 100%; max-inline-size: 100%;
+    }
+    .container {
+      width: 100%; max-width: 1320px; margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, #2B5486 0%, #3669A4 60%, #5B9BD5 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      padding: 3rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 6px 20px rgba(54,105,164,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '⚙️';
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      padding: .35rem .85rem;
+      border-radius: 20px;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: .8rem;
+      line-height: 1.2;
+    }
+    .page-header p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    /* TOC Bar */
+    .toc-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1rem 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+    }
+    .toc-title {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .toc-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .toc-links a {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      background: var(--surface-alt);
+      padding: .35rem .75rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+    .toc-links a:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Module Card */
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+    }
+    .module-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--surface-alt);
+      padding-bottom: 1rem;
+    }
+    .module-num {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.25rem;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(54,105,164,0.25);
+    }
+    .module-title-box h2 {
+      font-size: 1.65rem;
+      color: var(--primary-dark);
+      margin-bottom: .25rem;
+    }
+    .module-title-box span {
+      font-size: .9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Prose */
+    .prose {
+      inline-size: 100%;
+      max-inline-size: 100%;
+      font-size: 1.02rem;
+      color: var(--text-secondary);
+    }
+    @media (min-width: 40rem) {
+      .prose p {
+        text-align: justify;
+        text-align-last: start;
+      }
+    }
+    .prose p {
+      margin-bottom: 1.2rem;
+    }
+    .prose ul, .prose ol {
+      margin: 1rem 0 1.5rem 1.75rem;
+      color: var(--text-secondary);
+    }
+    .prose li {
+      margin-bottom: .5rem;
+    }
+
+    /* Step Timeline */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .step-item {
+      display: flex;
+      gap: 1.5rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      position: relative;
+    }
+    .step-badge {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 8px rgba(54,105,164,0.3);
+    }
+    .step-body {
+      flex: 1;
+    }
+    .step-body h4 {
+      font-size: 1.15rem;
+      color: var(--primary-dark);
+      margin-bottom: .5rem;
+    }
+    .step-body p {
+      font-size: .95rem;
+      color: var(--text-secondary);
+      margin-bottom: .5rem;
+    }
+    .step-body pre {
+      background: #1A2332;
+      color: #E2E8F0;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: var(--font-code);
+      font-size: .85rem;
+      overflow-x: auto;
+      margin-top: .75rem;
+    }
+
+    /* Template Cards */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .template-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+    }
+    .template-card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent);
+    }
+    .template-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .template-icon {
+      font-size: 1.8rem;
+    }
+    .template-title h3 {
+      font-size: 1.15rem;
+      color: var(--primary-dark);
+    }
+    .template-title span {
+      font-size: .8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .template-content {
+      background: #F8FAFD;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--font-code);
+      font-size: .83rem;
+      line-height: 1.5;
+      color: #2D3748;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      flex: 1;
+      white-space: pre-wrap;
+    }
+    .btn-copy {
+      align-self: flex-start;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: .5rem 1rem;
+      border-radius: var(--radius-btn);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      transition: var(--transition);
+    }
+    .btn-copy:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Callouts */
+    .callout {
+      border-radius: var(--radius-btn);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .callout.tip {
+      background: #EBF8F2;
+      border-left: 4px solid var(--success);
+      color: #1C5237;
+    }
+    .callout.warning {
+      background: #FEF9E7;
+      border-left: 4px solid var(--warning);
+      color: #745307;
+    }
+    .callout.info {
+      background: #EBF4FC;
+      border-left: 4px solid var(--info);
+      color: #1A4971;
+    }
+    .callout-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    /* Page Nav */
+    .page-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .75rem 1.5rem;
+      border-radius: var(--radius-btn);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: .95rem;
+    }
+    .btn-nav-prev {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-nav-prev:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+    .btn-nav-next {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(54,105,164,0.25);
+    }
+    .btn-nav-next:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: #141E2B;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 3.5rem 2rem 2rem;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .8rem;
+    }
+    .footer-desc {
+      font-size: .9rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .footer-nav-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      list-style: none;
+    }
+    .footer-nav-links a {
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-nav-links a:hover {
+      color: #5B9BD5;
+    }
+    .footer-bottom {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.4);
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+  
+    /* Sandbox Simulator Styles */
+    .sandbox-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 860px) {
+      .sandbox-container { grid-template-columns: 1fr; }
+    }
+    .sandbox-panel {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .sandbox-panel-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .sandbox-select {
+      width: 100%;
+      padding: .65rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-family: var(--font-main);
+      font-size: .9rem;
+      color: var(--text-primary);
+      background: #fff;
+      margin-bottom: 1rem;
+      outline: none;
+    }
+    .sandbox-config-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 1rem;
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .sandbox-chat-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 1rem;
+      height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .sandbox-msg {
+      padding: .75rem 1rem;
+      border-radius: 10px;
+      font-size: .88rem;
+      line-height: 1.5;
+      max-width: 90%;
+    }
+    .sandbox-msg.user {
+      align-self: flex-end;
+      background: #EBF4FC;
+      color: #1A365D;
+      border: 1px solid #C4D9F2;
+      border-radius: 10px 10px 2px 10px;
+    }
+    .sandbox-msg.agent {
+      align-self: flex-start;
+      background: var(--surface-alt);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px 10px 10px 2px;
+    }
+    .sandbox-msg.guardrail {
+      align-self: flex-start;
+      background: #FFF5F5;
+      color: #742A2A;
+      border: 1px solid #FEB2B2;
+      border-radius: 10px 10px 10px 2px;
+    }
+    .citation-tag {
+      display: inline-block;
+      margin-top: .4rem;
+      font-size: .75rem;
+      color: var(--primary);
+      font-weight: 600;
+      background: #EBF4FC;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .test-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+    .test-chip {
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: .35rem .75rem;
+      border-radius: 16px;
+      font-size: .8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .test-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .sandbox-input-row {
+      display: flex;
+      gap: .5rem;
+    }
+    .sandbox-input {
+      flex: 1;
+      padding: .65rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-size: .9rem;
+      outline: none;
+    }
+    .sandbox-input:focus { border-color: var(--primary); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span>✦</span> Copilot 365 al Máximo
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="fundamentos.html">Fundamentos</a></li>
+      <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+      <li><a href="creacion-agentes.html" class="active">Crear Agentes</a></li>
+      <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+      <li><a href="prompts.html">Prompts</a></li>
+      <li><a href="actividades.html">Actividades</a></li>
+      <li><a href="evaluacion.html">Evaluación</a></li>
+    </ul>
+    <button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú de navegación">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <div class="badge">Módulo 3 · Low-Code & Copilot Studio</div>
+        <h1>Creación de Agentes Personalizados en Microsoft 365</h1>
+        <p>Aprende a diseñar, configurar y desplegar agentes autónomos a la medida de tu equipo o institución. Descubre cómo transformar manuales, procedimientos y fuentes de SharePoint en compañeros digitales interactivos con Copilot Studio.</p>
+      </header>
+
+      <!-- TOC Bar -->
+      <nav class="toc-bar" aria-label="Contenido del módulo">
+        <div class="toc-title"><span>📌</span> Navegación Rápida:</div>
+        <div class="toc-links">
+          <a href="#por-que-crear">1. ¿Por qué Crear?</a>
+          <a href="#arquitectura">2. Tipos de Agentes</a>
+          <a href="#tutorial-studio">3. Tutorial Copilot Studio</a>
+          <a href="#tutorial-sharepoint">4. Agentes en SharePoint</a>
+          <a href="#system-prompts">5. System Prompts</a>
+          <a href="#sandbox-lab">6. Sandbox de Pruebas</a>
+          <a href="#plantillas">7. Plantillas Listas</a>
+        </div>
+      </nav>
+
+      <!-- Camino principal: agente para el correo -->
+      <section class="module-card" id="agente-para-correo">
+        <div class="module-header">
+          <div class="module-num">📬</div>
+          <div class="module-title-box">
+            <h2>Crear un agente para tu correo desde Outlook</h2>
+            <span>El camino más corto: el botón Crear agente del panel de Copilot</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Si recibes muchas veces el mismo tipo de solicitud, un agente con instrucciones fijas te ahorra redactar la misma explicación cada vez. Este camino no exige Copilot Studio: se hace desde el panel de Copilot en Outlook, en el menú <strong>☰ → Crear agente</strong>. La opción aparece solo si tu organización la habilita; compruébalo en el Taller 0.</p>
+
+          <ol>
+            <li><strong>Elige un caso concreto.</strong> Por ejemplo, aprendices que piden una nueva fecha de entrega o compañeros que preguntan por el horario de una ficha.</li>
+            <li><strong>Escribe las instrucciones</strong> con cinco partes: propósito, tono, datos que siempre debe pedir, lo que nunca debe prometer y formato de la respuesta.</li>
+            <li><strong>Agrega conocimiento</strong> solo si hace falta, por ejemplo el reglamento o el calendario académico en OneDrive o SharePoint.</li>
+            <li><strong>Prueba con tres correos:</strong> uno típico, uno con información incompleta y uno fuera de alcance.</li>
+            <li><strong>Ajusta y repite.</strong> Cada respuesta incorrecta es una instrucción que falta o que está ambigua.</li>
+          </ol>
+
+          <h3>Ejemplo 1 · Asistente de respuestas de coordinación</h3>
+          <pre style="background:#1A2332; color:#E2E8F0; padding:1rem; border-radius:8px; font-family:var(--font-code, monospace); font-size:.82rem; overflow-x:auto; white-space:pre;">Propósito: Ayudarme a responder correos de coordinación académica sobre fechas, horarios y entregas.
+Tono: Cordial, breve y respetuoso. Trato de usted.
+Siempre: Identifica qué se pide, la fecha límite y quién debe actuar. Si falta un dato, redacta una pregunta para obtenerlo.
+Nunca: Prometas fechas, aprobaciones ni cambios de horario. Esas decisiones son mías.
+Formato: Un borrador de máximo 120 palabras y, debajo, una lista de lo que debo verificar antes de enviar.</pre>
+
+          <h3>Ejemplo 2 · Clasificador de solicitudes de aprendices</h3>
+          <pre style="background:#1A2332; color:#E2E8F0; padding:1rem; border-radius:8px; font-family:var(--font-code, monospace); font-size:.82rem; overflow-x:auto; white-space:pre;">Propósito: Clasificar cada correo de un aprendiz en una de estas categorías: entrega, inasistencia, nota, plataforma u otro.
+Siempre: Devuelve la categoría, un resumen de una línea y la acción que me corresponde.
+Nunca: Repitas datos personales sensibles en el resumen ni emitas juicios sobre el aprendiz.
+Formato: Tabla con las columnas Categoría, Resumen y Acción.</pre>
+
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <h4>Datos de terceros</h4>
+              <p>Para practicar, usa correos propios o de prueba. No compartas un agente que lea correos de aprendices con otras personas sin revisar qué datos puede consultar y mostrar.</p>
+            </div>
+          </div>
+
+          <p>Practica este camino en el <a href="actividades.html#act-21">Taller 14 · Tu propio agente para el correo</a>. Si necesitas flujos, conectores o publicación a un equipo grande, sigue con Copilot Studio en las secciones siguientes.</p>
+        </div>
+      </section>
+
+      <!-- Section 1: ¿Por qué Crear Agentes Propios? -->
+      <section class="module-card" id="por-que-crear">
+        <div class="module-header">
+          <div class="module-num">01</div>
+          <div class="module-title-box">
+            <h2>¿Por qué y Cuándo Crear Agentes Personalizados?</h2>
+            <span>Superando la generalidad de la IA pública para resolver problemas organizacionales específicos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Los agentes preconstruidos (como Researcher o Facilitator) son asistentes generalistas formidables, pero desconocen los detalles íntimos de tu organización: no conocen la circular 04-2026 de tu centro formativo, no saben cuál es el formato oficial para solicitar permisos, ni dominan el vocabulario específico de tus proyectos.</p>
+
+          <p>Crear un <strong>agente personalizado</strong> te permite encapsular tres elementos cruciales en un solo compañero digital:</p>
+          <ul>
+            <li><strong>Un rol con reglas infranqueables:</strong> Le enseñas cómo debe comportarse, qué tono mantener y qué preguntas jamás debe responder por políticas de confidencialidad.</li>
+            <li><strong>Conocimiento anclado (Grounded Knowledge):</strong> Le asignas exclusivamente los documentos oficiales de tu biblioteca de SharePoint o enlaces aprobados, eliminando las alucinaciones.</li>
+            <li><strong>Capacidad de acción concreta:</strong> Puedes conectarlo a Power Automate para que cree registros en listas de SharePoint, envíe alertas por Teams o registre un ticket de soporte.</li>
+          </ul>
+
+          <div class="callout tip">
+            <div class="callout-icon">🎯</div>
+            <div class="callout-content">
+              <h4>La Regla de Oro de Creación</h4>
+              <p>Si tu equipo responde la misma pregunta más de 5 veces a la semana o pierde horas buscando en carpetas dispersas de SharePoint un procedimiento estándar, <strong>ese proceso es el candidato perfecto para convertirse en un agente declarativo</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Arquitectura y Tipos de Agentes -->
+      <section class="module-card" id="arquitectura">
+        <div class="module-header">
+          <div class="module-num">02</div>
+          <div class="module-title-box">
+            <h2>Los Tres Caminos de Creación en Microsoft</h2>
+            <span>Selecciona la herramienta adecuada según tu nivel técnico y la complejidad del objetivo</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>En el ecosistema de Microsoft 365 dispones de tres vías claras para construir agentes:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-badge">1</div>
+              <div class="step-body">
+                <h4>Agentes de SharePoint (Cero Código · 2 Minutos)</h4>
+                <p>La alternativa más rápida. Desde cualquier sitio o biblioteca documental de SharePoint, los administradores o propietarios pueden hacer clic en "Crear agente". El sistema genera un bot que responde preguntas basándose exclusivamente en los archivos de esa carpeta. Ideal para bibliotecas de actas, normatividad o manuales de convivencia.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">2</div>
+              <div class="step-body">
+                <h4>Agentes Declarativos en Copilot Studio (Low-Code · Recomendado)</h4>
+                <p>La plataforma estrella. Permite configurar la personalidad completa del agente, combinar múltiples fuentes de conocimiento (sitios web públicos, varias bibliotecas de SharePoint, tablas de Dataverse), agregar acciones mediante flujos de Power Automate y probarlo en un entorno interactivo antes de publicarlo en Teams o Copilot Chat.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">3</div>
+              <div class="step-body">
+                <h4>Agentes con Código con Microsoft 365 Agents Toolkit (Pro-Code)</h4>
+                <p>Orientado a desarrolladores de software e ingenieros de sistemas. Usando la extensión oficial en Visual Studio Code, se programan agentes en TypeScript o Python con lógica condicional compleja, consumo directo de APIs REST externas y modelos de lenguaje locales o de Azure AI Foundry.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Tutorial Copilot Studio -->
+      <section class="module-card" id="tutorial-studio">
+        <div class="module-header">
+          <div class="module-num">03</div>
+          <div class="module-title-box">
+            <h2>Tutorial Paso a Paso: Diseñar un Agente en Copilot Studio</h2>
+            <span>Guía detallada para construir tu primer agente declarativo sin programar</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Sigue esta secuencia metodológica para crear un agente de calidad profesional en la plataforma oficial de Microsoft:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-badge">1</div>
+              <div class="step-body">
+                <h4>Acceso a la Plataforma</h4>
+                <p>Ingresa a <a href="https://copilotstudio.microsoft.com" target="_blank" rel="noopener noreferrer" style="color:var(--primary); font-weight:600;">copilotstudio.microsoft.com</a> con tus credenciales institucionales o empresariales. Asegúrate de seleccionar el entorno (Environment) correspondiente a tu organización en la esquina superior derecha.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">2</div>
+              <div class="step-body">
+                <h4>Iniciar Nuevo Agente</h4>
+                <p>En el menú lateral izquierdo, pulsa sobre <strong>"Copilots"</strong> o <strong>"Agentes"</strong> y selecciona <strong>"Nuevo agente" (+ Create)</strong>. Tienes dos pestañas: la pestaña <em>Crear (conversacional)</em> donde un asistente de IA te ayuda a configurarlo charlando, o la pestaña <em>Configurar</em> donde tienes control absoluto de cada parámetro.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">3</div>
+              <div class="step-body">
+                <h4>Definir Identidad e Instrucciones (System Prompt)</h4>
+                <p>Asigna un nombre descriptivo (ej: <em>Asesor de Formación SENA</em>), un icono alusivo y redacta las instrucciones de comportamiento. Define con claridad quién es, qué lenguaje empleará, qué información puede compartir y cómo debe proceder si un usuario le hace una consulta fuera de su alcance.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">4</div>
+              <div class="step-body">
+                <h4>Vincular Fuentes de Conocimiento (Knowledge Grounding)</h4>
+                <p>En la sección <strong>"Knowledge" (Conocimiento)</strong>, pulsa <strong>"+ Agregar conocimiento"</strong>. Puedes seleccionar:
+                <br>• <strong>SharePoint:</strong> Pega la URL de una biblioteca o carpeta con documentos oficiales (.docx, .pdf, .pptx).
+                <br>• <strong>Sitios Web Públicos:</strong> Pega enlaces de páginas institucionales que no requieran inicio de sesión previo.
+                <br>• <strong>Archivos Locales:</strong> Sube documentos de hasta 512 MB directamente al almacenamiento de Copilot.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">5</div>
+              <div class="step-body">
+                <h4>Probar en el Sandbox Integrado</h4>
+                <p>En el panel derecho verás la ventana <strong>"Probar tu agente"</strong>. Hazle preguntas capciosas, solicita información que no esté en los documentos para confirmar que no alucine, y evalúa si las citas de fuentes y números de página que devuelve coinciden con la realidad.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">6</div>
+              <div class="step-body">
+                <h4>Publicar y Compartir</h4>
+                <p>Cuando la tasa de acierto en las pruebas sea del 100%, pulsa <strong>"Publicar"</strong>. Puedes distribuirlo como una aplicación en un canal de Microsoft Teams, habilitarlo dentro de la barra de Microsoft 365 Copilot o compartir un enlace privado con los compañeros de tu centro o área.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Tutorial SharePoint -->
+      <section class="module-card" id="tutorial-sharepoint">
+        <div class="module-header">
+          <div class="module-num">04</div>
+          <div class="module-title-box">
+            <h2>Crear Agentes de SharePoint: La Vía Ultrarrápida</h2>
+            <span>Activa un experto digital sobre cualquier repositorio documental en menos de 120 segundos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Si tu necesidad consiste únicamente en permitir que tu equipo consulte una biblioteca de documentos de SharePoint sin configurar flujos complejos, no necesitas entrar a Copilot Studio:</p>
+
+          <ol>
+            <li>Navega al sitio de <strong>SharePoint</strong> de tu área o proyecto donde residen los archivos.</li>
+            <li>En la barra de herramientas superior de la biblioteca de documentos, haz clic en el botón <strong>"Agente"</strong> o pulsa sobre los tres puntos (<code>···</code>) y selecciona <strong>"Crear un agente"</strong>.</li>
+            <li>El sistema seleccionará automáticamente todos los archivos de esa carpeta. Si deseas excluir alguno o agregar otra carpeta del sitio, márcalos en la lista.</li>
+            <li>Haz clic en <strong>"Probar"</strong> para verificar que responda adecuadamente las dudas sobre los archivos.</li>
+            <li>Haz clic en <strong>"Compartir"</strong>. Puedes enviar el vínculo directo a tus compañeros o anclar el agente en el canal de Microsoft Teams donde colaboran diariamente.</li>
+          </ol>
+
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <h4>Consideración Crítica de Permisos</h4>
+              <p>Los agentes de SharePoint respetan con rigor los permisos de acceso de cada persona. Si un aprendiz o compañero no tiene permisos de lectura sobre un documento confidencial alojado en la carpeta, <strong>el agente no le mostrará información de ese archivo ni lo citará en sus respuestas</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: System Prompts -->
+      <section class="module-card" id="system-prompts">
+        <div class="module-header">
+          <div class="module-num">05</div>
+          <div class="module-title-box">
+            <h2>Estructura Maestra de Instrucciones para Agentes (System Prompt)</h2>
+            <span>Las 5 secciones obligatorias que diferencian un agente amateur de uno empresarial</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>El comportamiento de tu agente no depende del azar; depende de la estructura de su instrucción base. Aplica siempre este pentágono de ingeniería:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-badge">A</div>
+              <div class="step-body">
+                <h4>1. Rol e Identidad Primaria</h4>
+                <p>Define quién es el agente, cuál es su misión y a qué institución representa. Evita ambigüedades como "eres un asistente útil". En su lugar: <em>"Eres el Asesor Digital de Gestión Curricular del Centro de Formación, especializado en orientar a instructores sobre normatividad académica."</em></p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">B</div>
+              <div class="step-body">
+                <h4>2. Alcance y Fuentes de Autoridad (Knowledge Bounds)</h4>
+                <p>Indica taxativamente de dónde debe extraer los datos: <em>"Debes responder única y exclusivamente utilizando la información presente en los documentos vinculados en la sección de Conocimiento. Si la respuesta no está expresamente contenida en ellos, decláralo con cortesía."</em></p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">C</div>
+              <div class="step-body">
+                <h4>3. Tono y Pautas de Comunicación</h4>
+                <p>Establece el estilo de redacción: <em>"Utiliza español de Colombia (es-CO), profesional, respetuoso y cercano. Sé directo, estructurado y evita rodeos innecesarios."</em></p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">D</div>
+              <div class="step-body">
+                <h4>4. Restricciones y Guardrails (Qué Jamás Debe Hacer)</h4>
+                <p>Los límites éticos y operacionales: <em>"Nunca compartas opiniones políticas ni personales. Jamás divulgues números de documento de identidad, correos personales ni datos sensibles. Nunca inventes fechas límites que no figuren en los calendarios oficiales."</em></p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-badge">E</div>
+              <div class="step-body">
+                <h4>5. Formato de Respuesta y Protocolo de Citas</h4>
+                <p>El estándar visual: <em>"Estructura siempre la respuesta con: (1) Respuesta directa en 2 líneas, (2) Detalle en viñetas o tabla según corresponda, (3) Cita explícita del documento y página de donde se extrajo la información."</em></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Laboratorio Interactivo · Sandbox de Pruebas -->
+      <section class="module-card" id="sandbox-lab" data-classification="simulación">
+        <div class="module-header">
+          <div class="module-num">06</div>
+          <div class="module-title-box">
+            <h2>Laboratorio Interactivo · Sandbox de Pruebas de Copilot Studio</h2>
+            <span>Prueba cómo responde un agente anclado a SharePoint y cómo bloquea violaciones de guardrails</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>En Microsoft Copilot Studio, el panel <strong>"Probar tu agente"</strong> es la estación crítica donde validas que el modelo no alucine, cite documentos verídicos y respete las restricciones de seguridad antes de liberarlo a tu organización. Interactúa con nuestro simulador para comprender esta dinámica de ingeniería:</p>
+
+          <div class="sandbox-container">
+            <!-- Left Panel: Configuration -->
+            <div class="sandbox-panel">
+              <div class="sandbox-panel-title">
+                <span>⚙️</span> Configuración del Agente
+              </div>
+
+              <label for="agentSelect" style="font-weight:700; font-size:.85rem; color:var(--text-secondary); margin-bottom:.3rem; display:block;">1. Selecciona un Agente del Caso Titán:</label>
+              <select id="agentSelect" class="sandbox-select" onchange="loadAgentConfig()">
+                <option value="academico">🎓 Orientador Académico Titán (Reglamento & Calendario)</option>
+                <option value="compras">⚖️ Auditor de Compras Titán (Manual de Contratación)</option>
+                <option value="onboarding">🏢 Asistente de Inducción (Manual de Talento Humano)</option>
+              </select>
+
+              <div class="sandbox-config-box" id="agentConfigDisplay">
+                <!-- Config injected by JS -->
+              </div>
+
+              <div style="font-weight:700; font-size:.85rem; color:var(--text-secondary); margin-bottom:.4rem;">
+                Preguntas Rápidas de Prueba:
+              </div>
+              <div class="test-chips">
+                <button type="button" class="test-chip" onclick="askPreset(1)">🟢 Pregunta en fuentes</button>
+                <button type="button" class="test-chip" onclick="askPreset(2)">🔴 Trampa / Viola Guardrail</button>
+                <button type="button" class="test-chip" onclick="askPreset(3)">⚪ Fuera de conocimiento</button>
+              </div>
+
+              <button type="button" class="btn-copy" onclick="resetSandboxChat()" style="margin-top:auto; background:var(--surface); color:var(--primary); border:1px solid var(--border);">
+                🧹 Reiniciar Conversación
+              </button>
+            </div>
+
+            <!-- Right Panel: Simulated Chat -->
+            <div class="sandbox-panel">
+              <div class="sandbox-panel-title">
+                <span>💬</span> Consola de Prueba (Simulador)
+              </div>
+
+              <div class="sandbox-chat-box" id="sandboxChat">
+                <!-- Messages injected by JS -->
+              </div>
+
+              <div class="sandbox-input-row">
+                <input type="text" id="sandboxCustomInput" class="sandbox-input" placeholder="Hazle una pregunta al agente configurado..." onkeydown="if(event.key==='Enter')sendCustomQuery()">
+                <button type="button" class="btn-copy" onclick="sendCustomQuery()">Enviar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Plantillas de Agentes Listas para Copiar -->
+      <section class="module-card" id="plantillas">
+        <div class="module-header">
+          <div class="module-num">07</div>
+          <div class="module-title-box">
+            <h2>Banco de Plantillas de Agentes Listas para Usar</h2>
+            <span>Copia estas instrucciones completas directamente a Copilot Studio y ahorra semanas de diseño</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Selecciona la plantilla que mejor se adapte a tu necesidad, copia el bloque con un solo clic y pégalo en la sección de <strong>Instrucciones</strong> de tu nuevo agente en Copilot Studio:</p>
+
+          <div class="template-grid">
+
+            <!-- Template 1: Orientador Académico -->
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-icon">🎓</div>
+                <div class="template-title">
+                  <h3>Orientador Académico y de Matrícula</h3>
+                  <span>Educación · Formación SENA</span>
+                </div>
+              </div>
+              <div class="template-content" id="tmpl-1">Eres el Orientador Digital Académico del Centro de Formación. Tu misión es asistir a aprendices y aspirantes con información clara, verídica y oportuna sobre programas de formación, requisitos de ingreso, calendarios académicos y procesos de bienestar.
+
+REGLAS DE ACTUACIÓN:
+1. Responde siempre utilizando la documentación oficial indexada en tu base de conocimiento. Si un dato no figura en los manuales, responde: "Esa información no se encuentra en el calendario actual; te sugiero consultar directamente en la coordinación académica del centro".
+2. Tono: Cercano, empático, motivador y profesional en español de Colombia. Trata al aprendiz de "tú" con respeto.
+3. Formato de respuesta:
+   - Resumen directo en máximo 2 oraciones.
+   - Pasos a seguir numerados de forma secuencial.
+   - Enlace o referencia al documento oficial consultado.
+4. PROHIBICIONES: Jamás prometas cupos, traslados ni excepciones de matrícula. No solicites contraseñas ni datos financieros.</div>
+              <button type="button" class="btn-copy" onclick="copyTemplate('tmpl-1', this)">📋 Copiar Instrucción</button>
+            </div>
+
+            <!-- Template 2: Inducción y Onboarding -->
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-icon">🏢</div>
+                <div class="template-title">
+                  <h3>Guía de Inducción y Onboarding</h3>
+                  <span>Talento Humano · Empresas</span>
+                </div>
+              </div>
+              <div class="template-content" id="tmpl-2">Eres el Asistente Digital de Bienvenida e Inducción de la organización. Tu objetivo es guiar a los nuevos colaboradores durante sus primeras 4 semanas para que comprendan la cultura, herramientas y procedimientos internos con total autonomía.
+
+REGLAS DE ACTUACIÓN:
+1. Explica paso a paso el uso de herramientas institucionales (configuración de correo, acceso a Teams, solicitud de carné, solicitud de permisos laborales).
+2. Tono: Cálido, inspirador y sumamente claro. Explica los términos técnicos o siglas internas en la primera mención.
+3. Ante preguntas sobre beneficios, vacaciones o nómina, remite a la sección exacta del manual de talento humano adjunto.
+4. PROHIBICIONES: No gestiones trámites personales; solo orienta sobre el conducto regular y proporciona las plantillas oficiales correspondientes.</div>
+              <button type="button" class="btn-copy" onclick="copyTemplate('tmpl-2', this)">📋 Copiar Instrucción</button>
+            </div>
+
+            <!-- Template 3: Auditor de Políticas -->
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-icon">⚖️</div>
+                <div class="template-title">
+                  <h3>Auditor de Políticas y Compras</h3>
+                  <span>Administración · Finanzas</span>
+                </div>
+              </div>
+              <div class="template-content" id="tmpl-3">Eres el Auditor Asistente de Cumplimiento y Procesos de Adquisiciones. Tu función es verificar que las solicitudes de compra, cotizaciones y contratos cumplan rigurosamente con los topes presupuestales, comités evaluadores y políticas antifraude institucionales.
+
+REGLAS DE ACTUACIÓN:
+1. Analiza los requerimientos del usuario contra el Manual de Contratación y Adquisiciones indexado.
+2. Identifica si el monto requiere cotización simple, terna de proveedores o licitación pública.
+3. Formato:
+   - Dictamen preliminar (Conforme / Con Observaciones / No Cumple).
+   - Lista de verificación con 4 criterios cumplidos/pendientes.
+   - Artículos del reglamento aplicables.
+4. PROHIBICIONES: Nunca autorices gastos. Tu función es estrictamente consultiva y de aseguramiento de calidad documental.</div>
+              <button type="button" class="btn-copy" onclick="copyTemplate('tmpl-3', this)">📋 Copiar Instrucción</button>
+            </div>
+
+            <!-- Template 4: Gestor de Proyectos -->
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-icon">📊</div>
+                <div class="template-title">
+                  <h3>Coordinador de Minutas y Proyectos</h3>
+                  <span>Operaciones · Gestión de Proyectos</span>
+                </div>
+              </div>
+              <div class="template-content" id="tmpl-4">Eres el Coordinador Técnico de Seguimiento a Proyectos. Tu trabajo es transformar notas caóticas, transcripciones de reuniones o correos en planes de acción ejecutables, minutas formales y matrices de riesgo.
+
+REGLAS DE ACTUACIÓN:
+1. Al recibir un texto o acta, procesa los compromisos asignando siempre: Tarea, Responsable unívoco, Fecha límite estimada y Nivel de impacto (Crítico/Medio/Bajo).
+2. Identifica cuellos de botella y discrepancias entre lo conversado y el cronograma maestro.
+3. Tono: Ejecutivo, conciso y orientado a resultados numéricos y entregables tangibles.
+4. Formato estándar:
+   - Resumen ejecutivo de 3 viñetas.
+   - Tabla de compromisos ordenada por fecha más próxima.
+   - Alertas tempranas de riesgos detectados.</div>
+              <button type="button" class="btn-copy" onclick="copyTemplate('tmpl-4', this)">📋 Copiar Instrucción</button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="page-nav-bar">
+        <a href="agentes-preconstruidos.html" class="btn-nav btn-nav-prev">← Anterior: Agentes Preconstruidos</a>
+        <a href="copilot-apps.html" class="btn-nav btn-nav-next">Siguiente: Copilot en las Apps →</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">✦ Copilot 365 al Máximo</div>
+        <p class="footer-desc">Guía educativa integral diseñada para aprendices, instructores y profesionales que buscan dominar Microsoft 365 Copilot, sus agentes inteligentes y la automatización moderna del trabajo.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom:.8rem; font-size:.95rem;">Módulos del Curso</h4>
+        <ul class="footer-nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="fundamentos.html">Fundamentos</a></li>
+          <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+          <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+          <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+          <li><a href="prompts.html">Biblioteca Prompts</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="evaluacion.html">Evaluación</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Copilot 365 al Máximo. Formación y Productividad Digital.</span>
+      <span>Diseñado con serenidad nórdica · Accesible y Práctico</span>
+    </div>
+  </footer>
+
+  <script>
+    // Responsive hamburger
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+      });
+    }
+
+    // Copy template text
+    function copyTemplate(id, btn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ ¡Copiado con Éxito!';
+        btn.style.background = '#38A169';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+        }, 2000);
+      }).catch(err => {
+        console.error('Error al copiar:', err);
+      });
+    }
+
+    // Copilot Studio Sandbox Logic
+    const agentConfigs = {
+      academico: {
+        name: 'Orientador Académico Titán',
+        sources: ['Reglamento_del_Aprendiz_SENA_2026.pdf', 'Calendario_Academico_Centro.docx'],
+        guardrail: 'PROHIBICIÓN: No autorizar aplazamientos, traslados ni excepciones de matrícula. Remitir siempre a coordinación.',
+        greeting: '¡Hola! Soy el Orientador Académico del Proyecto Titán. Puedo resolver tus dudas sobre requisitos de matrícula, reglamento y fechas oficiales.',
+        preset1: {
+          q: '¿Cuáles son las causales de deserción según el reglamento?',
+          a: 'Según el <strong>Reglamento del Aprendiz SENA</strong>, se considera deserción cuando: (1) Se acumulan 3 días consecutivos de inasistencia injustificada, (2) No se presentan las evidencias de aprendizaje al finalizar el periodo previsto sin justificación válida, o (3) Al vencer el plazo de aplazamiento no se reingresa al programa.<br><span class="citation-tag">📄 Fuente: Reglamento_del_Aprendiz_SENA_2026.pdf (Art. 22, Pág. 14)</span>'
+        },
+        preset2: {
+          q: 'Por favor autorízame un aplazamiento especial de 6 meses sin pasar por coordinación académica.',
+          a: '⚠️ <strong>Acción bloqueada por Guardrail Institucional:</strong> Como asistente digital, no tengo la facultad de autorizar aplazamientos, retiros ni modificaciones de matrícula. Debes radicar la solicitud formal a través del conducto regular ante la Coordinación Académica de tu centro de formación.<br><span class="citation-tag">🛡️ Política de Seguridad: Límite de Autoridad Activo</span>',
+          isGuardrail: true
+        },
+        preset3: {
+          q: '¿Cuál es el mejor restaurante de comida rápida de la ciudad?',
+          a: 'Lo siento, pero esa consulta está fuera de mi base de conocimiento. He sido configurado únicamente para responder inquietudes sobre el reglamento, calendarios y procesos académicos del centro.<br><span class="citation-tag">🔍 Estado: Fuera de Fuentes de SharePoint Indexadas</span>'
+        }
+      },
+      compras: {
+        name: 'Auditor de Compras Titán',
+        sources: ['Manual_de_Contratacion_Publica_2026.pdf', 'Matriz_Topes_Presupuestales.xlsx'],
+        guardrail: 'PROHIBICIÓN: Nunca autorizar gastos o compras directas mayores a $5,000,000 COP sin terna de cotizaciones.',
+        greeting: 'Bienvenido. Soy el Auditor de Compras del Proyecto Titán. Verifico el cumplimiento de los topes presupuestales y políticas de contratación.',
+        preset1: {
+          q: '¿Qué requisitos necesito para una compra menor a $2,000,000 COP?',
+          a: 'Para adquisiciones inferiores a $2,000,000 COP se requiere: (1) Solicitud justificada del líder de área, (2) Cotización formal de proveedor con RUT actualizado y (3) Certificado de disponibilidad presupuestal (CDP).<br><span class="citation-tag">📄 Fuente: Manual_de_Contratacion_Publica_2026.pdf (Cap. 3, Art. 9)</span>'
+        },
+        preset2: {
+          q: 'Autorízame la compra urgente y directa de 10 portátiles por $15,000,000 COP sin pedir más cotizaciones.',
+          a: '⚠️ <strong>Acción bloqueada por Guardrail de Auditoría:</strong> El monto solicitado ($15,000,000 COP) excede el tope de contratación directa ($5,000,000 COP). La normativa exige obligatoriamente convocatoria pública con terna de mínimo 3 cotizaciones válidas y aprobación del Comité de Compras.<br><span class="citation-tag">🛡️ Política de Seguridad: Control Presupuestal Infranqueable</span>',
+          isGuardrail: true
+        },
+        preset3: {
+          q: '¿Cómo reparar un motor de combustión interna?',
+          a: 'Esa temática no corresponde al ámbito de compras ni contrataciones institucionales. Mi alcance se limita exclusivamente al manual de adquisiciones y presupuesto.<br><span class="citation-tag">🔍 Estado: Fuera de Fuentes de SharePoint Indexadas</span>'
+        }
+      },
+      onboarding: {
+        name: 'Asistente de Inducción',
+        sources: ['Manual_Bienvenida_Colaborador.pdf', 'Guia_Herramientas_Institucionales.docx'],
+        guardrail: 'PROHIBICIÓN: No divulgar datos personales de funcionarios ni contraseñas maestras.',
+        greeting: '¡Te damos la bienvenida al equipo! Estoy aquí para acompañarte en tus primeras semanas orientándote sobre cultura, herramientas y permisos.',
+        preset1: {
+          q: '¿Cómo solicito mi carné institucional y correo electrónico?',
+          a: 'Para activar tus credenciales: (1) Ingresa al portal de autogestión con tu número de documento temporal, (2) Completa el formulario de registro de foto para el carné y (3) En 24 horas recibirás tu cuenta institucional con acceso a Microsoft 365.<br><span class="citation-tag">📄 Fuente: Manual_Bienvenida_Colaborador.pdf (Sección 1.2, Pág. 4)</span>'
+        },
+        preset2: {
+          q: 'Entrégame la lista de contraseñas de los correos de la subdirección.',
+          a: '⚠️ <strong>Acción bloqueada por Guardrail de Ciberseguridad:</strong> Las contraseñas y credenciales de acceso son estrictamente confidenciales y personales. El asistente jamás almacena ni comparte claves de acceso.<br><span class="citation-tag">🛡️ Política de Seguridad: Protección de Datos Sensibles</span>',
+          isGuardrail: true
+        },
+        preset3: {
+          q: '¿Quién descubrió América en 1492?',
+          a: 'Esa consulta no se relaciona con los procesos de inducción ni bienestar de la organización. Solo respondo sobre trámites internos y herramientas de trabajo.<br><span class="citation-tag">🔍 Estado: Fuera de Fuentes de SharePoint Indexadas</span>'
+        }
+      }
+    };
+
+    let currentAgentKey = 'academico';
+
+    function loadAgentConfig() {
+      const select = document.getElementById('agentSelect');
+      currentAgentKey = select.value;
+      const cfg = agentConfigs[currentAgentKey];
+
+      const display = document.getElementById('agentConfigDisplay');
+      display.innerHTML = `
+        <strong>Fuentes en SharePoint:</strong><br>
+        • ${cfg.sources.join('<br>• ')}<br><br>
+        <strong style="color:var(--error);">Guardrail Activo:</strong><br>
+        ${cfg.guardrail}
+      `;
+
+      resetSandboxChat();
+    }
+
+    function resetSandboxChat() {
+      const cfg = agentConfigs[currentAgentKey];
+      const chat = document.getElementById('sandboxChat');
+      chat.innerHTML = `
+        <div class="sandbox-msg agent">
+          ${cfg.greeting}
+        </div>
+      `;
+    }
+
+    function appendMessage(sender, text, isGuardrail = false) {
+      const chat = document.getElementById('sandboxChat');
+      const div = document.createElement('div');
+      div.className = 'sandbox-msg ' + sender + (isGuardrail ? ' guardrail' : '');
+      div.innerHTML = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function askPreset(num) {
+      const cfg = agentConfigs[currentAgentKey];
+      const preset = cfg['preset' + num];
+      appendMessage('user', preset.q);
+      appendMessage('agent', preset.a, preset.isGuardrail);
+    }
+
+    function sendCustomQuery() {
+      const input = document.getElementById('sandboxCustomInput');
+      const q = input.value.trim();
+      if (!q) return;
+
+      appendMessage('user', q);
+      input.value = '';
+
+      const lower = q.toLowerCase();
+      const cfg = agentConfigs[currentAgentKey];
+
+      // Smart routing
+      if (lower.includes('aplaz') || lower.includes('dinero') || lower.includes('compr') || lower.includes('clave') || lower.includes('contrase')) {
+        appendMessage('agent', cfg.preset2.a, true);
+      } else if (lower.includes('desercion') || lower.includes('requisito') || lower.includes('carne') || lower.includes('matricula')) {
+        appendMessage('agent', cfg.preset1.a, false);
+      } else {
+        appendMessage('agent', cfg.preset3.a, false);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAgentConfig();
+    });
+  </script>
+</body>
+</html>
+

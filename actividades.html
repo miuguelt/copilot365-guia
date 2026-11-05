@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividades Prácticas — Copilot 365 al Máximo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3669A4;
+      --primary-light: #4A7DB8;
+      --primary-dark: #2B5486;
+      --accent: #5B9BD5;
+      --bg: #F4F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #EDF1F7;
+      --text-primary: #1A2332;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --border: #D2DCE8;
+      --success: #38A169;
+      --warning: #D69E2E;
+      --error: #E53E3E;
+      --info: #3182CE;
+      --radius-card: 12px;
+      --radius-btn: 8px;
+      --shadow-card: 0 2px 8px rgba(54,105,164,0.08);
+      --shadow-hover: 0 4px 16px rgba(54,105,164,0.15);
+      --transition: all 0.3s ease;
+      --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-code: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      white-space: normal;
+      word-break: normal;
+      hyphens: none;
+      overflow-wrap: break-word;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none; display: flex; align-items: center; gap: .5rem;
+      white-space: nowrap;
+    }
+    .navbar-brand span { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary); font-size: .875rem;
+      padding: .45rem .75rem; border-radius: var(--radius-btn);
+      transition: var(--transition); white-space: nowrap; font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--primary); color: #fff;
+    }
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      flex-direction: column; gap: 5px; padding: .5rem;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2.5px; background: var(--text-primary);
+      border-radius: 2px; transition: var(--transition);
+    }
+
+    @media (max-width: 1024px) {
+      .nav-links {
+        display: none; position: fixed; top: 64px; left: 0; right: 0;
+        background: var(--surface); flex-direction: column; padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: .75rem 1rem; width: 100%; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── Main Layout ── */
+    main {
+      flex: 1; margin-top: 64px;
+      padding: 2.5rem 1.5rem 4rem;
+      inline-size: 100%; max-inline-size: 100%;
+    }
+    .container {
+      width: 100%; max-width: 1320px; margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, #2B5486 0%, #3669A4 60%, #5B9BD5 100%);
+      color: #fff;
+      border-radius: var(--radius-card);
+      padding: 3rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 6px 20px rgba(54,105,164,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: '🛠️';
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      padding: .35rem .85rem;
+      border-radius: 20px;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: .8rem;
+      line-height: 1.2;
+    }
+    .page-header p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.9);
+      max-width: 900px;
+      line-height: 1.6;
+    }
+
+    /* Progress Tracker Card */
+    .tracker-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    .tracker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .tracker-title {
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .tracker-stats {
+      font-size: .95rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: var(--surface-alt);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.4s ease;
+    }
+    .milestones-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+    .milestone-node {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .milestone-node.completed {
+      color: var(--success);
+    }
+    .milestone-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--surface-alt);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+    .milestone-node.completed .milestone-circle {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+
+    /* Activity Card */
+    .activity-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+      position: relative;
+    }
+    .activity-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+    .activity-card.card-completed {
+      border-left: 6px solid var(--success);
+    }
+    .activity-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .activity-title-group h2 {
+      font-size: 1.55rem;
+      color: var(--primary-dark);
+      margin-bottom: .25rem;
+    }
+    .activity-meta {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
+    .badge-diff {
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .25rem .65rem;
+      border-radius: 4px;
+    }
+    .diff-basico { background: #EBF8F2; color: #1C5237; }
+    .diff-intermedio { background: #FEF9E7; color: #745307; }
+    .diff-avanzado { background: #FFF5F5; color: #9B2C2C; }
+
+    .badge-time {
+      font-size: .8rem;
+      color: var(--text-muted);
+      background: var(--surface-alt);
+      padding: .25rem .65rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Prose */
+    .prose {
+      inline-size: 100%;
+      max-inline-size: 100%;
+      font-size: 1.02rem;
+      color: var(--text-secondary);
+    }
+    @media (min-width: 40rem) {
+      .prose p {
+        text-align: justify;
+        text-align-last: start;
+      }
+    }
+    .prose p {
+      margin-bottom: 1.2rem;
+    }
+
+    /* Step Timeline in Activity */
+    .steps-container {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .steps-container h4 {
+      font-size: 1.05rem;
+      color: var(--primary-dark);
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .steps-container ol {
+      margin-left: 1.5rem;
+      color: var(--text-secondary);
+    }
+    .steps-container li {
+      margin-bottom: .75rem;
+    }
+
+    /* Deliverable Box */
+    .deliverable-box {
+      background: #F0F6FD;
+      border: 1px solid #C4D9F2;
+      border-radius: var(--radius-btn);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .deliverable-box h4 {
+      color: var(--primary-dark);
+      font-size: 1.05rem;
+      margin-bottom: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .deliverable-box p {
+      color: #1A365D;
+      font-size: .95rem;
+      margin-bottom: 0;
+    }
+
+    /* Rubric list */
+    .rubric-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+    .rubric-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .4rem 0;
+      font-size: .92rem;
+      color: var(--text-secondary);
+    }
+    .rubric-check {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    /* Action footer in card */
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-toggle-done {
+      background: var(--surface);
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: .6rem 1.2rem;
+      border-radius: var(--radius-btn);
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      transition: var(--transition);
+    }
+    .btn-toggle-done:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-toggle-done.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+
+    /* Hints accordion */
+    .hint-box {
+      background: #FEF9E7;
+      border: 1px solid #F6E05E;
+      border-radius: var(--radius-btn);
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .hint-header {
+      width: 100%;
+      padding: .75rem 1rem;
+      background: none;
+      border: none;
+      text-align: left;
+      font-weight: 600;
+      color: #744210;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .9rem;
+    }
+    .hint-content {
+      display: block;
+      padding: .75rem 1rem 1rem;
+      font-size: .88rem;
+      color: #744210;
+      border-top: 1px dashed #ECC94B;
+    }
+
+    /* Plegables nativos: procedimiento, rúbrica y pista */
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::after {
+      content: "";
+      width: .55rem; height: .55rem;
+      border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+      transform: rotate(45deg); transition: transform .2s ease;
+      flex-shrink: 0; margin-left: auto;
+    }
+    details[open] > summary::after { transform: rotate(-135deg); }
+    details > summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    .steps-container { padding: 0; }
+    .steps-container > summary {
+      display: flex; align-items: center; gap: .75rem;
+      padding: 1rem 1.5rem; color: var(--primary-dark);
+    }
+    .steps-container > summary::before {
+      content: "Mostrar"; order: 2; margin-left: auto;
+      font-size: .8rem; font-weight: 600; color: var(--primary);
+    }
+    .steps-container[open] > summary::before { content: "Ocultar"; }
+    .steps-container > summary::after { order: 3; margin-left: 0; color: var(--primary); }
+    .steps-container[open] > summary { border-bottom: 1px solid var(--border); }
+    .steps-container > :not(summary) { margin-left: 1.5rem; margin-right: 1.5rem; }
+    .steps-container > ol { margin-left: 3rem; }
+    .steps-container > :last-child { margin-bottom: 1.25rem; }
+    .steps-container > summary + * { margin-top: 1rem; }
+    .rubric-details {
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+    }
+    .rubric-details > summary {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .7rem 1rem; font-weight: 600; font-size: .92rem; color: var(--success);
+    }
+    .rubric-details .rubric-list { margin: 0; padding: 0 1rem .75rem; }
+    .hint-header { list-style: none; }
+
+    /* Siguiente taller y barra de avance fija */
+    .tracker-next {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      background: var(--surface-alt); border-radius: var(--radius-btn);
+      padding: .9rem 1.1rem; margin-bottom: 1.5rem;
+    }
+    .tracker-next p { margin: 0; color: var(--text-secondary); font-size: .95rem; flex: 1 1 18rem; }
+    .btn-continue {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--primary); color: #fff; text-decoration: none;
+      font-weight: 700; font-size: .9rem;
+      padding: .6rem 1.1rem; border-radius: var(--radius-btn);
+      transition: var(--transition);
+    }
+    .btn-continue::after { content: "→"; }
+    .btn-continue:hover { background: var(--primary-dark); }
+    .btn-continue:focus-visible, .filter-chip:focus-visible, .milestone-node:focus-visible {
+      outline: 3px solid var(--accent); outline-offset: 2px;
+    }
+    .btn-continue[aria-disabled="true"] { background: var(--success); }
+    .btn-continue[aria-disabled="true"]::after { content: ""; }
+    .btn-continue-sm { padding: .4rem .85rem; font-size: .82rem; }
+    .progress-dock {
+      position: fixed; top: 64px; left: 0; right: 0; z-index: 900;
+      display: flex; align-items: center; gap: 1rem;
+      padding: .5rem 2rem;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+    }
+    .progress-dock[hidden] { display: none; }
+    .progress-dock-stats { font-size: .85rem; font-weight: 700; color: var(--primary-dark); white-space: nowrap; }
+    .progress-dock-bar { flex: 1; height: 6px; background: var(--surface-alt); border-radius: 3px; overflow: hidden; }
+    .progress-dock-bar > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width .4s ease; }
+    .activity-card, .activity-block-intro { scroll-margin-top: 130px; }
+
+    /* Hitos agrupados */
+    .milestone-group + .milestone-group { margin-top: 1.25rem; }
+    .milestone-group-title {
+      font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: .6rem;
+    }
+    .milestones-row { justify-content: flex-start; gap: .5rem; }
+    .milestone-node {
+      padding: .3rem .7rem .3rem .35rem;
+      border: 1px solid var(--border); border-radius: 999px; background: var(--surface);
+    }
+    .milestone-node:hover { border-color: var(--primary); color: var(--primary); }
+    .milestone-node.completed { border-color: #9AE6B4; background: #F0FFF4; }
+    .milestone-node.is-next {
+      border-color: var(--primary); color: var(--primary-dark); background: #EBF3FC;
+      box-shadow: 0 0 0 2px rgba(54,105,164,.18);
+    }
+    .milestone-node.is-next .milestone-circle { border-color: var(--primary); background: var(--primary); color: #fff; }
+
+    /* Filtros */
+    .activity-filters {
+      display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem;
+      margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);
+    }
+    .filter-set { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+    .filter-label { font-size: .85rem; font-weight: 600; color: var(--text-secondary); margin-right: .2rem; }
+    .filter-chip {
+      font: inherit; font-size: .85rem; font-weight: 600;
+      padding: .35rem .85rem; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-chip[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .filter-result { margin: 0 0 0 auto; font-size: .85rem; color: var(--text-muted); }
+    .filter-empty {
+      text-align: center; padding: 2rem 1rem; margin-bottom: 2.5rem;
+      border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-secondary);
+    }
+    .activity-card[hidden], .activity-block-intro[hidden] { display: none; }
+
+    /* Estado completado */
+    .activity-card.card-completed { background: linear-gradient(180deg, #F6FFF9 0, var(--surface) 7rem); }
+    .card-done-badge {
+      display: none; align-items: center; gap: .3rem;
+      font-size: .8rem; font-weight: 700; color: #22543D;
+      background: #C6F6D5; padding: .2rem .6rem; border-radius: 999px;
+    }
+    .card-completed .card-done-badge { display: inline-flex; }
+
+    @media (max-width: 768px) {
+      .progress-dock { padding: .5rem 1rem; gap: .6rem; }
+      .tracker-card { padding: 1.25rem; }
+      .activity-card { padding: 1.25rem; }
+      .filter-result { margin-left: 0; flex-basis: 100%; }
+    }
+
+    /* Page Nav */
+    .page-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .75rem 1.5rem;
+      border-radius: var(--radius-btn);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: .95rem;
+    }
+    .btn-nav-prev {
+      background: var(--surface);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+    .btn-nav-prev:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+    }
+    .btn-nav-next {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(54,105,164,0.25);
+    }
+    .btn-nav-next:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: #141E2B;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 3.5rem 2rem 2rem;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .8rem;
+    }
+    .footer-desc {
+      font-size: .9rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .footer-nav-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      list-style: none;
+    }
+    .footer-nav-links a {
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-nav-links a:hover {
+      color: #5B9BD5;
+    }
+    .footer-bottom {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.4);
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+  
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <span>✦</span> Copilot 365 al Máximo
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="fundamentos.html">Fundamentos</a></li>
+      <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+      <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+      <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+      <li><a href="prompts.html">Prompts</a></li>
+      <li><a href="actividades.html" class="active">Actividades</a></li>
+      <li><a href="evaluacion.html">Evaluación</a></li>
+    </ul>
+    <button type="button" class="hamburger" id="hamburger" aria-label="Abrir menú de navegación">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="badge">Módulo 6 · Aprendizaje Basado en Retos (PBL)</div>
+        <h1>Actividades Prácticas y Retos de Transferencia</h1>
+        <p>Aprender IA no se logra memorizando teoría, sino interactuando con la herramienta sobre problemas auténticos de tu entorno. El centro de esta práctica es Outlook: empieza por el diagnóstico, avanza por los talleres de correo, calendario y agentes, y luego lleva lo aprendido a otras aplicaciones con las extensiones. Completa los 22 talleres y marca tu avance a medida que construyes tu portafolio de evidencias de productividad.</p>
+      </header>
+
+      <!-- Tracker Card -->
+      <section class="tracker-card">
+        <div class="tracker-header">
+          <div class="tracker-title">
+            <span>📈</span> Progreso de tus Actividades Prácticas
+          </div>
+          <div class="tracker-stats" id="progressStats" aria-live="polite">0 de 22 completadas (0 %)</div>
+        </div>
+        <div class="progress-bar-bg" id="progressTrack" role="progressbar" aria-label="Avance de los talleres" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="tracker-next">
+          <p id="nextLabel">Empieza por el Taller 0: su diagnóstico te dice qué ruta seguir.</p>
+          <a class="btn-continue" id="nextLink" href="#act-15">Ir al Taller 0</a>
+        </div>
+        <div class="milestone-group">
+          <h3 class="milestone-group-title">Outlook · Talleres 0 a 14</h3>
+          <div class="milestones-row">
+          <a href="#act-15" class="milestone-node" id="m-15"><span class="milestone-circle">0</span> Diagnóstico</a>
+          <a href="#act-1" class="milestone-node" id="m-1"><span class="milestone-circle">1</span> Prompt CRTT+L</a>
+          <a href="#act-2" class="milestone-node" id="m-2"><span class="milestone-circle">2</span> Agentes</a>
+          <a href="#act-8" class="milestone-node" id="m-8"><span class="milestone-circle">3</span> Triage</a>
+          <a href="#act-9" class="milestone-node" id="m-9"><span class="milestone-circle">4</span> Responder</a>
+          <a href="#act-10" class="milestone-node" id="m-10"><span class="milestone-circle">5</span> Hilo a tareas</a>
+          <a href="#act-16" class="milestone-node" id="m-16"><span class="milestone-circle">6</span> Adjuntos</a>
+          <a href="#act-17" class="milestone-node" id="m-17"><span class="milestone-circle">7</span> Buscar acuerdos</a>
+          <a href="#act-11" class="milestone-node" id="m-11"><span class="milestone-circle">8</span> Preparar reunión</a>
+          <a href="#act-18" class="milestone-node" id="m-18"><span class="milestone-circle">9</span> Calendario</a>
+          <a href="#act-19" class="milestone-node" id="m-19"><span class="milestone-circle">10</span> Seguimientos</a>
+          <a href="#act-20" class="milestone-node" id="m-20"><span class="milestone-circle">11</span> Acta</a>
+          <a href="#act-22" class="milestone-node" id="m-22"><span class="milestone-circle">12</span> Plantillas</a>
+          <a href="#act-12" class="milestone-node" id="m-12"><span class="milestone-circle">13</span> Workflows</a>
+          <a href="#act-21" class="milestone-node" id="m-21"><span class="milestone-circle">14</span> Agente propio</a>
+          </div>
+        </div>
+        <div class="milestone-group">
+          <h3 class="milestone-group-title">Extensiones A a F y proyecto final</h3>
+          <div class="milestones-row">
+          <a href="#act-13" class="milestone-node" id="m-13"><span class="milestone-circle">A</span> SharePoint</a>
+          <a href="#act-14" class="milestone-node" id="m-14"><span class="milestone-circle">B</span> Teams</a>
+          <a href="#act-3" class="milestone-node" id="m-3"><span class="milestone-circle">C</span> Word</a>
+          <a href="#act-4" class="milestone-node" id="m-4"><span class="milestone-circle">D</span> Excel</a>
+          <a href="#act-5" class="milestone-node" id="m-5"><span class="milestone-circle">E</span> PowerPoint</a>
+          <a href="#act-6" class="milestone-node" id="m-6"><span class="milestone-circle">F</span> Copilot Studio</a>
+          <a href="#act-7" class="milestone-node" id="m-7"><span class="milestone-circle">★</span> Proyecto final</a>
+          </div>
+        </div>
+        <div class="activity-filters" role="group" aria-label="Filtrar talleres">
+          <div class="filter-set" data-filter="tool">
+            <span class="filter-label">Aplicación:</span>
+            <button type="button" class="filter-chip" data-value="todas" aria-pressed="true">Todas</button>
+            <button type="button" class="filter-chip" data-value="outlook" aria-pressed="false">Outlook</button>
+            <button type="button" class="filter-chip" data-value="extensiones" aria-pressed="false">Extensiones</button>
+          </div>
+          <div class="filter-set" data-filter="status">
+            <span class="filter-label">Estado:</span>
+            <button type="button" class="filter-chip" data-value="todas" aria-pressed="true">Todos</button>
+            <button type="button" class="filter-chip" data-value="pendientes" aria-pressed="false">Pendientes</button>
+            <button type="button" class="filter-chip" data-value="completadas" aria-pressed="false">Completados</button>
+          </div>
+          <p class="filter-result" id="filterResult" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <div class="progress-dock" id="progressDock" hidden>
+        <span class="progress-dock-stats" id="dockStats">0 de 22</span>
+        <span class="progress-dock-bar" aria-hidden="true"><span id="dockBar"></span></span>
+        <a class="btn-continue btn-continue-sm" id="dockLink" href="#act-15">Ir al Taller 0</a>
+      </div>
+
+      <!-- Bloque Outlook -->
+      <section class="activity-block-intro" id="bloque-outlook" style="margin:3rem 0 1.5rem;">
+        <h2>Productividad en Outlook con Copilot</h2>
+        <p class="prose">Estos talleres se resuelven dentro de Outlook: en el botón <strong>Copilot</strong> de la cinta, en la opción <strong>Resumir este correo electrónico</strong> que aparece sobre cada mensaje y en el panel lateral de Copilot con sus agentes. Cada taller resuelve una tarea que se repite todas las semanas: clasificar la bandeja, responder, leer adjuntos, encontrar acuerdos, organizar el calendario, cerrar reuniones, automatizar avisos y crear tu propio agente. Empieza por el Taller 0: su tabla de diagnóstico te dice qué ruta seguir en cada uno.</p>
+        <div class="hint-box" style="margin-top:1rem;">
+          <div class="hint-content" style="display:block;">
+            <strong>Antes de empezar:</strong> practica con correos propios que no contengan datos personales de terceros, calificaciones ni información reservada. Si tu bandeja no tiene un caso adecuado, envíate dos o tres correos de prueba desde tu misma cuenta o pide a un compañero que te escriba uno. No pegues en Copilot documentos de otras personas sin su autorización.
+          </div>
+        </div>
+      </section>
+
+      <!-- Actividad 15 -->
+      <article class="activity-card" id="act-15" data-id="15" data-tool="outlook" data-diagnostic="true">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 0 · Diagnóstico de capacidades de tu Copilot</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Descubre qué puede hacer Copilot con tu cuenta antes de empezar</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Comprobar, con pruebas propias, qué capacidades de Copilot están habilitadas en tu cuenta institucional y decidir qué ruta seguir en cada taller.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Abre un correo cualquiera y pulsa <strong>Resumir este correo electrónico</strong>. Anota si funciona.</li>
+              <li>Abre un correo con un archivo adjunto (Excel, Word o PDF) y pide en el panel de Copilot: <em>"Resume el archivo adjunto de este correo en cinco puntos."</em></li>
+              <li>Pide: <em>"Busca el correo más reciente que recibí de [nombre de un compañero] sobre [tema] y dime la fecha y el asunto."</em> Esta prueba comprueba la búsqueda en Microsoft 365, no solo el correo abierto.</li>
+              <li>Pide: <em>"¿Qué reuniones tengo mañana y cuánto tiempo libre me queda entre ellas?"</em> Compara la respuesta con tu calendario.</li>
+              <li>Si participaste en una reunión de Teams con transcripción, pide: <em>"Resume la reunión [nombre] y lista las tareas acordadas."</em></li>
+              <li>Abre el menú <strong>☰</strong> del panel: comprueba si puedes cambiar de agente y si aparece la opción <strong>Crear agente</strong>.</li>
+              <li>Completa la tabla de diagnóstico con las columnas Capacidad, Resultado (sí, no o parcial) y Observación. Para cada «no», anota la alternativa que indica cada taller.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Tabla de diagnóstico con siete capacidades probadas y una captura por cada prueba positiva. Esta tabla te dice qué ruta seguir en los talleres siguientes.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Cada capacidad se probó con un caso real y no solo con la respuesta de Copilot sobre sí mismo.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Las respuestas de calendario y búsqueda se contrastaron con Outlook.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              No confíes en lo que Copilot dice que puede hacer: compruébalo. A veces responde que tiene acceso a algo que tu organización no habilitó, o lo contrario. La prueba con un caso real es la única evidencia válida.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(15)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 1 -->
+      <article class="activity-card" id="act-1" data-id="1" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 1 · Tu primer prompt con el método CRTT+L</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Compara empíricamente la diferencia entre una orden vaga y una calibrada</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 15 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Aplicar el método CRTT+L (Contexto, Rol, Tarea, Tono y Límites) y comprobar cómo una petición completa convierte una respuesta genérica en un entregable listo para revisar.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento Paso a Paso</h4></summary>
+            <ol>
+              <li>Abre el panel <strong>Copilot</strong> en Outlook con tu cuenta institucional. Si tu panel ofrece el conmutador <strong>Web</strong>, actívalo para esta prueba.</li>
+              <li>Envía este prompt vago: <em>"Resume las noticias de tecnología de hoy."</em> Observa la respuesta superficial que devuelve.</li>
+              <li>Ahora redacta y envía la versión con el método CRTT+L: <em>"[C] Usa fuentes web confiables de las últimas 48 horas; el resultado es para instructores y directores académicos. [R] Actúa como analista de tendencias educativas. [T] Sintetiza las 4 noticias más relevantes de hoy sobre adopción de IA en educación superior en una tabla de 3 columnas: Titular, Impacto pedagógico y Enlace a la fuente. [Tono] Profesional y claro, en español de Colombia. [L] No inventes noticias ni enlaces: si no encuentras 4, entrega las que tengas y escribe [NO CONSTA] en las filas vacías."</em></li>
+              <li>Compara ambos resultados: evalúa formato, utilidad directa y tiempo que te ahorraría en tu labor real.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Captura de pantalla donde se visualicen ambos prompts y sus respuestas, acompañada de una breve reflexión escrita (máximo 100 palabras) sobre por qué la segunda respuesta fue superior.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Aplica explícitamente los cinco pilares de CRTT+L en el segundo prompt.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> La respuesta resultante es utilizable sin edición pesada adicional.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Asegúrate de tener seleccionado el conmutador <strong>"Web"</strong> en Copilot Chat para que pueda consultar noticias de internet en tiempo real y no intente buscar en tus correos privados.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(1)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 2 -->
+      <article class="activity-card" id="act-2" data-id="2" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 2 · Safari de agentes en Outlook</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Descubre qué agentes tienes habilitados y pruébalos con tu propio correo</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Identificar qué agentes están habilitados en tu cuenta y comprobar, con un correo real, qué aporta cada uno frente a una consulta normal a Copilot.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento Paso a Paso</h4></summary>
+            <ol>
+              <li>En Outlook, abre el panel <strong>Copilot</strong> y pulsa el menú <strong>☰</strong>. Haz una lista de los agentes que aparecen en «Mis agentes» y en «Creado por Microsoft».</li>
+              <li>Usa el buscador para comprobar si tienes <strong>Researcher</strong> o <strong>Analyst</strong>. Si aparece «No encontramos ninguna coincidencia», anótalo: esos agentes requieren la licencia completa.</li>
+              <li>Abre <strong>Prompt Coach</strong> y pídele que mejore este prompt: <em>"Resume mis correos"</em>. Copia la versión mejorada.</li>
+              <li>Abre <strong>Writing Coach</strong>, pega un borrador de respuesta a un correo real y pide comentarios de tono y claridad.</li>
+              <li>Abre <strong>Workflows</strong> y describe una automatización sencilla para tu correo. Revisa la vista previa, pero no la actives todavía: lo harás en el Taller 13.</li>
+              <li>Registra en un cuadro comparativo el resultado de cada agente frente a la misma consulta hecha a Copilot sin agente.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Ficha de exploración en formato PDF o Word con la lista de agentes habilitados en tu cuenta y mínimo 3 agentes probados con: Nombre del agente, Prompt utilizado, Valor aportado frente a una consulta normal y Escenario real de trabajo donde lo aplicarás semanalmente.</p>
+          </div>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si tu cuenta sí tiene <strong>Researcher</strong>, pruébalo como paso opcional con una pregunta que cruce correos y archivos. Los agentes de «Mis agentes» los publica tu organización o terceros: lee su descripción antes de compartirles un correo.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(2)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 8 -->
+      <article class="activity-card" id="act-8" data-id="8" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 3 · Triage de la bandeja en 15 minutos</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Resume, prioriza y decide qué hacer con los correos pendientes</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Usar Copilot en Outlook para leer menos y decidir más rápido: resumir mensajes largos, priorizar los pendientes y dejar una regla que mantenga la bandeja ordenada.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Abre un correo largo o un hilo con varias respuestas y pulsa <strong>Resumir este correo electrónico</strong>, en la parte superior del mensaje.</li>
+              <li>Abre el panel <strong>Copilot</strong> y escribe: <em>"Revisa mis correos sin leer de los últimos dos días. Clasifícalos en tres grupos: requiere mi respuesta hoy, puede esperar y solo informativo. Para cada uno dame remitente, asunto y la acción que me piden."</em></li>
+              <li>Verifica la clasificación abriendo al menos tres de los correos. Anota cualquier error de Copilot.</li>
+              <li>Atiende el grupo «requiere mi respuesta hoy». Marca con bandera los que no puedas resolver ahora.</li>
+              <li>Crea una regla en <strong>Configuración → Correo → Reglas</strong> para mover a una carpeta los correos informativos que más se repiten, por ejemplo boletines o notificaciones automáticas.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Captura del resumen de un hilo, la tabla de clasificación de Copilot con tus correcciones marcadas y una captura de la regla creada. Agrega una línea con el tiempo que te tomó el triage.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> La clasificación fue verificada contra los correos reales y se documentan los errores.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> La regla creada resuelve un tipo de correo que se repite.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si Copilot responde que no puede ver tu bandeja, pide el resumen correo por correo con el botón <strong>Resumir</strong> y arma tú la clasificación. El objetivo es el hábito, no un único prompt.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(8)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 9 -->
+      <article class="activity-card" id="act-9" data-id="9" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 4 · Responder con el tono adecuado</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Redacta con Copilot y revisa el resultado con Writing Coach</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Redactar respuestas con Copilot sin perder la propia voz: generar un borrador, ajustar su tono y validar la claridad antes de enviar.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Abre un correo que debas responder y pulsa <strong>Responder</strong>. En el redactor, elige <strong>Copilot → Borrador con Copilot</strong>.</li>
+              <li>Escribe una instrucción concreta: <em>"Responde aceptando la reunión del jueves, propone las 10 a. m. y pide que envíen la agenda antes del miércoles. Tono cordial y breve."</em></li>
+              <li>Usa las opciones de <strong>tono</strong> y <strong>longitud</strong> del borrador para generar una segunda versión y elige la mejor.</li>
+              <li>Abre el panel de Copilot, selecciona el agente <strong>Writing Coach</strong> y pega tu borrador final. Pídele que revise la claridad y el tono para ese destinatario.</li>
+              <li>Aplica solo los cambios con los que estés de acuerdo y guarda el correo en Borradores o envíalo.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Documento con tres versiones del mismo correo (borrador inicial, versión ajustada y versión final después de Writing Coach) y una tabla breve con los cambios que aceptaste y los que rechazaste, con el motivo.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Las tres versiones muestran una mejora visible en claridad o tono.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se justifica por qué se rechazó al menos una sugerencia.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si Writing Coach no aparece en tu panel, usa <strong>Coaching de Copilot</strong> dentro del redactor de Outlook. Cumple la misma función.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(9)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 10 -->
+      <article class="activity-card" id="act-10" data-id="10" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 5 · De un hilo de correo a una lista de tareas</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Extrae compromisos, responsables y fechas</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 25 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Convertir una conversación larga en compromisos verificables, con responsable y fecha, y registrarlos donde se les pueda hacer seguimiento.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Elige un hilo con al menos cuatro mensajes donde se hayan acordado acciones.</li>
+              <li>Con el hilo abierto, pide en el panel de Copilot: <em>"De este hilo, extrae los compromisos en una tabla con las columnas Tarea, Responsable, Fecha límite y Correo de origen. Si falta la fecha o el responsable, escribe «sin definir»."</em></li>
+              <li>Revisa la tabla contra el hilo y corrige lo que no coincida.</li>
+              <li>Arrastra el correo a <strong>Mi día</strong> o márcalo con bandera para que aparezca en <strong>Microsoft To Do</strong>, y crea allí las tareas que te corresponden.</li>
+              <li>Pide a Copilot un borrador de correo de cierre que confirme los compromisos a todos los participantes. Revísalo antes de enviarlo.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Tabla de compromisos corregida, captura de las tareas en To Do y el correo de confirmación (enviado o guardado en Borradores).</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Cada compromiso tiene responsable y fecha, o la marca «sin definir».</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Las correcciones hechas a la tabla de Copilot están señaladas.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Los compromisos que nadie asumió explícitamente son los que más se pierden. Pide a Copilot: <em>"¿Qué temas quedaron sin responsable?"</em>
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(10)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 16 -->
+      <article class="activity-card" id="act-16" data-id="16" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 6 · Adjuntos sin abrirlos uno por uno</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Resume y compara documentos que llegan por correo</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 25 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Usar Copilot para entender rápidamente los archivos adjuntos y detectar cambios entre dos versiones de un mismo documento.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Abre un correo con un adjunto extenso, por ejemplo una programación de formación en Excel o un PDF institucional.</li>
+              <li>Pide en el panel de Copilot: <em>"Resume el adjunto: propósito, fechas clave, responsables y lo que me piden a mí."</em></li>
+              <li>Si tienes dos versiones del mismo documento en correos distintos, pide: <em>"Compara el adjunto de este correo con el que recibí el [fecha] y lista las diferencias en una tabla."</em></li>
+              <li>Abre el archivo y verifica al menos tres datos del resumen (una fecha, un nombre y una cifra).</li>
+              <li>Responde al remitente con una pregunta concreta sobre algo que el resumen dejó sin aclarar.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Resumen del adjunto con los tres datos verificados marcados, la tabla de diferencias (si aplica) y la respuesta enviada o guardada.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se verificaron tres datos del resumen contra el archivo original.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> La pregunta enviada se basa en un vacío real del documento.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si Copilot no lee el adjunto, guárdalo en OneDrive y en el panel escribe <strong>/</strong> para elegirlo como referencia. Si tampoco funciona, copia el contenido en el chat.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(16)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 17 -->
+      <article class="activity-card" id="act-17" data-id="17" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 7 · Encontrar lo acordado sin buscar a mano</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Pregunta a Copilot por tus correos, archivos y reuniones</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Recuperar decisiones y datos dispersos en el correo con preguntas en lenguaje natural y comprobar las fuentes que Copilot cita.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>En el panel de Copilot, pregunta: <em>"¿Qué acordamos con [persona] sobre [tema] en el último mes? Cita los correos de donde sale cada acuerdo."</em></li>
+              <li>Abre cada correo citado y confirma que dice lo que Copilot afirma.</li>
+              <li>Haz una segunda pregunta para un dato concreto: <em>"¿Cuál es la fecha límite de entrega de [documento] según los correos de coordinación?"</em></li>
+              <li>Registra los aciertos, los errores y las respuestas sin cita.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Tabla con dos preguntas, la respuesta de Copilot, las fuentes citadas y la verificación de cada una (correcta, incorrecta o sin fuente).</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Cada afirmación tiene una fuente verificada o queda marcada como no verificable.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se identifica al menos un límite de la búsqueda.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Una respuesta sin cita no es una evidencia. Si Copilot no encuentra algo que sabes que existe, usa la búsqueda de Outlook con el remitente y una palabra clave, y compara los resultados.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(17)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 11 -->
+      <article class="activity-card" id="act-11" data-id="11" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 8 · Preparar una reunión desde el calendario</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Llega a la reunión con contexto y agenda</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Usar el calendario de Outlook y Copilot para preparar una reunión en minutos: recuperar el contexto de los correos previos y proponer una agenda.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Abre en el <strong>Calendario</strong> una reunión de esta semana y revisa si Copilot ofrece un resumen o la opción <strong>Preparar</strong>.</li>
+              <li>En el panel de Copilot, selecciona <strong>Asesor de reuniones</strong> si lo tienes. Si no, usa Copilot directamente.</li>
+              <li>Pide: <em>"Para mi reunión de [nombre] del [día], resume los correos relacionados de las últimas dos semanas, lista los temas sin resolver y propone una agenda de 30 minutos con tiempos."</em></li>
+              <li>Ajusta la agenda y pégala en el cuerpo de la convocatoria o envíala como respuesta a los participantes.</li>
+              <li>Después de la reunión, pide a Copilot un borrador de correo de seguimiento con decisiones y tareas.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Captura del resumen de contexto, la agenda final incluida en la convocatoria y el borrador de seguimiento.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> La agenda tiene tiempos y un objetivo por punto.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> El contexto cita los correos de los que proviene.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si la reunión no tiene correos relacionados, crea una de prueba contigo mismo y envíate antes dos correos con los temas por tratar.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(11)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 18 -->
+      <article class="activity-card" id="act-18" data-id="18" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 9 · Calendario: huecos libres y tiempo de foco</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Organiza tu semana conversando con Copilot</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Usar Copilot para leer el calendario, encontrar espacios disponibles y proteger bloques de trabajo concentrado.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Pide: <em>"Muéstrame mis reuniones de esta semana y los bloques libres de más de una hora."</em></li>
+              <li>Compara la respuesta con la vista semanal del calendario y corrige lo que no coincida.</li>
+              <li>Pide un borrador de correo para proponer una reunión: <em>"Propón a [persona] tres horarios de 30 minutos dentro de mis espacios libres de la semana."</em></li>
+              <li>Crea en el calendario dos bloques de <strong>tiempo de foco</strong> con un título claro y márcalos como ocupados.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Captura de la respuesta de Copilot con las correcciones, el borrador de propuesta de horarios y la vista semanal con los dos bloques de foco.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Los horarios propuestos no se cruzan con compromisos existentes.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Los bloques de foco quedan visibles como ocupados.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si Copilot no puede leer tu calendario, revisa tú la vista semanal y usa Copilot solo para redactar el correo con los horarios que elijas.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(18)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 19 -->
+      <article class="activity-card" id="act-19" data-id="19" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 10 · Seguimientos pendientes en lote</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Que ningún correo enviado quede sin respuesta</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Identificar los correos enviados que esperan respuesta y preparar recordatorios cordiales con el apoyo de Copilot.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Pide: <em>"Lista los correos que envié en las últimas dos semanas en los que pedí algo y todavía no me han respondido."</em></li>
+              <li>Revisa la lista en la carpeta <strong>Elementos enviados</strong> y descarta los que ya se resolvieron por otro medio.</li>
+              <li>Para tres correos, pide: <em>"Redacta un recordatorio breve y cordial para este correo, recordando la fecha que necesito."</em></li>
+              <li>Programa el envío de los recordatorios con <strong>Enviar más tarde</strong> para el siguiente día hábil a primera hora.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Lista depurada de seguimientos pendientes y captura de los tres recordatorios programados.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se depuró la lista contra Elementos enviados.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Los recordatorios incluyen la fecha o la acción concreta que se necesita.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si Copilot no encuentra los correos enviados sin respuesta, marca con bandera los correos que envíes y pide recordatorios para esa carpeta. Las banderas también aparecen en To Do.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(19)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 20 -->
+      <article class="activity-card" id="act-20" data-id="20" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 11 · Del recap de la reunión al correo de acta</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Cierra cada reunión con decisiones y responsables por escrito</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 25 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Convertir el contenido de una reunión en un correo de acta con decisiones, tareas y fechas, listo para enviar.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>En el calendario, abre una reunión de Teams ya realizada que tenga grabación o transcripción.</li>
+              <li>En el panel de Copilot, pide: <em>"Resume la reunión [nombre] del [día]: decisiones, tareas con responsable y temas pendientes."</em></li>
+              <li>Verifica el resumen con la transcripción o tus notas y corrige lo necesario.</li>
+              <li>Pide: <em>"Con ese resumen, redacta un correo de acta para los asistentes, con asunto claro y una tabla de tareas."</em> Revísalo y envíalo.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Resumen corregido de la reunión y el correo de acta enviado o guardado en Borradores.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> El acta tiene decisiones, tareas, responsables y fechas.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se señalan las correcciones hechas al resumen automático.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si tu organización no habilita la transcripción o Copilot no accede a la reunión, pega tus propias notas en el chat y pide el mismo correo de acta.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(20)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 22 -->
+      <article class="activity-card" id="act-22" data-id="22" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 12 · Plantillas y pasos rápidos con Copilot</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Combina la IA con las herramientas de Outlook que ya tienes</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Convertir respuestas generadas con Copilot en plantillas reutilizables y automatizar acciones repetidas con pasos rápidos.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Con Copilot, redacta la respuesta a la consulta que más recibes y ajústala hasta que la puedas usar sin cambios.</li>
+              <li>Guárdala en <strong>Mis plantillas</strong> desde el redactor de correo.</li>
+              <li>Crea un <strong>paso rápido</strong> que, con un clic, marque el correo como leído, lo mueva a una carpeta y lo marque con bandera.</li>
+              <li>Atiende tres correos reales usando la plantilla y el paso rápido, y mide el tiempo.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Capturas de la plantilla guardada y del paso rápido configurado, más el tiempo de atención de los tres correos.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> La plantilla no contiene datos de una persona concreta.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> El paso rápido combina al menos tres acciones.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Las plantillas no usan IA. Por eso son ideales para respuestas que deben ser idénticas cada vez. Usa Copilot para crearlas y mejorarlas, no para repetirlas.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(22)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 12 -->
+      <article class="activity-card" id="act-12" data-id="12" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 13 · Automatizar un aviso con Workflows</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Que Outlook trabaje por ti cuando llega un correo clave</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-avanzado">🔴 Avanzado</span>
+            <span class="badge-time">⏱️ 30 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Describir en lenguaje natural una automatización útil para el correo, revisarla antes de activarla y probar que funciona.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>En el panel de Copilot de Outlook, abre el agente <strong>Workflows</strong>.</li>
+              <li>Describe el flujo: <em>"Cada vez que reciba un correo con «urgente» en el asunto, envíame un mensaje en Teams con el remitente y un resumen de dos líneas."</em></li>
+              <li>Revisa la vista previa: disparador, condiciones, acciones y destinatarios. Corrige lo que no corresponda antes de activarlo.</li>
+              <li>Envíate un correo de prueba con «urgente» en el asunto y comprueba que llegue el aviso.</li>
+              <li>Prueba también un correo sin esa palabra para confirmar que el flujo no se dispara. Al terminar, decide si lo dejas activo o lo desactivas.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Capturas de la descripción del flujo, de la vista previa, del aviso recibido y de la prueba negativa, más una nota sobre si lo dejaste activo y por qué.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se probaron los dos casos: el correo que dispara el flujo y el que no.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Se revisaron los destinatarios antes de activar.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Workflows está marcado como <strong>Frontier</strong>, es decir, en acceso anticipado. Si no lo tienes, crea una <strong>regla de Outlook</strong> con la misma condición que mueva el correo a una carpeta «Urgente» y te muestre una alerta de escritorio, y documenta esa alternativa.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(12)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Actividad 21 -->
+      <article class="activity-card" id="act-21" data-id="21" data-tool="outlook">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Taller 14 · Tu propio agente para el correo</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Crea un agente que responda un tipo de solicitud recurrente</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-avanzado">🔴 Avanzado</span>
+            <span class="badge-time">⏱️ 35 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Diseñar, crear y probar un agente con instrucciones propias para resolver un tipo de correo que recibes con frecuencia.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Elige una solicitud que se repita en tu bandeja, por ejemplo aprendices que piden una nueva fecha de entrega.</li>
+              <li>En el panel de Copilot, abre el menú <strong>☰</strong> y selecciona <strong>Crear agente</strong>.</li>
+              <li>Describe el agente: su propósito, el tono, los datos que siempre debe pedir, lo que nunca debe prometer y el formato de respuesta. Usa la estructura de la página <a href="creacion-agentes.html#agente-para-correo">Crear agentes</a>.</li>
+              <li>Prueba el agente con tres correos distintos: uno típico, uno con información incompleta y uno fuera de su alcance.</li>
+              <li>Ajusta las instrucciones con lo que observaste y repite la prueba que falló.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Instrucciones del agente (versión inicial y final), tres pruebas con sus respuestas y una nota sobre los cambios que hiciste.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> El agente pide los datos faltantes en lugar de inventarlos.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Rechaza o deriva correctamente la solicitud fuera de su alcance.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si la opción <strong>Crear agente</strong> no aparece, guarda las mismas instrucciones como un prompt reutilizable y pruébalo con los tres correos. El aprendizaje es el mismo.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(21)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+      <p class="filter-empty" id="filterEmpty" hidden>Ningún taller coincide con este filtro. Elige «Todas» o «Todos» para ver de nuevo el recorrido completo.</p>
+
+      <section class="activity-block-intro" id="bloque-extensiones" style="margin:3rem 0 1.5rem;">
+        <h2>Extensiones: del correo a otras aplicaciones</h2>
+        <p class="prose">Estas actividades parten de algo que llegó o se produjo en Outlook (un hilo, un adjunto o un resumen) y lo llevan a SharePoint, Teams, Word, Excel, PowerPoint o Copilot Studio. Hazlas cuando domines el bloque de Outlook o cuando tu trabajo lo pida.</p>
+      </section>
+      <!-- Actividad 13 -->
+      <article class="activity-card" id="act-13" data-id="13" data-tool="sharepoint">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Extensión A · Del correo a una lista de SharePoint</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Comparte con tu equipo los compromisos de un hilo</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 20 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Llevar los compromisos extraídos del correo a una lista compartida de SharePoint con la que el equipo pueda hacer seguimiento.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Toma la tabla corregida del Taller 5.</li>
+              <li>En el panel de Copilot, abre <strong>SharePoint list agent</strong> y pide: <em>"Crea una lista con estas tareas, con columnas Tarea, Responsable, Fecha límite y Estado: [pega la tabla]."</em></li>
+              <li>Elige el sitio de SharePoint de tu equipo o tu espacio personal y revisa las columnas creadas.</li>
+              <li>Comparte el enlace de la lista con un compañero en un correo redactado con Copilot.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Captura de la lista en SharePoint y del correo con el enlace.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> La lista conserva todas las tareas y sus fechas.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Los permisos del sitio son adecuados para quienes recibirán el enlace.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Si el agente no está disponible, crea la lista en SharePoint con <strong>Nueva → Lista</strong> y usa Copilot solo para dar formato a la tabla.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(13)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 14 -->
+      <article class="activity-card" id="act-14" data-id="14" data-tool="teams">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Extensión B · Del correo a un canal de Teams</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Comparte un resumen sin reenviar el hilo completo</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-basico">🟢 Básico</span>
+            <span class="badge-time">⏱️ 15 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Evitar reenvíos largos: compartir en Teams un resumen útil de un hilo de correo o la agenda de una reunión.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento paso a paso</h4></summary>
+            <ol>
+              <li>Resume un hilo con Copilot en Outlook y ajusta el resumen para un canal: <em>"Reescribe este resumen en cinco viñetas para un canal de Teams, con una mención a la persona responsable de cada punto."</em></li>
+              <li>Usa la opción <strong>Compartir en Teams</strong> del correo o pega el resumen en el canal de tu equipo.</li>
+              <li>En Teams, pide a Copilot que resuma las respuestas del canal al día siguiente y compara si hace falta otro correo.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a entregar:</h4>
+            <p>Captura del mensaje publicado en Teams y una nota sobre cuántos correos de ida y vuelta evitaste.</p>
+          </div>
+
+          <details class="rubric-details">
+            <summary>Criterios de revisión</summary>
+            <ul class="rubric-list">
+            <li class="rubric-item"><span class="rubric-check">✓</span> El resumen no expone información que el canal no deba ver.</li>
+            <li class="rubric-item"><span class="rubric-check">✓</span> Cada punto tiene responsable.</li>
+          </ul>
+          </details>
+
+          <details class="hint-box">
+            <summary class="hint-header"><span>💡 Pista del Instructor</span></summary>
+            <div class="hint-content">
+              Antes de publicar, revisa quiénes son miembros del canal. Un canal de equipo puede incluir personas que no estaban en el hilo original.
+            </div>
+          </details>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(14)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 3 -->
+      <article class="activity-card" id="act-3" data-id="3" data-tool="extension">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Extensión C · Laboratorio Documental en Word con Comando /</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Elabora una propuesta institucional iterando con Copilot como coautor</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 30 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Dominar el anclaje de archivos mediante el comando barra oblicua (<code>/</code>), la reescritura de párrafos con ajuste de tono y la conversión de texto a tablas estructuradas.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento Paso a Paso</h4></summary>
+            <ol>
+              <li>Parte de un correo: elige un acta o informe que hayas recibido como adjunto y guárdalo en OneDrive para usarlo como fuente.</li>
+              <li>Abre Microsoft Word en la versión de escritorio o web e inicia un documento en blanco.</li>
+              <li>Presiona el icono de Copilot en el lienzo y redacta el borrador inicial de una <strong>Propuesta de Innovación Digital</strong> para tu área.</li>
+              <li>Utiliza el comando <code>/</code> para anclar un archivo existente de tu OneDrive (un acta o informe previo) para que Copilot tome de allí los antecedentes.</li>
+              <li>Selecciona el apartado metodológico y pídele a Copilot que lo reescriba en tono más persuasivo y riguroso.</li>
+              <li>Pide a Copilot que inserte al final una tabla de cronograma y presupuesto de 4 columnas.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Documento de Word terminado (.docx) de mínimo 3 páginas que muestre evidencia de al menos 4 interacciones observables con Copilot (borrador inicial, anclaje con <code>/</code>, reescritura de párrafo y tabla generada).</p>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(3)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 4 -->
+      <article class="activity-card" id="act-4" data-id="4" data-tool="extension">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Extensión D · Análisis Estadístico y Fórmulas en Excel</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Transforma un conjunto de datos desordenado en insights accionables</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 30 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Formatear tablas correctamente para Copilot, generar columnas calculadas con lógica condicional mediante lenguaje natural y extraer visualizaciones estadísticas automáticas.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento Paso a Paso</h4></summary>
+            <ol>
+              <li>Parte de un correo: usa una hoja de cálculo que te hayan enviado como adjunto (por ejemplo, una programación o un listado) y ábrela en Excel desde Outlook.</li>
+              <li>Abre una hoja de cálculo en Excel con al menos 30 filas de registros (calificaciones de aprendices, ventas o inventarios).</li>
+              <li>Convierte el rango en <strong>Tabla de Excel</strong> oficial con el atajo <code>Ctrl + T</code>.</li>
+              <li>Abre el panel de Copilot y solicita una fórmula condicional compleja (ej: categorización en 3 niveles según puntaje).</li>
+              <li>Pide a Copilot que identifique patrones o valores atípicos en la muestra.</li>
+              <li>Solicita la creación automática de un gráfico dinámico que resuma la distribución porcentual.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Libro de Excel (.xlsx) con la tabla analizada, la columna de fórmula creada por Copilot y el gráfico explicativo insertado con sus conclusiones.</p>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(4)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 5 -->
+      <article class="activity-card" id="act-5" data-id="5" data-tool="extension">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Extensión E · De Documento Técnico a Presentación en PowerPoint</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Construye una exposición visual de 8 diapositivas con notas para el orador</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-intermedio">🟡 Intermedio</span>
+            <span class="badge-time">⏱️ 25 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Convertir documentos extensos en presentaciones ejecutivas fluidas y generar el guion de apoyo verbal sin redactar manualmente cada diapositiva.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento Paso a Paso</h4></summary>
+            <ol>
+              <li>Parte de un correo: toma el documento de Word que recibiste o produjiste en la Extensión C y guárdalo en OneDrive.</li>
+              <li>Abre PowerPoint y en la ventana de inicio pulsa sobre el botón de <strong>Copilot</strong>.</li>
+              <li>Escribe: <em>"Crea una presentación basada en /"</em> y selecciona el documento de Word que generaste en el Extensión C.</li>
+              <li>Revisa la estructura generada: si alguna diapositiva tiene demasiado texto, pide a Copilot que la rediseñe con viñetas cortas.</li>
+              <li>Solicita a Copilot que agregue notas completas del orador para cada diapositiva con puntos clave de sustentación.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Archivo de presentación (.pptx) de 8 diapositivas, con diseño limpio, narrativa coherente y notas del orador redactadas en cada lámina.</p>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(5)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 6 -->
+      <article class="activity-card" id="act-6" data-id="6" data-tool="extension">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Extensión F · Construcción de tu Primer Agente Personalizado</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Diseña, ancla y calibra un compañero digital con Copilot Studio</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-avanzado">🔴 Avanzado</span>
+            <span class="badge-time">⏱️ 45 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Dominar la arquitectura de agentes declarativos en Microsoft Copilot Studio: redactar system prompts profesionales, vincular fuentes documentales y validar el comportamiento ético y verídico en sandbox.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Procedimiento Paso a Paso</h4></summary>
+            <ol>
+              <li>Ingresa a <strong>Copilot Studio</strong> (<a href="https://copilotstudio.microsoft.com" target="_blank" rel="noopener noreferrer" style="color:var(--primary); font-weight:600;">copilotstudio.microsoft.com</a>) o al creador de agentes de SharePoint.</li>
+              <li>Crea un nuevo agente asignándole un nombre institucional (ej: <em>Asistente Curricular SENA</em>).</li>
+              <li>Redacta las instrucciones maestras utilizando la estructura de 5 partes (Rol, Ámbito, Tono, Guardrails, Formato) o adapta una plantilla del Módulo 3.</li>
+              <li>Sube o vincula mínimo 2 documentos PDF o Word con procedimientos oficiales de tu área.</li>
+              <li>Ejecuta en el panel de pruebas 5 preguntas de validación, incluyendo una pregunta trampa fuera de alcance para verificar que no alucine.</li>
+            </ol>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Ficha de arquitectura del agente en PDF con: Instrucciones completas (System Prompt), Fuentes de conocimiento vinculadas, Captura del panel de prueba con las 5 interacciones y Enlace de publicación o captura de despliegue.</p>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste esta actividad en Copilot?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(6)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+      <!-- Actividad 7 -->
+      <article class="activity-card" id="act-7" data-id="7">
+        <div class="activity-top">
+          <div class="activity-title-group">
+            <h2>Reto Integrador · Flujo de Productividad Multifuncional</h2>
+            <span style="color:var(--text-muted); font-size:.9rem;">Conecta mínimo 3 aplicaciones de Microsoft 365 para resolver un caso empresarial real</span>
+          </div>
+          <div class="activity-meta">
+            <span class="card-done-badge">✓ Completado</span>
+            <span class="badge-diff diff-avanzado">🔴 Avanzado</span>
+            <span class="badge-time">⏱️ 60 minutos</span>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p><strong>Objetivo de aprendizaje:</strong> Articular el ecosistema completo de Microsoft 365 Copilot en un flujo de trabajo continuo de extremo a extremo, demostrando una reducción comprobada en tiempos de ejecución.</p>
+
+          <details class="steps-container">
+            <summary><h4>📋 Escenario del Proyecto Integrador</h4></summary>
+            <p>Debes coordinar el lanzamiento de un nuevo programa formativo o proyecto institucional en tu centro. Debes conectar en secuencia al menos 3 de las siguientes herramientas:</p>
+            <ul>
+              <li><strong>Outlook:</strong> Convocatoria, agenda y extracción de compromisos del hilo de correo con Copilot (Talleres 5 y 8).</li>
+              <li><strong>Teams:</strong> Reunión de arranque con transcripción activa para extraer compromisos.</li>
+              <li><strong>Word:</strong> Redacción de la propuesta de lanzamiento anclando el acta de Teams con <code>/</code>.</li>
+              <li><strong>Excel:</strong> Modelo financiero y cronograma de costos del proyecto con fórmulas asistidas.</li>
+              <li><strong>PowerPoint:</strong> Sustentación ejecutiva para directivos creada a partir del documento de Word.</li>
+              <li><strong>Forms:</strong> Cuestionario de retroalimentación para evaluar el impacto del proyecto.</li>
+            </ul>
+          </details>
+
+          <div class="deliverable-box">
+            <h4>📦 Evidencia a Entregar:</h4>
+            <p>Portafolio de Evidencias del Proyecto Integrador que incluya: 1) Guía del flujo documentado con capturas de cada paso, 2) Matriz de balance de tiempo: minutos requeridos manualmente vs. minutos invertidos con Copilot, 3) Reflexión crítica sobre buenas prácticas y gobierno de datos.</p>
+          </div>
+
+          <div style="background:#F8FAFD; border:1px solid var(--border); border-radius:var(--radius-btn); padding:1.25rem; margin-top:1.25rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem; flex-wrap:wrap; gap:.5rem;">
+              <strong style="color:var(--primary-dark); font-size:.92rem;">📄 Plantilla Estructurada para el Portafolio de Evidencias (Lista para Copiar):</strong>
+              <button type="button" class="btn-copy" onclick="copyPortfolioTemplate(this)" style="padding:.35rem .85rem; font-size:.8rem; background:var(--primary); color:#fff; border:none; border-radius:6px; cursor:pointer;">
+                📋 Copiar Plantilla Markdown
+              </button>
+            </div>
+            <pre id="portfolioTmpl" style="background:#1A2332; color:#E2E8F0; padding:1rem; border-radius:8px; font-family:var(--font-code); font-size:.82rem; overflow-x:auto; margin:0; line-height:1.5;"># Portafolio de Evidencias del Proyecto Integrador — Caso Titán
+**Participante:** [Tu Nombre Completo]
+**Ficha / Centro:** [Identificación Institucional]
+**Fecha:** [Fecha de Entrega]
+
+## 1. Descripción del Flujo Cross-App
+- **Herramienta 1:** Outlook + Copilot (hilo de correo convertido en compromisos)
+- **Herramienta 2:** Microsoft Word (Propuesta formal con anclaje `/`)
+- **Herramienta 3:** Microsoft PowerPoint (Deck de 8 diapositivas con notas)
+
+## 2. Matriz de Medición de Productividad
+| Tarea del Flujo | Tiempo Manual Estimado | Tiempo con Copilot | Ahorro (%) |
+|---|---|---|---|
+| Elaboración de Acta de Reunión | 45 min | 5 min | 88.8% |
+| Redacción de Propuesta Ejecutiva | 90 min | 15 min | 83.3% |
+| Creación de Presentación (8 láminas) | 60 min | 10 min | 83.3% |
+| **Total del Flujo** | **195 min (3.25 h)** | **30 min (0.5 h)** | **84.6%** |
+
+## 3. Verificación Ética y Discrepancias Corregidas
+- Alucinaciones detectadas y mitigadas con anclaje: [...]
+- Protocolo de Protección de Datos Comerciales (CDP) verificado: [...]</pre>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <span style="font-size:.85rem; color:var(--text-muted);">¿Completaste este proyecto integrador?</span>
+          <button type="button" class="btn-toggle-done" onclick="toggleDone(7)" aria-pressed="false">
+            <span>Marcar como completado</span>
+          </button>
+        </div>
+      </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Navigation Footer -->
+      <div class="page-nav-bar">
+        <a href="prompts.html" class="btn-nav btn-nav-prev">← Anterior: Biblioteca de Prompts</a>
+        <a href="evaluacion.html" class="btn-nav btn-nav-next">Siguiente: Evaluación Final →</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">✦ Copilot 365 al Máximo</div>
+        <p class="footer-desc">Guía educativa integral diseñada para aprendices, instructores y profesionales que buscan dominar Microsoft 365 Copilot, sus agentes inteligentes y la automatización moderna del trabajo.</p>
+      </div>
+      <div>
+        <h4 style="color:#fff; margin-bottom:.8rem; font-size:.95rem;">Módulos del Curso</h4>
+        <ul class="footer-nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="fundamentos.html">Fundamentos</a></li>
+          <li><a href="agentes-preconstruidos.html">Agentes</a></li>
+          <li><a href="creacion-agentes.html">Crear Agentes</a></li>
+          <li><a href="copilot-apps.html">Copilot en Apps</a></li>
+          <li><a href="prompts.html">Biblioteca Prompts</a></li>
+          <li><a href="actividades.html">Actividades</a></li>
+          <li><a href="evaluacion.html">Evaluación</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Copilot 365 al Máximo. Formación y Productividad Digital.</span>
+      <span>Diseñado con serenidad nórdica · Accesible y Práctico</span>
+    </div>
+  </footer>
+
+  <script src="src/features/activities-progress.js"></script>
+  <script>
+    // Progreso, siguiente taller y filtros. La lógica pura vive en src/features/activities-progress.js
+    // (probada con node --test); aquí solo se conecta con el DOM.
+    const STORAGE_KEY = 'copilot365_activities_progress';
+    const AP = window.ActivitiesProgress;
+    const filter = { tool: 'todas', status: 'todas' };
+
+    function cards() { return Array.from(document.querySelectorAll('article.activity-card')); }
+    function order() { return cards().map(c => Number(c.dataset.id)); }
+
+    function getProgress() {
+      try { return AP.parseProgress(localStorage.getItem(STORAGE_KEY)); } catch (e) { return []; }
+    }
+
+    function saveProgress(arr) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); } catch (e) {}
+    }
+
+    function shortTitle(id) {
+      const h = document.querySelector('#act-' + id + ' h2');
+      return h ? h.textContent.split('·')[0].trim() : '';
+    }
+
+    function setNextLink(link, id) {
+      if (!link) return;
+      if (id === null) {
+        link.textContent = 'Recorrido completo';
+        link.href = '#act-7';
+        link.setAttribute('aria-disabled', 'true');
+      } else {
+        link.textContent = 'Ir al ' + shortTitle(id);
+        link.href = '#act-' + id;
+        link.removeAttribute('aria-disabled');
+      }
+    }
+
+    function updateUI() {
+      const completed = getProgress();
+      const seq = order();
+      const { count, total, pct } = AP.summarize(seq, completed);
+      const next = AP.nextPending(seq, completed);
+
+      document.getElementById('progressStats').textContent = `${count} de ${total} completados (${pct} %)`;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressTrack').setAttribute('aria-valuenow', String(pct));
+      document.getElementById('dockStats').textContent = `${count} de ${total}`;
+      document.getElementById('dockBar').style.width = pct + '%';
+
+      const label = document.getElementById('nextLabel');
+      if (next === null) label.textContent = 'Completaste todos los talleres. Revisa tu Portafolio de Evidencias antes de entregarlo.';
+      else if (count === 0) label.textContent = 'Empieza por el Taller 0: su diagnóstico te dice qué ruta seguir.';
+      else label.textContent = 'Tu siguiente paso: ' + document.querySelector('#act-' + next + ' h2').textContent.trim();
+      setNextLink(document.getElementById('nextLink'), next);
+      setNextLink(document.getElementById('dockLink'), next);
+
+      cards().forEach(card => {
+        const id = Number(card.dataset.id);
+        const isDone = completed.includes(id);
+        const btn = card.querySelector('.btn-toggle-done');
+        const node = document.getElementById('m-' + id);
+        card.classList.toggle('card-completed', isDone);
+        if (btn) {
+          btn.classList.toggle('done', isDone);
+          btn.setAttribute('aria-pressed', String(isDone));
+          btn.innerHTML = isDone ? '<span>✓ Completado · desmarcar</span>' : '<span>Marcar como completado</span>';
+        }
+        if (node) {
+          node.classList.toggle('completed', isDone);
+          node.classList.toggle('is-next', id === next);
+          if (id === next) node.setAttribute('aria-current', 'step'); else node.removeAttribute('aria-current');
+        }
+      });
+      applyFilter();
+    }
+
+    function applyFilter() {
+      const completed = getProgress();
+      let visible = 0;
+      cards().forEach(card => {
+        const show = AP.matchesFilter({ tool: card.dataset.tool, done: completed.includes(Number(card.dataset.id)) }, filter);
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      // Las introducciones de bloque solo se muestran si su bloque tiene talleres visibles.
+      document.getElementById('bloque-outlook').hidden = !cards().some(c => !c.hidden && c.dataset.tool === 'outlook');
+      document.getElementById('bloque-extensiones').hidden = !cards().some(c => !c.hidden && c.dataset.tool !== 'outlook');
+      document.getElementById('filterEmpty').hidden = visible > 0;
+      const total = cards().length;
+      document.getElementById('filterResult').textContent = visible === total ? '' : `Mostrando ${visible} de ${total} talleres`;
+    }
+
+    function toggleDone(id) {
+      saveProgress(AP.toggleId(getProgress(), id));
+      updateUI();
+    }
+
+    function copyPortfolioTemplate(btn) {
+      const el = document.getElementById('portfolioTmpl');
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = '✓ ¡Copiado!';
+        btn.style.background = '#38A169';
+        setTimeout(() => {
+          btn.innerText = orig;
+          btn.style.background = '';
+        }, 1800);
+      }).catch(err => {
+        console.error(err);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.filter-set').forEach(set => {
+        set.addEventListener('click', e => {
+          const chip = e.target.closest('.filter-chip');
+          if (!chip) return;
+          filter[set.dataset.filter] = chip.dataset.value;
+          set.querySelectorAll('.filter-chip').forEach(c => c.setAttribute('aria-pressed', String(c === chip)));
+          applyFilter();
+        });
+      });
+
+      // Al abrir un taller desde un enlace, se despliega su procedimiento.
+      function openTarget() {
+        const target = location.hash && document.querySelector(location.hash + '.activity-card');
+        if (!target) return;
+        if (target.hidden) {
+          document.querySelectorAll('.filter-chip[data-value="todas"]').forEach(c => c.click());
+        }
+        const steps = target.querySelector('.steps-container');
+        if (steps) steps.open = true;
+      }
+      window.addEventListener('hashchange', openTarget);
+
+      const tracker = document.querySelector('.tracker-card');
+      const dock = document.getElementById('progressDock');
+      if (tracker && dock && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+          dock.hidden = entry.isIntersecting || entry.boundingClientRect.top > 0;
+        }).observe(tracker);
+      }
+
+      updateUI();
+      openTarget();
+
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('nav-links');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+          navLinks.classList.toggle('open');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

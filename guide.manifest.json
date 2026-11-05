@@ -1,0 +1,181 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devbrain/educational-guide-schema/v2.5.0/guide.manifest.schema.json",
+  "standard": {
+    "id": "devbrain.educational-guide",
+    "version": "2.5.0"
+  },
+  "guide": {
+    "id": "copilot-365-al-maximo",
+    "title": "Copilot 365 al Máximo: agentes de Copilot en Outlook y productividad del correo",
+    "format": "web",
+    "language": "es-CO",
+    "version": "4.0.0",
+    "sourceDocument": "Lineamientos Oficiales de Microsoft 365 Copilot para Educación (Licencias A3/A5)"
+  },
+  "curricularAlignment": {
+    "program": {
+      "name": "Formación transversal en competencias digitales, productividad e Inteligencia Artificial",
+      "code": "ADSO-TRANS-IA-2026"
+    },
+    "competency": {
+      "code": "220501096",
+      "name": "Aprovechar herramientas de inteligencia artificial generativa y agentes de software para optimizar procesos organizacionales y académicos",
+      "sourceStatus": "Competencia transversal institucional orientada a la apropiación de IA y modernización del trabajo ofimático y colaborativo."
+    },
+    "learningResults": [
+      {
+        "id": "RAP-01",
+        "description": "Comprender la arquitectura de Microsoft Graph y los principios de anclaje semántico (grounding) y protección de datos comerciales en Copilot."
+      },
+      {
+        "id": "RAP-02",
+        "description": "Formular instrucciones y prompts de ingeniería con el método CRTT+L en las aplicaciones ofimáticas y colaborativas de la suite Microsoft 365."
+      },
+      {
+        "id": "RAP-03",
+        "description": "Diseñar, configurar y validar agentes de software declarativos y de conocimiento en Microsoft Copilot Studio y SharePoint con guardrails éticos."
+      },
+      {
+        "id": "RAP-04",
+        "description": "Integrar flujos de trabajo multifuncionales de extremo a extremo midiendo el ahorro de tiempo y documentando el portafolio de evidencias del proyecto."
+      }
+    ],
+    "projectPhase": "Fase de Apropiación Tecnológica y Automatización de Procesos",
+    "projectActivity": "Implementar el ecosistema de productividad y agentes de IA para el Proyecto Conductor Titán."
+  },
+  "duration": {
+    "status": "adaptacion-didactica-no-oficial",
+    "sourceStatus": "Estimación didáctica de 40 horas pedagógicas distribuidas en 7 módulos formativos y talleres aplicados.",
+    "recommendedTotalHours": 40,
+    "activities": [
+      {
+        "phase": "reflection",
+        "recommendedHours": 4
+      },
+      {
+        "phase": "contextualization",
+        "recommendedHours": 6
+      },
+      {
+        "phase": "appropriation",
+        "recommendedHours": 20
+      },
+      {
+        "phase": "transfer",
+        "recommendedHours": 10
+      }
+    ]
+  },
+  "project": {
+    "case": "Proyecto Conductor Titán: Modernización y Gestión Digital de Procesos Académico-Administrativos",
+    "challenge": "Recuperar tiempo en la gestión del correo, los adjuntos, el calendario y las reuniones del Proyecto Titán con Copilot y sus agentes dentro de Outlook, y continuar el trabajo en Teams, SharePoint, Word, Excel y PowerPoint.",
+    "finalProduct": "Portafolio de Evidencias con la tabla de diagnóstico de capacidades, los talleres de Outlook resueltos, un agente propio para el correo, las extensiones elegidas y un balance cuantitativo de ahorro de tiempo.",
+    "checkpoints": [
+      {
+        "id": "CP-00",
+        "name": "Diagnóstico de capacidades en Outlook",
+        "evidence": "Tabla con siete capacidades de Copilot probadas con casos reales (resumen, adjuntos, búsqueda, calendario, reuniones, agentes y creación de agentes).",
+        "criterion": "Decide la ruta de cada taller con evidencia propia y no con la descripción que Copilot hace de sí mismo."
+      },
+      {
+        "id": "CP-01",
+        "name": "Análisis de Arquitectura y Grounding",
+        "evidence": "Contraste técnico entre un prompt ambiguo y un prompt profesional estructurado con el método CRTT+L.",
+        "criterion": "Aplica explícitamente los cinco pilares de CRTT+L, con fuentes de Microsoft Graph delimitadas en el Contexto."
+      },
+      {
+        "id": "CP-02",
+        "name": "Exploración de agentes en Outlook",
+        "evidence": "Ficha con los agentes habilitados en la cuenta y la prueba de Prompt Coach, Writing Coach y Workflows con un correo real.",
+        "criterion": "Distingue los agentes disponibles de los que requieren licencia completa y explica el aporte de cada uno."
+      },
+      {
+        "id": "CP-02B",
+        "name": "Productividad en Outlook",
+        "evidence": "Evidencias de los talleres de bandeja, respuestas, adjuntos, búsqueda, calendario, seguimientos, actas, plantillas, automatización y agente propio.",
+        "criterion": "Reduce el tiempo de gestión del correo y verifica cada resultado de Copilot contra la fuente."
+      },
+      {
+        "id": "CP-03",
+        "name": "Laboratorio Documental Ofimático",
+        "evidence": "Documento en Word con comando / y presentación ejecutiva en PowerPoint con notas de orador.",
+        "criterion": "Demuestra anclaje de fuentes reales, iteración de estilo y transformación de contenido sin alucinaciones."
+      },
+      {
+        "id": "CP-04",
+        "name": "Análisis Cuantitativo en Excel",
+        "evidence": "Hoja de cálculo analizada con fórmulas condicionales creadas por Copilot y gráfico explicativo.",
+        "criterion": "Garantiza formato oficial de Tabla de Excel (Ctrl + T) y genera insights estadísticos correctos."
+      },
+      {
+        "id": "CP-05",
+        "name": "Agente Declarativo en Copilot Studio",
+        "evidence": "Ficha técnica de configuración del agente con System Prompt de 5 partes, fuentes de SharePoint y prueba de guardrail superada.",
+        "criterion": "El agente responde exclusivamente sobre su base de conocimiento y bloquea consultas no autorizadas."
+      },
+      {
+        "id": "CP-06",
+        "name": "Proyecto Integrador Multifuncional",
+        "evidence": "Portafolio de evidencias del flujo cross-app que conecta mínimo 3 aplicaciones de M365 con matriz de tiempos manual vs. Copilot.",
+        "criterion": "El flujo resuelve un problema auténtico del Caso Titán y demuestra una ganancia de productividad superior al 50%."
+      },
+      {
+        "id": "CP-07",
+        "name": "Evaluación y Certificación",
+        "evidence": "Aprobación del cuestionario de 15 preguntas con porcentaje >= 70% y bitácora de reflexión diligenciada.",
+        "criterion": "Demuestra dominio conceptual y ético sobre la adopción segura de IA generativa."
+      }
+    ]
+  },
+  "learningSequence": [
+    {
+      "moduleIndex": 1,
+      "page": "fundamentos.html",
+      "title": "Fundamentos: Copilot en Outlook, agentes y licencias",
+      "phase": "reflection",
+      "rap": "RAP-01"
+    },
+    {
+      "moduleIndex": 2,
+      "page": "agentes-preconstruidos.html",
+      "title": "Agentes de Copilot: disponibles en Outlook y con licencia completa",
+      "phase": "contextualization",
+      "rap": "RAP-01"
+    },
+    {
+      "moduleIndex": 3,
+      "page": "creacion-agentes.html",
+      "title": "Creación de Agentes Declarativos y de SharePoint",
+      "phase": "appropriation",
+      "rap": "RAP-03"
+    },
+    {
+      "moduleIndex": 4,
+      "page": "copilot-apps.html",
+      "title": "Copilot en Outlook y extensiones a las demás aplicaciones",
+      "phase": "appropriation",
+      "rap": "RAP-02"
+    },
+    {
+      "moduleIndex": 5,
+      "page": "prompts.html",
+      "title": "Biblioteca de prompts y calificador CRTT+L",
+      "phase": "appropriation",
+      "rap": "RAP-02"
+    },
+    {
+      "moduleIndex": 6,
+      "page": "actividades.html",
+      "title": "Actividades: diagnóstico, 14 talleres de Outlook, extensiones y reto integrador (PBL)",
+      "phase": "transfer",
+      "rap": "RAP-04"
+    },
+    {
+      "moduleIndex": 7,
+      "page": "evaluacion.html",
+      "title": "Evaluación Integral, Rúbrica y Certificado Digital",
+      "phase": "transfer",
+      "rap": "RAP-04"
+    }
+  ]
+}
