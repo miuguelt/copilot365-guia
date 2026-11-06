@@ -141,6 +141,59 @@ test('resuelve recursos locales de prosa en plantillas Flask sin iniciar el serv
   }
 });
 
+test('resuelve recursos de prosa relativos, de la raíz y de la carpeta public de Vite', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'text-layout-vite-assets-'));
+  try {
+    const app = path.join(root, '_projects', 'vite-app');
+    const page = path.join(app, 'index.html');
+    const publicCss = path.join(app, 'public', 'prose.css');
+    const publicJs = path.join(app, 'public', 'prose.js');
+    const relativeCss = path.join(app, 'local.css');
+    const rootJs = path.join(root, 'shared.js');
+    fs.mkdirSync(path.dirname(publicCss), { recursive: true });
+    fs.writeFileSync(path.join(app, 'package.json'), JSON.stringify({ devDependencies: { vite: '^6.0.0' } }));
+    fs.writeFileSync(publicCss, '.public { inline-size: 100%; }');
+    fs.writeFileSync(publicJs, 'window.publicRuntime = true;');
+    fs.writeFileSync(relativeCss, '.local { inline-size: 100%; }');
+    fs.writeFileSync(rootJs, 'window.rootRuntime = true;');
+
+    fs.writeFileSync(page, [
+      '<link data-devbrain-prose href="/prose.css?v=1">',
+      '<link data-devbrain-prose href="local.css#hash">',
+      '<link data-devbrain-prose href="prose.css">',
+      '<link data-devbrain-prose href="">',
+      '<script data-devbrain-prose-runtime src="/prose.js"></script>',
+      '<script data-devbrain-prose-runtime src="/shared.js"></script>',
+      '<script data-devbrain-prose-runtime src="/missing.js"></script>'
+    ].join(''));
+    const assets = resolveTemplateAssets(page, root);
+    assert.deepEqual(assets.styles.map(item => item.path), [publicCss, relativeCss, publicCss]);
+    assert.deepEqual(assets.scripts.map(item => item.path), [publicJs, rootJs]);
+    assert.match(assets.styles[1].content, /\.local/);
+
+    fs.writeFileSync(path.join(app, 'package.json'), '{ dañado');
+    assert.deepEqual(resolveTemplateAssets(page, root).styles.map(item => item.path), [relativeCss], 'un manifiesto dañado no expone la carpeta public');
+    assert.deepEqual(resolveTemplateAssets(page, root).scripts.map(item => item.path), [rootJs]);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('un package.json anidado dañado no impide encontrar el manifiesto de Vite superior', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'text-layout-bad-manifest-'));
+  try {
+    const app = path.join(root, '_projects', 'vite-app');
+    const nested = path.join(app, 'pages', 'index.html');
+    fs.mkdirSync(path.dirname(nested), { recursive: true });
+    fs.writeFileSync(path.join(app, 'package.json'), JSON.stringify({ devDependencies: { vite: '^6.0.0' } }));
+    fs.writeFileSync(path.join(app, 'pages', 'package.json'), '{ dañado');
+    fs.writeFileSync(nested, '<!doctype html><html><head><script type="module" src="/src/main.js"></script></head><body><main>Entrada</main></body></html>');
+    assert.equal(discoverIndexPages(root).includes(nested), false, 'la entrada sigue tratándose como fuente de Vite');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('crea sondas de texto, limita la carga de ejemplo y resuelve Edge', () => {
   assert.match(createStressExpression(0), /phrase\.repeat\(1\)/);
   assert.match(createStressExpression(99), /phrase\.repeat\(20\)/);
