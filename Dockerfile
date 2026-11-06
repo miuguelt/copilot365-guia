@@ -3,7 +3,8 @@ FROM nginx:1.27-alpine
 RUN apk add --no-cache curl
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY index.html /usr/share/nginx/html/
+COPY *.html devbrain-prose.css devbrain-prose.js /usr/share/nginx/html/
+COPY src/ /usr/share/nginx/html/src/
 
 EXPOSE 80
 
